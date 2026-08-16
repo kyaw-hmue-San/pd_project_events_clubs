@@ -4,11 +4,11 @@ Design an architecture for this platform.
 
 Here are the requirements:
 
-[requirements]
+[Requirements]
 
 Here is the data model:
 
-[data model]
+[Data Model]
 
 Constraints:
 

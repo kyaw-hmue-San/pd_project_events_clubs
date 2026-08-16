@@ -5,6 +5,8 @@ Use the following information:
 
 [Problem]
 [Users]
+[User Journey]
+[Scope]
 [Requirements]
 [Data Model]
 [Architecture]
@@ -27,6 +29,9 @@ Requirements:
 - Include deployment
 - Include risks
 - Include acceptance criteria
+- Preserve requirement IDs from the requirements document
+- Use the structure in template/PRD_template.md
+- Include error handling and failure scenarios
 
 The architecture must remain realistic for:
 

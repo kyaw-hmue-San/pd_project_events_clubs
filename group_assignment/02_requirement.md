@@ -32,59 +32,79 @@ The system shall allow students to view activities for which they are currently 
 
 The system shall allow students to cancel their own valid registration.
 
-### FR-08 — Publish Activity
+### FR-08 — Create Activity
 
-The system shall allow an authorized organizer to create and publish an event or club activity.
+The system shall allow an authorized organizer to create an event or club activity as a draft.
 
-### FR-09 — Update Activity
+### FR-09 — Publish Activity
+
+The system shall allow an authorized organizer to publish an activity that they manage after all required information is present.
+
+### FR-10 — Update Activity
 
 The system shall allow an authorized organizer to update information for an activity that they manage.
 
-### FR-10 — View Activity Registrations
+### FR-11 — View Activity Registrations
 
 The system shall allow an authorized organizer to view the students registered for an activity that they manage.
+
+### FR-12 — User Authentication
+
+The system shall authenticate users before allowing protected operations.
+
+### FR-13 — Role Identification
+
+The system shall identify the authenticated user's role for authorization checks.
 
 ---
 
 # 2. Non-Functional Requirements
 
-### NFR-01 — Performance
+### NFR-01 — Usability
 
-Normal user actions such as viewing activities, opening activity details, and submitting registration should provide a response within a reasonable time under expected university-project usage.
+During usability testing, at least 80% of representative student participants shall complete the discovery-to-registration journey without assistance.
 
-### NFR-02 — Security
+### NFR-02 — Performance
 
-Only authenticated users shall be allowed to perform actions that require a student, organizer, or administrator identity.
+For the expected classroom-demonstration load, 95% of ordinary API requests shall complete within 2 seconds, excluding third-party authentication redirects.
 
-### NFR-03 — Authorization
+### NFR-03 — Security
 
-The system shall verify that users can access or modify only information permitted by their assigned role and ownership.
+Only authenticated users shall be allowed to perform protected student or organizer operations. Secrets shall remain server-side and outside source control.
 
-### NFR-04 — Usability
+### NFR-04 — Authorization
 
-The main student journey shall be understandable and completable without requiring technical knowledge or additional instructions.
+The backend and database shall verify that users can access or modify only information permitted by their role and resource ownership.
 
 ### NFR-05 — Reliability
 
 The system shall provide clear success or error feedback when registration, cancellation, publishing, or updating cannot be completed.
 
-### NFR-06 — Cost
+### NFR-06 — Maintainability
+
+The system structure and project documentation shall be simple enough for a five-member student team to understand, test, and maintain during one semester.
+
+### NFR-07 — Cost
 
 The MVP shall operate within a **0 THB deployment budget** and should use services that can remain within appropriate free-tier limits.
 
-### NFR-07 — Maintainability
+### NFR-08 — Responsiveness
 
-The system structure and project documentation shall be simple enough for a five-member student team to understand, test, and maintain during one semester.
+The main student and organizer journeys shall remain usable without horizontal scrolling at viewport widths from 360 px through 1440 px.
+
+### NFR-09 — Data Integrity
+
+Database constraints and atomic backend operations shall prevent invalid relationships and more than one active registration per student and activity.
 
 ---
 
 # 3. Business Rules
 
-### BR-01 — One Registration per Student
+### BR-01 — One Active Registration
 
 A student may have only one active registration for the same activity.
 
-### BR-02 — Published Activities
+### BR-02 — Published Activity
 
 Students may register only for activities that are currently published and available for registration.
 
@@ -92,7 +112,7 @@ Students may register only for activities that are currently published and avail
 
 A student may view or cancel only their own registrations.
 
-### BR-04 — Organizer Ownership
+### BR-04 — Activity Ownership
 
 An organizer may update and manage registrations only for activities that they are authorized to manage.
 
@@ -104,18 +124,31 @@ Minimum information should include:
 
 * Activity name
 * Description
+* Activity type
 * Date and time
 * Location
 * Organizer
-* Registration information
+* Registration availability
 
 ### BR-06 — Cancellation
 
 Cancellation shall remove or change the student's active registration so that the student is no longer considered registered for that activity.
 
-### BR-07 — Registration Availability
+### BR-07 — Valid Activity Status
 
-The system shall reject a registration when the selected activity is no longer available for registration.
+Activity status shall use `DRAFT`, `PUBLISHED`, or `CLOSED`. Drafts are visible only to their organizer, published activities are visible and open for registration, and closed activities reject new registrations.
+
+### BR-08 — Valid Registration Status
+
+Registration status shall use `ACTIVE` or `CANCELLED`.
+
+### BR-09 — Role Restrictions
+
+Only authorized Organizers may create, publish, or modify activities. Students may manage only their own registrations.
+
+### BR-10 — No Duplicate Active Registration
+
+The database shall allow at most one `ACTIVE` registration for each `student_id + activity_id` pair while retaining cancelled history.
 
 > **Needs validation:** Registration deadlines and maximum participant limits should become additional business rules only if Team 12 confirms that the MVP requires them.
 
@@ -127,7 +160,6 @@ The system shall reject a registration when the selected activity is no longer a
 | ----------------- | ------------------------------------------------------------------------------------------------------------- |
 | **Student**       | View published activities, view activity details, register, view own registrations, cancel own registration   |
 | **Organizer**     | Create activities, publish activities, update activities they manage, view registrations for their activities |
-| **Administrator** | Manage platform-level information or users only if an administrator role is confirmed as necessary            |
 
 ## Permission Principles
 
@@ -135,9 +167,7 @@ The system shall reject a registration when the selected activity is no longer a
 * Students cannot publish or modify activities.
 * Organizers cannot modify activities they do not manage.
 * Organizer-only actions must not be available to normal students.
-* Administrator permissions should remain minimal if the role is included.
-
-> **Decision required:** Team 12 should confirm whether a separate **Administrator** is necessary for the MVP. If not, the MVP can remain focused on Student and Organizer roles.
+* The MVP has no Administrator role. Platform administration and long-term club membership management are outside scope.
 
 ---
 
@@ -147,29 +177,29 @@ The system shall reject a registration when the selected activity is no longer a
 
 The system will be developed by a university project team of **5 students**.
 
-### CON-02 — Development Time
+### CON-02 — Time
 
 The MVP must be realistically designed, implemented, tested, and documented within **one semester**.
 
-### CON-03 — Deployment Budget
+### CON-03 — Budget
 
 The deployment budget is **0 THB**.
 
-### CON-04 — Free-Tier Services
+### CON-04 — Simplicity
 
-Any later technology or external service selection should be capable of operating within an appropriate free tier without requiring paid billing for the MVP.
+The architecture should remain understandable by the whole team.
 
-### CON-05 — Simplicity
+### CON-05 — No Unnecessary Enterprise Infrastructure
 
-The architecture and implementation shall avoid unnecessary enterprise-level complexity.
+The MVP shall not introduce microservices, Kubernetes, message queues, dedicated API gateways, multiple databases, distributed caching, or separate authentication infrastructure unless a later confirmed requirement makes one necessary.
 
-### CON-06 — MVP Priority
+### CON-06 — Free Tier
 
-Features that do not directly support the main Events & Clubs journey should not delay implementation of the core MVP.
+Selected services must remain within appropriate free-tier limits without requiring paid billing for the MVP.
 
-### CON-07 — Core Interface
+## Scope Priority
 
-The project shall provide the required core user interfaces necessary to demonstrate the main Events & Clubs user journey.
+Features that do not directly support the main Events & Clubs journey should not delay implementation. The project shall provide only the interfaces necessary to demonstrate that core journey.
 
 ---
 
@@ -180,6 +210,8 @@ The following are not required for the first MVP:
 * Online payments
 * Paid event tickets
 * Paid club memberships
+* General club membership management
+* A separate Administrator role or administration console
 * Live chat
 * Comments and reactions
 * Social-media-style feeds

@@ -20,11 +20,7 @@ At the same time, event and club organizers need a clear way to publish activity
 
 * Event or club organizers who publish activities and manage registrations.
 
-**Possible Supporting User**
-
-* Administrator who manages or controls platform information.
-
-> The need for a separate administrator role must be validated by the team.
+An Administrator role is outside the first MVP. Student and Organizer are the only application roles required by the current core journey.
 
 ---
 
@@ -94,8 +90,8 @@ The following assumptions should be confirmed before finalizing the PRD:
 5. Events may have a maximum number of participants.
 6. Registration may have an opening or closing deadline.
 7. Organizers should be able to edit activities after publishing them.
-8. The team needs to decide whether **Event Organizer** and **Administrator** are separate roles.
-9. The team needs to decide whether joining a **club** and registering for an **event** follow the same process.
+8. The first MVP does not include a separate Administrator role.
+9. The first MVP treats event and club-activity registration as the same process; long-term club membership is a separate future feature.
 10. The minimum information required for every event or club activity must be defined.
 
 ---

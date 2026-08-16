@@ -20,15 +20,25 @@
 
 ---
 
-## 3. User Roles
+## 3. User Roles and Permissions
 
-### User
+### Role 1 — [Name]
 
-### Admin
+#### Goal
+
+#### Permissions
+
+### Role 2 — [Name]
+
+#### Goal
+
+#### Permissions
+
+> Include an Administrator only when a confirmed MVP requirement needs that role.
 
 ---
 
-## 4. User Journey
+## 4. Core User Journey
 
 ### Main Journey
 
@@ -43,9 +53,15 @@
 
 ### FR-01
 
+The system shall ...
+
 ### FR-02
 
+The system shall ...
+
 ### FR-03
+
+The system shall ...
 
 ---
 
@@ -77,9 +93,21 @@
 
 ### Entity B
 
+### Data Integrity
+
+- Unique constraints:
+- Foreign keys:
+- Controlled values:
+- Atomic operations:
+
+### Data Privacy
+
+- Data that must not be stored:
+- Sensitive data:
+
 ---
 
-## 9. Architecture
+## 9. Platform Architecture
 
 ### Architecture Overview
 
@@ -119,9 +147,19 @@
 
 ### API-02
 
+### API Authorization
+
+### User Interface Notes
+
+- Required screens:
+- Loading state:
+- Empty state:
+- Error state:
+- Permission-denied state:
+
 ---
 
-## 12. Security
+## 12. Security and Privacy
 
 ### Authentication
 
@@ -131,7 +169,7 @@
 
 ---
 
-## 13. Error Handling
+## 13. Error Handling and Failure Scenarios
 
 ### Expected Errors
 
@@ -139,7 +177,7 @@
 
 ---
 
-## 14. Deployment
+## 14. Deployment Plan
 
 ### Development
 
@@ -156,14 +194,16 @@
 
 ---
 
-## 16. Risks
+## 16. Risks and Mitigations
 
-| Risk | Impact | Mitigation |
-|---|---|---|
+| Risk | Likelihood | Impact | Mitigation | Owner |
+|---|---|---|---|---|
 
 ---
 
 ## 17. Acceptance Criteria
+
+### Testing Strategy
 
 ### MVP is complete when:
 
@@ -171,9 +211,18 @@
 - [ ]
 - [ ]
 
+Acceptance criteria must be observable and traceable to requirement IDs.
+
+### MVP Success Definition
+
 ---
 
 ## 18. Future Improvements
 
 -
 -
+
+### Final Product Boundary
+
+- Core MVP:
+- Explicitly excluded:

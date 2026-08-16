@@ -1,6 +1,6 @@
 Based on these requirements:
 
-[requirements]
+[Requirements]
 
 Identify the minimum data model required for the MVP.
 

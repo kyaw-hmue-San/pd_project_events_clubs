@@ -2,7 +2,7 @@ Act as a senior product engineer.
 
 Based on this platform concept:
 
-[your Problem + Users + Journey]
+[Problem + Users + Journey]
 
 Generate requirements for an MVP.
 

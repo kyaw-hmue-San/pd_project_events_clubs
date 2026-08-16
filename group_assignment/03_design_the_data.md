@@ -25,8 +25,8 @@ Represents a person who uses the platform.
 | `user_id`       | Unique identifier for each user               |
 | `university_id` | Identifies the university user                |
 | `name`          | Display name                                  |
-| `email`         | University email if required                  |
-| `role`          | Student, Organizer, or optional Administrator |
+| `email`         | University email used for account identity    |
+| `role`          | Student or Organizer                          |
 | `created_at`    | Date/time the user record was created         |
 
 ### Relationships
@@ -49,7 +49,7 @@ Represents a person who uses the platform.
 
 # 2. Activity
 
-Represents a published campus event or club activity.
+Represents a draft, published, or closed campus event or club activity.
 
 ### Important Fields
 
@@ -58,8 +58,8 @@ Represents a published campus event or club activity.
 | `activity_id`   | Unique identifier                 |
 | `title`         | Activity name                     |
 | `description`   | Activity information              |
-| `activity_type` | Event or Club                     |
-| `date_time`     | When the activity occurs          |
+| `activity_type` | Event or Club Activity            |
+| `date_time`     | When the activity occurs, stored in UTC and displayed in the campus time zone |
 | `location`      | Where the activity occurs         |
 | `organizer_id`  | User responsible for the activity |
 | `status`        | Draft, Published, or Closed       |
@@ -334,7 +334,7 @@ This prevents duplicate user accounts representing the same university user.
 
 ---
 
-### DB-02 — Unique Registration
+### DB-02 — Unique Active Registration
 
 The combination of:
 
@@ -342,9 +342,9 @@ The combination of:
 student_id + activity_id
 ```
 
-must be unique.
+must be unique only for rows whose status is `ACTIVE`.
 
-This prevents duplicate registration for the same activity.
+In PostgreSQL, implement this as a partial unique index. This prevents duplicate active registrations while allowing a student to register again after cancelling a previous registration.
 
 ---
 
@@ -372,9 +372,11 @@ A published Activity must contain required information such as:
 
 * Title
 * Description
+* Activity type
 * Date/time
 * Location
 * Organizer
+* Registration availability
 
 ---
 
@@ -385,10 +387,7 @@ The role should contain only approved values:
 ```text
 STUDENT
 ORGANIZER
-ADMIN
 ```
-
-`ADMIN` should be included only if Team 12 confirms that the administrator role is required.
 
 ---
 
@@ -415,7 +414,20 @@ CLOSED
 
 ---
 
-### DB-10 — Ownership Validation
+### DB-10 — Controlled Activity Type
+
+Activity type must contain only:
+
+```text
+EVENT
+CLUB_ACTIVITY
+```
+
+This classification does not create club membership functionality.
+
+---
+
+### DB-11 — Ownership Validation
 
 Only the organizer responsible for an Activity should be permitted to modify that Activity or access its registration list.
 

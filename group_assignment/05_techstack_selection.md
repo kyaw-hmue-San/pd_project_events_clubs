@@ -118,7 +118,7 @@ PATCH  /api/activities/:id
 POST   /api/activities/:id/registrations
 GET    /api/me/registrations
 
-DELETE /api/registrations/:id
+PATCH  /api/registrations/:id/cancel
 
 GET    /api/activities/:id/registrations
 ```
@@ -218,12 +218,19 @@ Supabase Auth
 Authenticated User
  │
  ▼
-Application
+Access token sent to Express API
  │
- ├── Student
+ ▼
+API verifies token with Supabase Auth
  │
- └── Organizer
+ ▼
+API loads trusted role and checks resource ownership
+ │
+ ▼
+Authorized database operation
 ```
+
+The client must not be trusted to declare its own role. The role used for authorization shall come from a protected server-side user record or protected token claim. Any Supabase service-role key must remain server-side; if it is used, the Express API must perform explicit role and ownership checks because service-role access can bypass Row Level Security.
 
 Authentication and authorization are separate concepts:
 
@@ -294,6 +301,8 @@ If file uploads become a confirmed requirement later, storage can be added witho
 ## Vercel
 
 The frontend/application will be deployed through Vercel.
+
+The Express application will run as a single Vercel Function rather than as an always-running server. The team shall keep request handlers stateless, avoid background processes and in-memory sessions, and use the supported Vercel project layout for the Vite frontend and Express API.
 
 Expected deployment flow:
 

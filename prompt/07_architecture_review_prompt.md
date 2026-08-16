@@ -12,6 +12,11 @@ Architecture:
 
 [Architecture]
 
+Requirements and data model:
+
+[Requirements]
+[Data Model]
+
 Evaluate the architecture against:
 
 1. Requirement fit
@@ -49,3 +54,11 @@ and classify it as:
 READY
 READY WITH CHANGES
 NOT READY
+
+Also provide a decision-log table with:
+
+- Finding ID
+- Decision: Accept / Defer / Reject
+- Required document change
+- Owner
+- Reason

@@ -1,56 +1,43 @@
-# Option A
+Act as a senior software engineer selecting an implementation stack.
 
-Frontend
-Next.js
+Use the following inputs:
 
-Backend
-Next.js Server/API
+[Requirements]
+[Data Model]
+[Recommended Architecture]
 
-Database
-Supabase PostgreSQL
+Compare practical technology choices for the recommended architecture. At minimum, evaluate:
 
-Auth
-Supabase Auth
+- Frontend framework and build tool
+- Backend/API framework and deployment model
+- Database
+- Authentication
+- Authorization approach
+- File storage, including whether it is needed for the MVP
+- Hosting and deployment
+- Testing and development tools
 
-Storage
-Supabase Storage
+For each choice explain:
 
-Deploy
-Vercel
+- Which requirement or constraint it supports
+- Advantages
+- Disadvantages
+- Free-tier and billing risks
+- Feasibility for a 3-5 person student team in one semester
 
+Do not change the recommended architecture without clearly explaining why.
+Do not add a service unless a confirmed MVP requirement needs it.
 
-# Option B
+Finally select ONE implementation stack and provide:
 
-Frontend
-React
+1. A technology decision table
+2. A deployment summary
+3. Major risks and mitigations
+4. Alternatives considered
 
-Backend
-Cloudflare Worker + Hono
+Constraints:
 
-Database
-D1
-
-Storage
-R2
-
-Deploy
-Cloudflare
-
-
-
-# Option C
-
-Frontend
-React
-
-Backend
-Firebase SDK / Functions
-
-Database
-Firestore
-
-Auth
-Firebase Auth
-
-Deploy
-Firebase Hosting
+- Deployment budget: 0 THB
+- Prefer services that do not require a billing method
+- Prefer simplicity over theoretical scalability
+- Verify current free-tier limitations before making the final decision
