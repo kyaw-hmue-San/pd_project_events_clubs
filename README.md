@@ -1,11 +1,11 @@
-# Campus Events & Clubs — Team 12
+��# Campus Events & Clubs — Team 12
 
 This repository contains the discovery, requirements, data design, architecture, technology selection, PRD, review, validation, and stress-test documents for the Events & Clubs campus-service MVP.
 
 ## Submission Documents
 
 - [PRD.md](PRD.md) — canonical implementation-ready Product Requirements Document
-- [architecture.md](architecture.md) — canonical architecture options and selected design
+- [architecture.md](architecture.md— canonical architecture options and selected design
 - [role-reviews.md](role-reviews.md) — architecture review, findings, and decision log
 - [diagrams/platform-architecture.md](diagrams/platform-architecture.md) — canonical platform diagram and data flow
 
@@ -60,4 +60,4 @@ The documents are internally aligned, but the following evidence is still requir
 
 ## Git Workflow
 
-See [git_guide.md](git_guide.md) for the team Git workflow. Work on a feature branch, review changes before staging, and open a pull request before merging into `main`.
+See [git_guide.md](git_guide.mdfor the team Git workflow. Work on a feature branch, review changes before staging, and open a pull request before merging into `main`.
