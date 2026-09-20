@@ -1,0 +1,8 @@
+{
+  "name": "campus-events-firestore-api",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": { "start": "node api.mjs", "seed": "node seed.mjs" },
+  "dependencies": { "express": "^5.1.0", "firebase-admin": "^13.0.0" }
+}

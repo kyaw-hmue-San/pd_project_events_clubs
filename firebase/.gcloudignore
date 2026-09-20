@@ -1,0 +1,10 @@
+.gcloudignore
+.git
+.gitignore
+node_modules/
+.firebase/
+firebase-debug.log
+postman/
+*.json
+!package.json
+!package-lock.json

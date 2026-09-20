@@ -1,0 +1,200 @@
+{
+  "info": {
+    "name": "Campus Events Firebase API",
+    "description": "Run requests in order. Firebase sign-in requests save organizerToken and studentToken automatically.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://127.0.0.1:3000" },
+    { "key": "firebaseApiKey", "value": "PASTE_FIREBASE_WEB_API_KEY" },
+    { "key": "organizerEmail", "value": "PASTE_ORGANIZER_EMAIL" },
+    { "key": "organizerPassword", "value": "PASTE_ORGANIZER_PASSWORD", "type": "secret" },
+    { "key": "studentEmail", "value": "PASTE_STUDENT_EMAIL" },
+    { "key": "studentPassword", "value": "PASTE_STUDENT_PASSWORD", "type": "secret" },
+    { "key": "organizerToken", "value": "", "type": "secret" },
+    { "key": "studentToken", "value": "", "type": "secret" },
+    { "key": "activityId", "value": "" },
+    { "key": "registrationId", "value": "" },
+    { "key": "draftId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "01 - Health",
+      "request": { "method": "GET", "url": "{{baseUrl}}/health" }
+    },
+    {
+      "name": "02 - Sign in Organizer",
+      "event": [{
+        "listen": "test",
+        "script": { "exec": [
+          "pm.test('Organizer signed in', () => pm.response.to.have.status(200));",
+          "const body = pm.response.json();",
+          "if (body.idToken) pm.collectionVariables.set('organizerToken', body.idToken);"
+        ] }
+      }],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"email\": \"{{organizerEmail}}\",\n  \"password\": \"{{organizerPassword}}\",\n  \"returnSecureToken\": true\n}" },
+        "url": "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={{firebaseApiKey}}"
+      }
+    },
+    {
+      "name": "03 - Sign in Student",
+      "event": [{
+        "listen": "test",
+        "script": { "exec": [
+          "pm.test('Student signed in', () => pm.response.to.have.status(200));",
+          "const body = pm.response.json();",
+          "if (body.idToken) pm.collectionVariables.set('studentToken', body.idToken);"
+        ] }
+      }],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"email\": \"{{studentEmail}}\",\n  \"password\": \"{{studentPassword}}\",\n  \"returnSecureToken\": true\n}" },
+        "url": "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={{firebaseApiKey}}"
+      }
+    },
+    {
+      "name": "04 - Organizer Profile",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{organizerToken}}", "type": "text" }],
+        "url": "{{baseUrl}}/api/me"
+      }
+    },
+    {
+      "name": "05 - Student Profile",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}", "type": "text" }],
+        "url": "{{baseUrl}}/api/me"
+      }
+    },
+    {
+      "name": "06 - Create Activity Draft",
+      "event": [{
+        "listen": "test",
+        "script": { "exec": [
+          "pm.test('Draft created', () => pm.response.to.have.status(201));",
+          "const body = pm.response.json();",
+          "if (body.id) pm.collectionVariables.set('activityId', body.id);"
+        ] }
+      }],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{organizerToken}}", "type": "text" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": { "mode": "raw", "raw": "{\n  \"title\": \"Backend Workshop\",\n  \"description\": \"Learn API and database design.\",\n  \"activityType\": \"EVENT\",\n  \"dateTime\": \"2026-10-02T09:00:00+07:00\",\n  \"location\": \"Computer Lab 1\"\n}" },
+        "url": "{{baseUrl}}/api/activities"
+      }
+    },
+    {
+      "name": "07 - Publish Activity",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{organizerToken}}", "type": "text" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": { "mode": "raw", "raw": "{\n  \"status\": \"PUBLISHED\",\n  \"location\": \"Computer Lab 2\"\n}" },
+        "url": "{{baseUrl}}/api/activities/{{activityId}}"
+      }
+    },
+    {
+      "name": "08 - List Published Activities",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}", "type": "text" }],
+        "url": "{{baseUrl}}/api/activities?limit=20"
+      }
+    },
+    {
+      "name": "09 - Get Activity",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}", "type": "text" }],
+        "url": "{{baseUrl}}/api/activities/{{activityId}}"
+      }
+    },
+    {
+      "name": "10 - Register Student",
+      "event": [{
+        "listen": "test",
+        "script": { "exec": [
+          "pm.test('Registration created', () => pm.response.to.have.status(201));",
+          "const body = pm.response.json();",
+          "if (body.id) pm.collectionVariables.set('registrationId', body.id);"
+        ] }
+      }],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}", "type": "text" }],
+        "url": "{{baseUrl}}/api/activities/{{activityId}}/registrations"
+      }
+    },
+    {
+      "name": "11 - Student Active Registrations",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}", "type": "text" }],
+        "url": "{{baseUrl}}/api/me/registrations"
+      }
+    },
+    {
+      "name": "12 - Organizer Activity Registrations",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{organizerToken}}", "type": "text" }],
+        "url": "{{baseUrl}}/api/activities/{{activityId}}/registrations"
+      }
+    },
+    {
+      "name": "13 - Cancel Registration",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{studentToken}}", "type": "text" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": { "mode": "raw", "raw": "{\n  \"status\": \"CANCELLED\"\n}" },
+        "url": "{{baseUrl}}/api/registrations/{{registrationId}}"
+      }
+    },
+    {
+      "name": "14 - Create Disposable Draft",
+      "event": [{
+        "listen": "test",
+        "script": { "exec": [
+          "pm.test('Disposable draft created', () => pm.response.to.have.status(201));",
+          "const body = pm.response.json();",
+          "if (body.id) pm.collectionVariables.set('draftId', body.id);"
+        ] }
+      }],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{organizerToken}}", "type": "text" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": { "mode": "raw", "raw": "{\n  \"title\": \"Disposable Test Draft\",\n  \"description\": \"Created to demonstrate activity deletion.\",\n  \"activityType\": \"CLUB_ACTIVITY\",\n  \"dateTime\": \"2026-10-03T10:00:00+07:00\",\n  \"location\": \"Student Center\"\n}" },
+        "url": "{{baseUrl}}/api/activities"
+      }
+    },
+    {
+      "name": "15 - Delete Disposable Draft",
+      "event": [{
+        "listen": "test",
+        "script": { "exec": ["pm.test('Draft deleted', () => pm.response.to.have.status(204));"] }
+      }],
+      "request": {
+        "method": "DELETE",
+        "header": [{ "key": "Authorization", "value": "Bearer {{organizerToken}}", "type": "text" }],
+        "url": "{{baseUrl}}/api/activities/{{draftId}}"
+      }
+    }
+  ]
+}

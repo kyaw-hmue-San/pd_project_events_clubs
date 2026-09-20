@@ -59,11 +59,13 @@ Each group submits the following in its repository:
 
 ```text
 project/
-├── PRD.md
-├── architecture.md
-├── role-reviews.md
-└── diagrams/
-    └── platform-architecture.png or platform-architecture.md
+├── README.md
+└── docs/
+    ├── PRD.md
+    ├── architecture.md
+    ├── role-reviews.md
+    └── diagrams/
+        └── platform-architecture.png or platform-architecture.md
 ```
 
 The final documents must be written in English.
