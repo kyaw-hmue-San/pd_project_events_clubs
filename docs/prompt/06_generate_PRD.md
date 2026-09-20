@@ -30,7 +30,7 @@ Requirements:
 - Include risks
 - Include acceptance criteria
 - Preserve requirement IDs from the requirements document
-- Use the structure in template/PRD_template.md
+- Use the structure in docs/template/PRD_template.md
 - Include error handling and failure scenarios
 
 The architecture must remain realistic for:
