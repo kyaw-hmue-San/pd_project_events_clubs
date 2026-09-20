@@ -1,5 +1,6 @@
 import express from 'express';
-import { createHash } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
+import { createIntegration, requestEvidence } from './integration.mjs';
 import { applicationDefault, initializeApp } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 import { FieldValue, Timestamp, getFirestore } from 'firebase-admin/firestore';
@@ -8,7 +9,9 @@ if (!process.env.FIREBASE_PROJECT_ID) throw new Error('Set FIREBASE_PROJECT_ID')
 initializeApp({ credential: applicationDefault(), projectId: process.env.FIREBASE_PROJECT_ID });
 const db = getFirestore();
 const app = express();
+const integration = createIntegration({ db });
 app.disable('x-powered-by');
+app.use(requestEvidence(db));
 app.use(express.json({ limit: '32kb' }));
 const fail = (status, code) => { throw Object.assign(new Error(code), { status }); };
 const stamp = () => FieldValue.serverTimestamp();
@@ -56,6 +59,20 @@ function validateActivity(body, partial = false) {
 }
 
 app.get('/health', (_req, res) => res.json({ status: 'ok' }));
+// Partner webhooks use a separate shared secret, never a Firebase user token.
+app.post('/webhooks/partner', async (req, res) => {
+  const result = await integration.receive(req.get('X-Webhook-Secret'), req.body, req.requestId);
+  res.status(result.status).json(result.body);
+});
+// Small provider interface for the partner group. The API key is shared privately.
+app.get('/partner/activities', async (req, res) => {
+  integration.authenticatePartner(req.get('X-Partner-Key'));
+  const raw = req.query.limit ?? '20';
+  if (typeof raw !== 'string' || !/^\d+$/.test(raw) || Number(raw) < 1 || Number(raw) > 50) fail(400, 'INVALID_LIMIT');
+  const result = await db.collection('activities').where('status', '==', 'PUBLISHED')
+    .orderBy('dateTime').orderBy('__name__').limit(Number(raw)).get();
+  res.json({ data: result.docs.map(row), requestId: req.requestId, generatedAt: new Date().toISOString() });
+});
 app.use('/api', async (req, _res, next) => {
   try {
     const match = /^Bearer (\S+)$/.exec(req.headers.authorization || '');
@@ -71,6 +88,17 @@ app.use('/api', async (req, _res, next) => {
   } catch (e) { next(e); }
 });
 app.get('/api/me', async (req, res) => res.json(row(await db.doc(`users/${req.user.uid}`).get())));
+app.get('/api/integration/partner', async (req, res) => {
+  if (req.user.role !== 'ORGANIZER') fail(403, 'FORBIDDEN');
+  res.json(await integration.consumePartner('api-request', req.requestId));
+});
+app.get('/api/integration/logs', async (req, res) => {
+  if (req.user.role !== 'ORGANIZER') fail(403, 'FORBIDDEN');
+  const raw = req.query.limit ?? '20';
+  if (typeof raw !== 'string' || !/^\d+$/.test(raw) || Number(raw) < 1 || Number(raw) > 50) fail(400, 'INVALID_LIMIT');
+  const result = await db.collection('integrationLogs').orderBy('at', 'desc').limit(Number(raw)).get();
+  res.json({ data: result.docs.map(row) });
+});
 app.get('/api/activities', async (req, res) => {
   const raw = req.query.limit ?? '20';
   if (typeof raw !== 'string' || !/^\d+$/.test(raw)) fail(400, 'INVALID_LIMIT');
@@ -104,6 +132,7 @@ app.post('/api/activities', async (req, res) => {
 app.patch('/api/activities/:id', async (req, res) => {
   const update = validateActivity(req.body, true);
   const ref = db.doc(`activities/${docId(req.params.id)}`);
+  const eventId = randomUUID();
   await db.runTransaction(async tx => {
     const snap = await tx.get(ref);
     if (!snap.exists) fail(404, 'NOT_FOUND');
@@ -113,6 +142,9 @@ app.patch('/api/activities/:id', async (req, res) => {
       validateActivity({ title: merged.title, description: merged.description, location: merged.location, activityType: merged.activityType, dateTime: merged.dateTime.toDate().toISOString(), status: merged.status });
     }
     if (merged.status === 'DRAFT' && snap.data().status !== 'DRAFT') fail(409, 'CANNOT_RETURN_TO_DRAFT');
+    if (merged.status === 'PUBLISHED' && snap.data().status !== 'PUBLISHED') {
+      integration.queuePublication(tx, ref.id, merged, eventId, req.requestId);
+    }
     tx.update(ref, { ...update, updatedAt: stamp() });
   });
   res.json(row(await ref.get()));
@@ -187,3 +219,4 @@ app.use((err, _req, res, _next) => {
 });
 const port = Number(process.env.PORT || 3000);
 app.listen(port, '0.0.0.0', () => console.log(`Campus Events API listening on port ${port}`));
+integration.start();

@@ -1,0 +1,68 @@
+{
+  "info": {
+    "name": "Team 12 - Assignment 5 Integration API",
+    "description": "Safe partner handoff collection. Placeholder secrets only; do not commit populated secrets.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "team12BaseUrl", "value": "https://pd-project-events-clubs.onrender.com" },
+    { "key": "partnerApiKey", "value": "PASTE_PRIVATE_PARTNER_API_KEY", "type": "secret" },
+    { "key": "team12WebhookSecret", "value": "PASTE_PRIVATE_INBOUND_WEBHOOK_SECRET", "type": "secret" },
+    { "key": "eventId", "value": "partner-event-001" }
+  ],
+  "item": [
+    {
+      "name": "01 - Health",
+      "request": { "method": "GET", "url": "{{team12BaseUrl}}/health" }
+    },
+    {
+      "name": "02 - Partner Lists Published Activities",
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('Provider returns published activities', () => pm.response.to.have.status(200));",
+        "pm.test('Response has request ID', () => pm.expect(pm.response.json().requestId).to.be.a('string'));"
+      ] } }],
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "X-Partner-Key", "value": "{{partnerApiKey}}", "type": "text" },
+          { "key": "Accept", "value": "application/json" }
+        ],
+        "url": "{{team12BaseUrl}}/partner/activities?limit=20"
+      }
+    },
+    {
+      "name": "03 - Send Webhook First Time",
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('First event creates one inbox record', () => pm.response.to.have.status(201));",
+        "pm.test('Not a duplicate', () => pm.expect(pm.response.json().duplicate).to.eql(false));"
+      ] } }],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "X-Webhook-Secret", "value": "{{team12WebhookSecret}}", "type": "text" },
+          { "key": "X-Event-ID", "value": "{{eventId}}", "type": "text" }
+        ],
+        "body": { "mode": "raw", "raw": "{\n  \"id\": \"{{eventId}}\",\n  \"type\": \"notification.delivered\",\n  \"occurredAt\": \"2026-09-20T15:00:00Z\",\n  \"data\": {\n    \"activityId\": \"demo-welcome-event\",\n    \"message\": \"Partner processed the activity\"\n  }\n}" },
+        "url": "{{team12BaseUrl}}/webhooks/partner"
+      }
+    },
+    {
+      "name": "04 - Repeat Same Webhook (Idempotency)",
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('Duplicate succeeds safely', () => pm.response.to.have.status(200));",
+        "pm.test('Duplicate is identified', () => pm.expect(pm.response.json().duplicate).to.eql(true));"
+      ] } }],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "X-Webhook-Secret", "value": "{{team12WebhookSecret}}", "type": "text" },
+          { "key": "X-Event-ID", "value": "{{eventId}}", "type": "text" }
+        ],
+        "body": { "mode": "raw", "raw": "{\n  \"id\": \"{{eventId}}\",\n  \"type\": \"notification.delivered\",\n  \"occurredAt\": \"2026-09-20T15:00:00Z\",\n  \"data\": {\n    \"activityId\": \"demo-welcome-event\",\n    \"message\": \"Partner processed the activity\"\n  }\n}" },
+        "url": "{{team12BaseUrl}}/webhooks/partner"
+      }
+    }
+  ]
+}
