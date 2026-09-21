@@ -88,7 +88,7 @@
           { "key": "Authorization", "value": "Bearer {{organizerToken}}", "type": "text" },
           { "key": "Content-Type", "value": "application/json" }
         ],
-        "body": { "mode": "raw", "raw": "{\n  \"title\": \"Backend Workshop\",\n  \"description\": \"Learn API and database design.\",\n  \"activityType\": \"EVENT\",\n  \"dateTime\": \"2026-10-02T09:00:00+07:00\",\n  \"location\": \"Computer Lab 1\"\n}" },
+        "body": { "mode": "raw", "raw": "{\n  \"title\": \"Campus Integration Test Event\",\n  \"description\": \"Test activity for the Team 10 and Team 12 webhook integration.\",\n  \"activityType\": \"EVENT\",\n  \"dateTime\": \"2026-10-03T09:00:00+07:00\",\n  \"location\": \"Student Center\"\n}" },
         "url": "{{baseUrl}}/api/activities"
       }
     },

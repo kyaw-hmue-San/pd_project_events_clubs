@@ -1,0 +1,182 @@
+{
+  "source": "Redacted Postman integration log responses supplied by Team 12",
+  "data": [
+    {
+      "id": "Z9Vdpv3I9K2kKoEZfR05",
+      "kind": "webhook.received",
+      "eventId": "a95db2cc-99b2-4e23-ba2e-979319ef7538",
+      "requestId": "4b2605ed-0882-4af0-b575-fb6335f2f4b4",
+      "at": "2026-09-21T15:01:13.902Z",
+      "secretVerified": true,
+      "outcome": "DUPLICATE",
+      "payloadHash": "93f0b6328d4accc357d6f4c43e4c035d0b29d9f902beb14228672ae7ea1e6b75",
+      "payload": {
+        "id": "a95db2cc-99b2-4e23-ba2e-979319ef7538",
+        "type": "maintenance.status_changed",
+        "occurredAt": "2026-09-21T14:55:52.6173967Z",
+        "data": {
+          "workOrderId": "88888888-8888-4888-8888-888888888888",
+          "fromStatus": "OPEN",
+          "toStatus": "ASSIGNED"
+        }
+      }
+    },
+    {
+      "id": "rB92i4e1ygsxJBkb5Z5J",
+      "kind": "webhook.received",
+      "eventId": "a95db2cc-99b2-4e23-ba2e-979319ef7538",
+      "requestId": "ce850655-28d2-42c9-9041-677b1f7a834f",
+      "at": "2026-09-21T15:01:13.124Z",
+      "secretVerified": true,
+      "outcome": "CREATED",
+      "payloadHash": "93f0b6328d4accc357d6f4c43e4c035d0b29d9f902beb14228672ae7ea1e6b75",
+      "payload": {
+        "id": "a95db2cc-99b2-4e23-ba2e-979319ef7538",
+        "type": "maintenance.status_changed",
+        "occurredAt": "2026-09-21T14:55:52.6173967Z",
+        "data": {
+          "workOrderId": "88888888-8888-4888-8888-888888888888",
+          "fromStatus": "OPEN",
+          "toStatus": "ASSIGNED"
+        }
+      }
+    },
+    {
+      "id": "Ou2KGdWTA0DyRTTBef7W",
+      "kind": "webhook.sent",
+      "at": "2026-09-21T14:33:18.559Z",
+      "eventId": "419f3a6f-8bed-4426-8269-f3473f20b011",
+      "requestId": "f3649eff-c52a-4120-a575-3b25a1d2578e",
+      "target": "https://maintenanceteam10.vercel.app/api/integrations/team12/webhook",
+      "attempt": 1,
+      "payload": {
+        "id": "419f3a6f-8bed-4426-8269-f3473f20b011",
+        "type": "activity.published",
+        "occurredAt": "2026-09-21T14:33:11.125Z",
+        "data": {
+          "activityId": "sm5ioKgDgsWkSYYKhLV2",
+          "title": "What is Love?",
+          "activityType": "EVENT",
+          "dateTime": "2026-10-02T02:00:00.000Z",
+          "location": "Computer Lab 2",
+          "status": "PUBLISHED"
+        }
+      },
+      "httpStatus": 201,
+      "response": {
+        "received": true,
+        "duplicate": false,
+        "eventId": "419f3a6f-8bed-4426-8269-f3473f20b011"
+      },
+      "outcome": "DELIVERED",
+      "recovered": false
+    },
+    {
+      "id": "GePhUqmhXGIbqL5fxfcZ",
+      "kind": "partner.fetch",
+      "at": "2026-09-21T15:16:12.343Z",
+      "requestId": "6c1aa848-2b27-40d6-9356-5f53c3c3c754",
+      "source": "api-request",
+      "target": "https://maintenanceteam10.vercel.app/api/partner/health",
+      "httpStatus": 503,
+      "response": null,
+      "outcome": "degraded",
+      "recovered": false
+    },
+    {
+      "id": "Wz8ICiQDjdScv6LvHXLl",
+      "kind": "partner.fetch",
+      "at": "2026-09-21T15:15:58.735Z",
+      "requestId": "8ffd4eb9-bfae-4197-bcdc-9fda374f727f",
+      "source": "automatic-retry",
+      "target": "https://maintenanceteam10.vercel.app/api/partner/health",
+      "httpStatus": 503,
+      "response": null,
+      "outcome": "degraded",
+      "recovered": false
+    },
+    {
+      "id": "WBMu7Tb5SkOtD078hUPG",
+      "kind": "webhook.sent",
+      "at": "2026-09-21T15:11:29.767Z",
+      "eventId": "9cc046ef-391c-457c-a545-0c981a0a7d29",
+      "requestId": "401403e5-29d3-4456-a229-b2a28a0d63c1",
+      "target": "https://maintenanceteam10.vercel.app/api/integrations/team12/webhook",
+      "attempt": 2,
+      "payload": {
+        "id": "9cc046ef-391c-457c-a545-0c981a0a7d29",
+        "type": "activity.published",
+        "occurredAt": "2026-09-21T15:10:15.902Z",
+        "data": {
+          "activityId": "uZ45yyv6yz9sv3mUzqis",
+          "title": "Backend Workshop",
+          "activityType": "EVENT",
+          "dateTime": "2026-10-02T02:00:00.000Z",
+          "location": "Computer Lab 2",
+          "status": "PUBLISHED"
+        }
+      },
+      "httpStatus": 200,
+      "response": {
+        "received": true,
+        "duplicate": true,
+        "eventId": "9cc046ef-391c-457c-a545-0c981a0a7d29"
+      },
+      "outcome": "DELIVERED",
+      "recovered": true
+    },
+    {
+      "id": "hGu5eFK8HM9T0ot7meyL",
+      "kind": "webhook.sent",
+      "at": "2026-09-21T15:10:33.677Z",
+      "eventId": "9cc046ef-391c-457c-a545-0c981a0a7d29",
+      "requestId": "401403e5-29d3-4456-a229-b2a28a0d63c1",
+      "target": "https://maintenanceteam10.vercel.app/api/integrations/team12/webhook",
+      "attempt": 1,
+      "payload": {
+        "id": "9cc046ef-391c-457c-a545-0c981a0a7d29",
+        "type": "activity.published",
+        "occurredAt": "2026-09-21T15:10:15.902Z",
+        "data": {
+          "activityId": "uZ45yyv6yz9sv3mUzqis",
+          "title": "Backend Workshop",
+          "activityType": "EVENT",
+          "dateTime": "2026-10-02T02:00:00.000Z",
+          "location": "Computer Lab 2",
+          "status": "PUBLISHED"
+        }
+      },
+      "httpStatus": null,
+      "response": null,
+      "outcome": "RETRY_SCHEDULED",
+      "recovered": false
+    },
+    {
+      "id": "VchfKsSla6ypvdjM9gxT",
+      "kind": "partner.fetch",
+      "at": "2026-09-21T15:25:57.812Z",
+      "requestId": "2938338b-ba63-41be-afd9-294fabae094d",
+      "source": "api-request",
+      "target": "https://maintenanceteam10.vercel.app/api/partner/health",
+      "httpStatus": 200,
+      "response": {
+        "status": "ok",
+        "service": "maintenance-team10-api"
+      },
+      "outcome": "ok",
+      "recovered": true
+    },
+    {
+      "id": "Y3y8HCVPs4WNUfIL1fOV",
+      "kind": "partner.fetch",
+      "at": "2026-09-21T15:24:58.659Z",
+      "requestId": "873d42ec-c527-444b-ab51-7eb06e3b4e09",
+      "source": "automatic-retry",
+      "target": "https://maintenanceteam10.vercel.app/api/partner/health",
+      "httpStatus": 503,
+      "response": null,
+      "outcome": "degraded",
+      "recovered": false
+    }
+  ]
+}
