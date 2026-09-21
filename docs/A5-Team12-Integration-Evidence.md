@@ -1,18 +1,34 @@
 # A5-Team12-Integration-Evidence
 
-> Status: implementation prepared; joint evidence is pending the partner group's
-> endpoint and a coordinated test. Replace every bracketed placeholder with real
-> evidence. Do not claim a test passed until the screenshots and logs exist.
+> Status: Team 12's application consumer succeeded against Team 10 on
+> 2026-09-21, and an application-triggered `activity.published` delivery
+> succeeded. The Team 10 maintenance event, provider call, and
+> degradation evidence remain pending. Replace every bracketed placeholder
+> with real evidence.
 
 ## Integration summary
 
 | Item | Value |
 |---|---|
 | Team | Team 12 — Events & Clubs |
-| Partner group | `[GROUP NAME]` |
-| Partner project | `[PROJECT NAME]` |
+| Partner group | Team 10 |
+| Partner project | Maintenance platform |
 | Our base URL | `https://pd-project-events-clubs.onrender.com` |
 | Test window | `[START AND END WITH TIME ZONE]` |
+
+## Manual Team 10 endpoint smoke tests
+
+These calls were made directly from a shell; they do not establish an
+application `partner.fetch` log or an activity-triggered `webhook.sent` log.
+
+| Test | Time (UTC, from response `Date`) | HTTP status | Response |
+|---|---|---|---|
+| `GET https://maintenanceteam10.vercel.app/api/partner/health` with `X-Partner-Key` | 2026-09-21 14:10:02 | 200 | `{"status":"ok","service":"maintenance-team10-api"}` |
+| `POST https://maintenanceteam10.vercel.app/api/integrations/team12/webhook` with `activity.published` | 2026-09-21 14:10:25 | 201 | `{"received":true,"duplicate":false,"eventId":"team12-test-1789999823"}` |
+| Repeat identical POST with the same event ID and payload | 2026-09-21 14:11:12 | 200 | `{"received":true,"duplicate":true,"eventId":"team12-test-1789999823"}` |
+
+The POST used `X-Webhook-Secret` and `X-Event-ID`. No secret value is recorded
+here. Team 10's response confirms duplicate handling for this test event.
 
 ## 1. Consumer Proof
 
@@ -20,19 +36,29 @@ Team 12 called the partner's endpoint.
 
 | Evidence | Value |
 |---|---|
-| Partner URL | `[METHOD AND URL]` |
-| Request timestamp | `[ISO-8601 TIMESTAMP WITH TIME ZONE]` |
-| Correlation/request ID | `[REQUEST ID]` |
-| HTTP status | `[STATUS]` |
-| Response summary | `[SHORT DESCRIPTION]` |
-| Screenshot | `[INSERT IMAGE OR RELATIVE LINK]` |
+| Partner URL | `GET https://maintenanceteam10.vercel.app/api/partner/health` |
+| Request timestamp | `2026-09-21T14:30:45.590Z` (matching internal log) |
+| Correlation/request ID | `1121313f-2b3f-438f-b28e-f8c0e8eb6396` |
+| HTTP status | `200` |
+| Response summary | Team 10 returned `status: ok`, `service: maintenance-team10-api`; Team 12 returned `status: ok`, `stale: false` |
+| Screenshot | Postman request 16 response shown in conversation; export or attach to submission |
 
 ```json
-[PASTE REDACTED RESPONSE BODY]
+{
+  "status": "ok",
+  "data": {
+    "status": "ok",
+    "service": "maintenance-team10-api"
+  },
+  "stale": false,
+  "lastSuccessAt": "2026-09-21T14:30:45.590Z",
+  "requestId": "1121313f-2b3f-438f-b28e-f8c0e8eb6396"
+}
 ```
 
-Internal Firestore evidence: `integrationLogs` record with
-`kind = partner.fetch` and the matching `requestId`.
+Internal Firestore evidence: `integrationLogs/XXezQzDkMP3aD0DfBHZb` has
+`kind = partner.fetch`, `source = api-request`, `httpStatus = 200`,
+`outcome = ok`, `recovered = false`, and the matching `requestId`.
 
 ## 2. Provider Proof
 
@@ -80,15 +106,27 @@ An organizer published an activity. Team 12 queued and sent an
 
 | Evidence | Value |
 |---|---|
-| Internal trigger | `[ACTIVITY ID CHANGED DRAFT → PUBLISHED]` |
-| Event ID | `[EVENT ID]` |
-| Trigger timestamp | `[TIMESTAMP]` |
-| Partner webhook URL | `[URL]` |
-| Partner HTTP response | `[STATUS AND REDACTED BODY]` |
-| Outbox/log evidence | `[SCREENSHOT/LINK]` |
+| Internal trigger | Activity `sm5ioKgDgsWkSYYKhLV2` changed from draft to `PUBLISHED` via Postman request 07; retain the request/response screenshot |
+| Event ID | `419f3a6f-8bed-4426-8269-f3473f20b011` |
+| Trigger timestamp | `2026-09-21T14:33:11.125Z` (`occurredAt`) |
+| Partner webhook URL | `https://maintenanceteam10.vercel.app/api/integrations/team12/webhook` |
+| Partner HTTP response | `201`, `{"received":true,"duplicate":false,"eventId":"419f3a6f-8bed-4426-8269-f3473f20b011"}` |
+| Outbox/log evidence | `integrationLogs/Ou2KGdWTA0DyRTTBef7W`; `attempt = 1`, `outcome = DELIVERED`, `recovered = false`; attach request 17 screenshot |
 
 ```json
-[PASTE OUTGOING PAYLOAD]
+{
+  "id": "419f3a6f-8bed-4426-8269-f3473f20b011",
+  "type": "activity.published",
+  "occurredAt": "2026-09-21T14:33:11.125Z",
+  "data": {
+    "activityId": "sm5ioKgDgsWkSYYKhLV2",
+    "title": "What is Love?",
+    "activityType": "EVENT",
+    "dateTime": "2026-10-02T02:00:00.000Z",
+    "location": "Computer Lab 2",
+    "status": "PUBLISHED"
+  }
+}
 ```
 
 ## 5. Idempotency Proof
@@ -135,11 +173,36 @@ and scheduled a retry.
 
 ## Evidence audit
 
-- [ ] Consumer: partner URL, request timestamp, response body screenshot.
+- [x] Consumer: partner URL, request timestamp, response body, and matching log captured; attach the Postman screenshot to the submitted file.
 - [ ] Provider: our URL, internal request log, partner confirmation.
 - [ ] Receiver: payload, secret verification result, stored log.
-- [ ] Sender: trigger, outgoing payload, partner response log.
+- [x] Sender: trigger, outgoing payload, and partner response log captured; attach Postman screenshots.
 - [ ] Idempotency: request 1/2 payloads and one stored inbox record.
 - [ ] Degradation: breakage timestamp, fallback JSON, automatic recovery log.
 - [ ] All secrets, passwords, Firebase tokens, and service-account data are redacted.
 
+## Next execution steps for Team 12
+
+1. In Render's Environment settings, set `PARTNER_API_URL` to
+   `https://maintenanceteam10.vercel.app/api/partner/health`,
+   `PARTNER_API_HEADER_NAME` to `X-Partner-Key`, `PARTNER_API_TOKEN` to the
+   privately shared Team 10 partner key, `PARTNER_WEBHOOK_URL` to
+   `https://maintenanceteam10.vercel.app/api/integrations/team12/webhook`, and
+   `WEBHOOK_OUTBOUND_SECRET` to the privately shared Team 10 webhook secret.
+   Redeploy and verify `/health`. The local `firebase/.env` is not uploaded to
+   Render.
+2. In the updated `Campus_Events_API.postman_collection.json`, set `baseUrl` to
+   the live Team 12 URL and sign in as a provisioned Organizer with request 02.
+   Run request 16 (`Consume Team 10 Partner API`), then request 17 (`Read
+   Integration Logs`). Match the response `requestId` to a `partner.fetch` log.
+3. Run request 06 to create a draft, then request 07 to publish it. After at
+   least 30 seconds while the Render service is awake, run request 17 again.
+   Match the published activity's ID to a `webhook.sent` log with
+   `outcome = DELIVERED` and Team 10's HTTP response.
+4. Ask Team 10 to call our provider endpoint and send a real
+   `maintenance.status_changed` event twice with the exact same body and ID.
+   Use request 17 and the Firestore inbox to collect our provider, receiver,
+   and idempotency evidence.
+5. Coordinate a brief Team 10 endpoint outage for degradation and recovery
+   evidence. Capture the failed consumer response and subsequent
+   `partner.fetch` log with `source = automatic-retry` and `recovered = true`.

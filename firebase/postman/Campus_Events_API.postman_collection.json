@@ -195,6 +195,31 @@
         "header": [{ "key": "Authorization", "value": "Bearer {{organizerToken}}", "type": "text" }],
         "url": "{{baseUrl}}/api/activities/{{draftId}}"
       }
+    },
+    {
+      "name": "16 - Consume Team 10 Partner API",
+      "event": [{
+        "listen": "test",
+        "script": { "exec": [
+          "pm.test('Partner fetch succeeded', () => pm.response.to.have.status(200));",
+          "const body = pm.response.json();",
+          "pm.test('Partner status is ok', () => pm.expect(body.status).to.eql('ok'));",
+          "pm.test('Correlation ID present', () => pm.expect(body.requestId).to.be.a('string'));"
+        ] }
+      }],
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{organizerToken}}", "type": "text" }],
+        "url": "{{baseUrl}}/api/integration/partner"
+      }
+    },
+    {
+      "name": "17 - Read Integration Logs",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{organizerToken}}", "type": "text" }],
+        "url": "{{baseUrl}}/api/integration/logs?limit=20"
+      }
     }
   ]
 }
