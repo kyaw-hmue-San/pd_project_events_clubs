@@ -74,6 +74,16 @@ X-Event-ID: partner-event-001
 
 Rules:
 
+- `maintenance.status_changed` is accepted with `data.workOrderId`,
+  `data.fromStatus`, and `data.toStatus` as in Team 10's handoff.
+- Authentication uses the exact shared secret in `X-Webhook-Secret`. The
+  receiver currently does not implement HMAC signing or a signature header;
+  `X-Event-ID` may be sent for correlation, while the JSON `id` controls
+  idempotency.
+- The JSON object must contain exactly `id`, `type`, `occurredAt`, and `data`.
+  `id` is 1–128 ASCII letters, digits, `_`, or `-`; `type` is a lowercase
+  dotted event name; `occurredAt` is an ISO 8601 timestamp with a timezone;
+  `data` is a JSON object.
 - `id` must be stable and unique for the logical event.
 - Retrying the exact same event with the same `id` returns `duplicate: true`
   and does not create a second inbox record.
@@ -140,4 +150,3 @@ organizer changes an activity from `DRAFT` to `PUBLISHED`:
 
 We retry failed deliveries automatically and record the partner response. Once
 you send your endpoint details, we will configure and run the joint evidence test.
-

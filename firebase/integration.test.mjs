@@ -15,6 +15,13 @@ test('webhook event validation accepts the documented contract', () => {
   assert.equal(validateEvent(event), event);
 });
 
+test('webhook event validation accepts Team 10 maintenance status changes', () => {
+  const event = { id: 'maintenance-event-001', type: 'maintenance.status_changed',
+    occurredAt: '2026-09-21T00:00:00.000Z',
+    data: { workOrderId: 'redacted-work-order-id', fromStatus: 'OPEN', toStatus: 'ASSIGNED' } };
+  assert.equal(validateEvent(event), event);
+});
+
 test('webhook event validation rejects malformed and oversized payloads', () => {
   assert.throws(() => validateEvent({ id: '../bad', type: 'x', occurredAt: 'now', data: {} }), /INVALID_WEBHOOK_EVENT/);
   assert.throws(() => validateEvent({ id: 'ok', type: 'x', occurredAt: '2026-09-20T15:00:00Z', data: { value: 'x'.repeat(9000) } }), /INVALID_WEBHOOK_EVENT/);
