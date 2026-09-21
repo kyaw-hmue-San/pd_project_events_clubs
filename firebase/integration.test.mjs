@@ -20,6 +20,8 @@ test('webhook event validation accepts Team 10 maintenance status changes', () =
     occurredAt: '2026-09-21T00:00:00.000Z',
     data: { workOrderId: 'redacted-work-order-id', fromStatus: 'OPEN', toStatus: 'ASSIGNED' } };
   assert.equal(validateEvent(event), event);
+  assert.equal(validateEvent({ ...event, id: 'a95db2cc-99b2-4e23-ba2e-979319ef7538',
+    occurredAt: '2026-09-21T14:55:52.6173967Z' }).type, 'maintenance.status_changed');
 });
 
 test('webhook event validation rejects malformed and oversized payloads', () => {

@@ -2,8 +2,10 @@
 
 > Status: Team 12's application consumer succeeded against Team 10 on
 > 2026-09-21, and an application-triggered `activity.published` delivery
-> succeeded. The Team 10 maintenance event, provider call, and
-> degradation evidence remain pending. Replace every bracketed placeholder
+> succeeded. Team 10's provider call succeeded, but its maintenance webhook
+> received `400` because its timestamp had seven fractional digits and the
+> deployed validator accepted at most three. The validator is fixed locally;
+> redeploy and retry are pending. Degradation evidence remains pending. Replace every bracketed placeholder
 > with real evidence.
 
 ## Integration summary
@@ -70,13 +72,15 @@ GET https://pd-project-events-clubs.onrender.com/partner/activities?limit=20
 
 | Evidence | Value |
 |---|---|
-| Partner request timestamp | `[TIMESTAMP]` |
-| Response `requestId` | `[REQUEST ID]` |
-| HTTP status | `[STATUS]` |
+| Partner request timestamp | `2026-09-21T14:55:51.8064554Z` (Team 10 report) |
+| Response `requestId` | `53f7919b-1d3a-4f82-8ff5-0bfb00400960` |
+| HTTP status | `200`; Team 10 reports five published activities |
 | Internal request log | `[SCREENSHOT/LINK TO requestLogs DOCUMENT OR RENDER LOG]` |
-| Partner confirmation | `[QUOTE OR SCREENSHOT/LINK]` |
+| Partner confirmation | Team 10's redacted integration report received in conversation; attach their response screenshot |
 
 The secret `X-Partner-Key` value must be hidden in all screenshots.
+Find `requestLogs/53f7919b-1d3a-4f82-8ff5-0bfb00400960` in Firestore and
+capture it to finish the internal request-log requirement.
 
 ## 3. Webhook Receiver
 
@@ -98,6 +102,17 @@ POST https://pd-project-events-clubs.onrender.com/webhooks/partner
 ```json
 [PASTE INCOMING PAYLOAD WITH SECRETS REMOVED]
 ```
+
+Team 10 sent `maintenance.status_changed` event
+`a95db2cc-99b2-4e23-ba2e-979319ef7538` twice at
+`2026-09-21T14:56:14.0258278Z` and `2026-09-21T14:56:14.9710141Z`.
+Both returned `400 INVALID_WEBHOOK_EVENT`. Its `occurredAt` was
+`2026-09-21T14:55:52.6173967Z`; the seven fractional digits exceeded the
+deployed three-digit validator limit. The event type itself is accepted.
+The local validator now permits up to nine fractional digits. After deploy,
+Team 10 must resend the identical event twice to collect `201` and `200`
+receiver/idempotency evidence. The earlier failed attempts did not create an
+inbox record.
 
 ## 4. Webhook Sender
 

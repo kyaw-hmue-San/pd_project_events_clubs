@@ -52,7 +52,7 @@ export function validateEvent(body) {
       !/^[A-Za-z0-9_-]{1,128}$/.test(body.id || '') ||
       typeof body.type !== 'string' || !/^[a-z][a-z0-9_.-]{0,79}$/.test(body.type) ||
       typeof body.occurredAt !== 'string' ||
-      !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?(?:Z|[+-]\d{2}:\d{2})$/.test(body.occurredAt) ||
+      !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,9})?(?:Z|[+-]\d{2}:\d{2})$/.test(body.occurredAt) ||
       !Number.isFinite(Date.parse(body.occurredAt)) ||
       !body.data || typeof body.data !== 'object' || Array.isArray(body.data) ||
       Buffer.byteLength(JSON.stringify(body)) > 8192) error(400, 'INVALID_WEBHOOK_EVENT');

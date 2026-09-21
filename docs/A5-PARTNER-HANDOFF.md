@@ -83,7 +83,8 @@ Rules:
 - The JSON object must contain exactly `id`, `type`, `occurredAt`, and `data`.
   `id` is 1–128 ASCII letters, digits, `_`, or `-`; `type` is a lowercase
   dotted event name; `occurredAt` is an ISO 8601 timestamp with a timezone;
-  `data` is a JSON object.
+  `data` is a JSON object. `occurredAt` accepts 1–9 fractional second digits,
+  including the seven digits produced by PowerShell/.NET's round-trip format.
 - `id` must be stable and unique for the logical event.
 - Retrying the exact same event with the same `id` returns `duplicate: true`
   and does not create a second inbox record.
