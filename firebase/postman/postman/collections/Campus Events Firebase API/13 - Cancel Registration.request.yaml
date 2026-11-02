@@ -1,0 +1,13 @@
+$kind: http-request
+url: "{{baseUrl}}/api/registrations/{{registrationId}}"
+method: PATCH
+headers:
+  Authorization: Bearer {{studentToken}}
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "status": "CANCELLED"
+    }
+order: 13000

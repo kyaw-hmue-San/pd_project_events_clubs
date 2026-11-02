@@ -1,0 +1,15 @@
+$kind: http-request
+url: "{{baseUrl}}/equipment"
+method: GET
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status is 200', () => pm.response.to.have.status(200));
+      pm.test('Two or more equipment records exist', () => {
+        const data = pm.response.json();
+        pm.expect(data).to.be.an('array').with.length.of.at.least(2);
+        pm.expect(data.some(item => item.id === 'eq-1')).to.be.true;
+        pm.expect(data.some(item => item.id === 'eq-2')).to.be.true;
+      });
+    language: text/javascript
+order: 1000

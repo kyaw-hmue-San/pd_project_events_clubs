@@ -59,6 +59,21 @@ export function validateEvent(body) {
   return body;
 }
 
+export function partnerActivity(id, activity) {
+  return {
+    id,
+    title: activity.title,
+    description: activity.description,
+    activityType: activity.activityType,
+    dateTime: activity.dateTime?.toDate
+      ? activity.dateTime.toDate().toISOString()
+      : activity.dateTime,
+    location: activity.location,
+    status: activity.status,
+    registrationCount: activity.registrationCount
+  };
+}
+
 // Limits both download time and response size. Redirects are not followed with secrets.
 export async function partnerRequest(url, options, config, fetchImpl = fetch) {
   const response = await fetchImpl(url, { ...options, redirect: 'error', signal: AbortSignal.timeout(config.timeoutMs) });

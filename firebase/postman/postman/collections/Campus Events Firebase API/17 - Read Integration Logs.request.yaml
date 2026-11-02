@@ -1,0 +1,8 @@
+$kind: http-request
+url: "{{baseUrl}}/api/integration/logs?limit=20"
+method: GET
+headers:
+  Authorization: Bearer {{organizerToken}}
+queryParams:
+  limit: "20"
+order: 17000

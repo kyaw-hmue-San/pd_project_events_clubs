@@ -1,0 +1,36 @@
+$kind: collection
+description: Run requests in order. Firebase sign-in requests save organizerToken and studentToken automatically.
+variables:
+  - key: baseUrl
+    value: http://127.0.0.1:3000
+    disabled: false
+  - key: firebaseApiKey
+    secret: true
+    disabled: false
+  - key: organizerEmail
+    value: PASTE_ORGANIZER_EMAIL
+    disabled: false
+  - key: organizerPassword
+    value: PASTE_ORGANIZER_PASSWORD
+    disabled: false
+  - key: studentEmail
+    value: PASTE_STUDENT_EMAIL
+    disabled: false
+  - key: studentPassword
+    value: PASTE_STUDENT_PASSWORD
+    disabled: false
+  - key: organizerToken
+    value: ""
+    disabled: false
+  - key: studentToken
+    value: ""
+    disabled: false
+  - key: activityId
+    value: ""
+    disabled: false
+  - key: registrationId
+    value: ""
+    disabled: false
+  - key: draftId
+    value: ""
+    disabled: false

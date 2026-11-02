@@ -1,0 +1,4 @@
+$kind: collection
+description: CRUD and error tests for the Hono/Cloudflare D1 Campus Equipment Booking API. Run the collection in order; the create request stores bookingId automatically.
+variables:
+  baseUrl: http://localhost:8787/api

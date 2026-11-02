@@ -1,0 +1,8 @@
+$kind: http-request
+url: "{{baseUrl}}/api/activities?limit=20"
+method: GET
+headers:
+  Authorization: Bearer {{studentToken}}
+queryParams:
+  limit: "20"
+order: 8000

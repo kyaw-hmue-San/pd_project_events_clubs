@@ -1,0 +1,6 @@
+$kind: http-request
+url: "{{baseUrl}}/api/activities/{{activityId}}/registrations"
+method: GET
+headers:
+  Authorization: Bearer {{organizerToken}}
+order: 12000

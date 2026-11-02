@@ -1,0 +1,6 @@
+$kind: http-request
+url: "{{baseUrl}}/api/me"
+method: GET
+headers:
+  Authorization: Bearer {{organizerToken}}
+order: 4000

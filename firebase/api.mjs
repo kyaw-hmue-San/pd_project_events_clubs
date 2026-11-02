@@ -1,6 +1,6 @@
 import express from 'express';
 import { createHash, randomUUID } from 'node:crypto';
-import { createIntegration, requestEvidence } from './integration.mjs';
+import { createIntegration, partnerActivity, requestEvidence } from './integration.mjs';
 import { applicationDefault, initializeApp } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 import { FieldValue, Timestamp, getFirestore } from 'firebase-admin/firestore';
@@ -71,7 +71,11 @@ app.get('/partner/activities', async (req, res) => {
   if (typeof raw !== 'string' || !/^\d+$/.test(raw) || Number(raw) < 1 || Number(raw) > 50) fail(400, 'INVALID_LIMIT');
   const result = await db.collection('activities').where('status', '==', 'PUBLISHED')
     .orderBy('dateTime').orderBy('__name__').limit(Number(raw)).get();
-  res.json({ data: result.docs.map(row), requestId: req.requestId, generatedAt: new Date().toISOString() });
+  res.json({
+    data: result.docs.map(snap => partnerActivity(snap.id, snap.data())),
+    requestId: req.requestId,
+    generatedAt: new Date().toISOString()
+  });
 });
 app.use('/api', async (req, _res, next) => {
   try {

@@ -1,0 +1,13 @@
+$kind: http-request
+url: "{{baseUrl}}/api/activities/{{activityId}}/registrations"
+method: POST
+headers:
+  Authorization: Bearer {{studentToken}}
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Registration created', () => pm.response.to.have.status(201));
+      const body = pm.response.json();
+      if (body.id) pm.collectionVariables.set('registrationId', body.id);
+    language: text/javascript
+order: 10000

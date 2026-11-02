@@ -1,0 +1,24 @@
+$kind: http-request
+url: "{{baseUrl}}/api/activities"
+method: POST
+headers:
+  Authorization: Bearer {{organizerToken}}
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "title": "Disposable Test Draft",
+      "description": "Created to demonstrate activity deletion.",
+      "activityType": "CLUB_ACTIVITY",
+      "dateTime": "2026-10-03T10:00:00+07:00",
+      "location": "Student Center"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Disposable draft created', () => pm.response.to.have.status(201));
+      const body = pm.response.json();
+      if (body.id) pm.collectionVariables.set('draftId', body.id);
+    language: text/javascript
+order: 14000
