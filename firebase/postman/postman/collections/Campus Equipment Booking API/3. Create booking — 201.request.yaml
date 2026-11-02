@@ -1,0 +1,27 @@
+$kind: http-request
+url: "{{baseUrl}}/bookings"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "equipmentId": "eq-1",
+      "borrowerName": "Somchai Jaidee",
+      "startAt": "2026-10-20T09:00:00.000Z",
+      "endAt": "2026-10-20T11:00:00.000Z",
+      "purpose": "Class presentation"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status is 201', () => pm.response.to.have.status(201));
+      const data = pm.response.json();
+      pm.test('Created booking has required fields', () => {
+        pm.expect(data).to.include.all.keys('id', 'equipmentId', 'borrowerName', 'startAt', 'endAt', 'purpose');
+        pm.expect(data.equipmentId).to.eql('eq-1');
+      });
+      pm.collectionVariables.set('bookingId', data.id);
+    language: text/javascript
+order: 3000

@@ -1,0 +1,14 @@
+$kind: http-request
+url: "{{baseUrl}}/api/activities/{{activityId}}"
+method: PATCH
+headers:
+  Authorization: Bearer {{organizerToken}}
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "status": "PUBLISHED",
+      "location": "Computer Lab 2"
+    }
+order: 7000

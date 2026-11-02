@@ -1,0 +1,24 @@
+$kind: http-request
+url: "{{baseUrl}}/api/activities"
+method: POST
+headers:
+  Authorization: Bearer {{organizerToken}}
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "title": "Backend Workshop",
+      "description": "Learn API and database design.",
+      "activityType": "EVENT",
+      "dateTime": "2026-10-02T09:00:00+07:00",
+      "location": "Computer Lab 1"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Draft created', () => pm.response.to.have.status(201));
+      const body = pm.response.json();
+      if (body.id) pm.collectionVariables.set('activityId', body.id);
+    language: text/javascript
+order: 6000

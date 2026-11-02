@@ -1,0 +1,10 @@
+$kind: http-request
+url: "{{baseUrl}}/api/activities/{{draftId}}"
+method: DELETE
+headers:
+  Authorization: Bearer {{organizerToken}}
+scripts:
+  - type: afterResponse
+    code: pm.test('Draft deleted', () => pm.response.to.have.status(204));
+    language: text/javascript
+order: 15000

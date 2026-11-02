@@ -1,0 +1,14 @@
+$kind: http-request
+url: "{{baseUrl}}/api/integration/partner"
+method: GET
+headers:
+  Authorization: Bearer {{organizerToken}}
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Partner fetch succeeded', () => pm.response.to.have.status(200));
+      const body = pm.response.json();
+      pm.test('Partner status is ok', () => pm.expect(body.status).to.eql('ok'));
+      pm.test('Correlation ID present', () => pm.expect(body.requestId).to.be.a('string'));
+    language: text/javascript
+order: 16000

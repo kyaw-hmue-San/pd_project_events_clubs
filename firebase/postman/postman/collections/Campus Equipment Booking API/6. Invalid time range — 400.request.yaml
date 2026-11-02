@@ -1,0 +1,22 @@
+$kind: http-request
+url: "{{baseUrl}}/bookings"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "equipmentId": "eq-1",
+      "borrowerName": "Somchai Jaidee",
+      "startAt": "2026-10-21T11:00:00.000Z",
+      "endAt": "2026-10-21T09:00:00.000Z",
+      "purpose": "Invalid time range test"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status is 400', () => pm.response.to.have.status(400));
+      pm.test('JSON error is returned', () => pm.expect(pm.response.json()).to.have.property('error'));
+    language: text/javascript
+order: 6000

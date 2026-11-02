@@ -1,0 +1,10 @@
+$kind: http-request
+url: "{{baseUrl}}/bookings/{{bookingId}}"
+method: GET
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status is 200', () => pm.response.to.have.status(200));
+      pm.test('Correct booking is returned', () => pm.expect(pm.response.json().id).to.eql(pm.collectionVariables.get('bookingId')));
+    language: text/javascript
+order: 4000

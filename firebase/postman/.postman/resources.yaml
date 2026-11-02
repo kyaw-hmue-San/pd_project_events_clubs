@@ -1,0 +1,15 @@
+# Use this workspace to collaborate
+workspace:
+  id: 7b544dbd-bdec-4aa4-80cc-7d0aaefc8e17
+
+localResources:
+  collections:
+    - ../Campus_Events_API.postman_collection.json
+    - ../Team12_Integration_API.postman_collection.json
+
+# Each entry here maps a local resource to one or more corresponding objects in Postman Cloud
+
+cloudResources:
+  collections:
+    ../postman/collections/Campus Events Firebase API: 5ce0386d-8698-42ab-8d58-aaa1002743d3
+    ../postman/collections/Campus Equipment Booking API: 705605fc-d394-4917-a01a-c6dd532f6a23
