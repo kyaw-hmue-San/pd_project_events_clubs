@@ -1,0 +1,185 @@
+I’ll keep this investigation read-only. I’ll inventory the repository and its history first, then trace the actual Firebase/API behavior against the docs, check available assignment requirements and run relevant tests; I’ll clearly label evidence that is in code versus claims recorded in documents.
+
+Searched for files matching `**/*`, 20 matches
+
+Read 
+
+Read memory
+
+The workspace is a compact repository: documentation plus a Firebase folder, with no obvious frontend project at the top level. I’m now checking the complete tracked-file list and recent history, then I’ll read the canonical requirements, assignment materials, and each API/security/config module.
+
+Ran terminal command:  git status --short && git log -8 --oneline --decorate && git ls-files
+
+Searched for files matching `**/docs/**/*`, 20 matches
+
+Searched for files matching `**/firebase/**/*`, 15 matches
+
+Searched for files matching `**/AGENTS.md`, no matches
+
+Recent Git history shows the latest commit is titled “Evidence,” but the Git command ran from `firebase`; the tracked-file output therefore may describe a nested repository rather than the whole workspace. I’m resolving that boundary now while reading the core assignment and design documents, because it affects how confidently we can describe project history and what the lecturer may expect.
+
+Ran terminal command:  cd /Users/rioo/projects/pd_project_events_clubs && printf 'workspace root: ' && pwd && git rev-parse --show-toplevel && git status --short && git ls-files | wc -l && cd firebase && printf 'firebase root: ' && git rev-parse --show-toplevel && git status --short && git ls-files | wc -l
+
+Read , lines 1 to 320
+
+Read , lines 1 to 340
+
+Read 
+
+Read , lines 1 to 300
+
+Read , lines 1 to 300
+
+The Git boundary is clear now: the workspace itself is the repository, is clean, and tracks 52 files; the 15 tracked files under `firebase` are only the implementation subset. Assignment 3 explicitly says it adopts Firebase as a separate user-selected implementation while earlier canonical documents select Supabase, so these are competing tracks rather than a migration already completed. I’m comparing the remaining architecture/stress/validation material and tracing the API implementation and configuration for concrete gaps.
+
+Read 
+
+Read , lines 1 to 360
+
+Read 
+
+Read 
+
+Read 
+
+Read 
+
+Read , lines 240 to 620
+
+The requirements documents are unusually explicit about the MVP: Student/Organizer flows, transaction-safe duplicate prevention, privacy, responsive behavior, cost, and usability. The lecturer-facing requirements I can locate are workshop/assignment instructions, not a separate rubric or grading sheet; I’m checking the backend and integration implementation now against those requirements, including deployment configuration and test coverage.
+
+Read 
+
+Read 
+
+Read 
+
+Read 
+
+Read 
+
+Read 
+
+Read 
+
+Read 
+
+The implementation trace is now concrete: browser sign-in is intended to yield a Firebase ID token; Express verifies it and loads the protected Firestore role; business operations then use Admin SDK transactions, while direct Firestore client access is denied. I’ve also found that the five tests exercise integration helpers only, not the activity/registration endpoints. I’m doing a final read-only status/history check and a public `/health` probe, then I’ll assemble the requirement-by-requirement assessment and a sequenced roadmap without changing anything.
+
+Ran terminal command:  printf 'Recent history\n' && git log -8 --date=short --format='%h %ad %s' && printf '\nWorktree status\n' && git status --short && printf '\nTracked frontend candidates\n' && git ls-files | rg '(^|/)(src|client|frontend|public|vite\.config|package\.json|index\.html)(/|$|\.)' || true && printf '\nRelevant implementation locations\n' && rg -n 'app\.use\(.*/api|app\.(get|post|patch|delete)|runTransaction|verifyIdToken|queuePublication|async function deliver|async function consumePartner|function tick|export function requestEvidence' firebase/api.mjs firebase/integration.mjs && printf '\nCurrent public health response\n' && curl -fsS --max-time 12 https://pd-project-events-clubs.onrender.com/health
+Tool execution failed with exit code 127
+
+The history confirms the implementation work is concentrated in September around Assignment 3 and Assignment 5. This shell does not have `rg`, so the prior combined check stopped before the health probe; I’m rerunning those read-only checks with standard `grep` and `curl` instead.
+
+Ran terminal command:  printf 'Tracked frontend candidates\n'; git ls-files | grep -E '(^|/)(src|client|frontend|public|vite\.config|package\.json|index\.html)(/|$|\.)' || true; printf '\nRelevant implementation locations\n'; grep -nE 'app\.(get|post|patch|delete)|runTransaction|verifyIdToken|queuePublication|async function deliver|async function consumePartner|function tick|export function requestEvidence' firebase/api.mjs firebase/integration.mjs; printf '\nCurrent public health response\n'; curl -fsS --max-time 12 https://pd-project-events-clubs.onrender.com/health
+
+The public endpoint’s `/health` currently returns `{"status":"ok"}` on November 2, 2026, which verifies only that the Render process responds; it does not verify Firestore credentials or authenticated CRUD. I also confirmed the checked-in Firebase assignment includes its package manifest but no React/Vite app files. I’m checking the remaining submission artifacts and whether the evidence document’s linked screenshots are actually present before finalizing what is demonstrable today.
+
+Read 
+
+Read 
+
+Read , lines 300 to 342
+
+Read , lines 300 to 560
+
+Read 
+
+Read 
+
+The evidence files referenced by the Assignment 5 report are present, including the screenshots and redacted log extract. The assignment write-up itself distinguishes illustrative API examples from live proof, and the later evidence report documents real September integration tests; I’ll now capture precise code/document locations and run syntax checks so the final report can point to verifiable boundaries.
+
+Ran terminal command:  node --check api.mjs && node --check integration.mjs && printf 'API locations\n' && grep -nE "verifyIdToken|app\.(get|post|patch|delete)|runTransaction|queuePublication" api.mjs && printf '\nIntegration locations\n' && grep -nE 'validateEvent|partnerRequest|async function receive|queuePublication|async function deliver|async function consumePartner|async function tick|function start|authenticatePartner|requestEvidence' integration.mjs && printf '\nStatus/document locations\n' && grep -nE 'Current Status|READY WITH CHANGES|still required|pending|deployment|validation' ../README.md ../docs/role-reviews.md ../docs/firebase_database_assignment.md ../docs/A5-Team12-Integration-Evidence.md | head -80 && printf '\nAssignment/rubric/deadline references\n' && grep -RniE 'rubric|marking criteria|submission instructions|deadline|due date|learning outcomes' ../docs --include='*.md' | head -100
+
+Read 
+
+The architecture workshop does include an assessment rubric, so there is at least one lecturer-facing evaluation standard in the repository; I’m reading that section now and mapping its criteria to the current artifacts. The backend source also passes Node syntax checks, in addition to the five helper tests.
+
+Read , lines 560 to 631
+
+The rubric makes individual role reviews and a consistent architecture explicit submission criteria, so the Supabase/Firebase split is not merely cosmetic. I’m checking the PRD’s API contract against implemented routes and verifying two operational constraints (Render/CORS and persistent background retries) to identify the highest-impact gaps for the roadmap.
+
+Ran terminal command:  printf 'PRD API and status references\n'; grep -nEi 'PATCH /api/registrations|registrations/:id|cancel|CLOSED|Vercel|Supabase|acceptance criteria|API contract' ../docs/PRD.md | head -100; printf '\nFirebase route and integration log locations\n'; grep -nE "app.get\('/api/integration/(partner|logs)'|app.listen|integration.start|app.use\('/api'|app.get\('/api/activities|app.patch\('/api/registrations|app.post\('/api/activities/:id/registrations" api.mjs; printf '\nDeployment constraints\n'; grep -nEi 'CORS|does not configure|Render|Vercel|persistent|background|sleep|deployment status' DEPLOY.md ../README.md ../docs/architecture.md | head -80; printf '\nRole-review names/checklist\n'; grep -nEi 'name|individual contribution|student and organizer|frontend|deployment' ../docs/role-reviews.md | tail -35
+
+Read 
+
+**Assessment**
+
+This is a documentation-heavy university project with a real Firebase backend and Assignment 5 integration work, but not a complete student-facing application. The repository has two different architecture directions, and there is not enough assignment-specific information to safely choose one for the final submission.
+
+**1. Project Overview**
+
+The intended product, Campus Events & Clubs, lets Students browse campus activities, view details, register, and cancel. Organizers create and publish activities and manage registrations. Those flows and the MVP boundary are defined in the PRD and requirements. The user-problem document correctly labels its pain points and current workflow as assumptions, not validated findings.
+
+**2. Architecture and How It Relates**
+
+- The main product documents choose **React + Vite, Express, Supabase Auth/PostgreSQL, and Vercel**. The canonical architecture, platform diagram, and README describe this direction.
+- The separate Assignment 3 track chooses **Firebase Authentication, Express, and Firestore**. The Firebase assignment and database assignment explicitly say this implementation does not rewrite the earlier Supabase submissions.
+- Assignment 5 extends the Firebase API with Team 10’s maintenance-platform integration. Its handoff and evidence report document provider API, webhook, retry, and degradation scenarios.
+- Therefore, this is **not one system that has already migrated**. Supabase/Vercel is the product architecture in the main design; Firebase/Render is the implemented API and integration track.
+
+**Provisional recommendation:** preserve Firebase for work specifically required by Assignments 3 and 5, since it is the only implemented backend. Do not port it to Supabase or combine both stacks yet. Whether the final product must use Supabase depends on the lecturer’s current implementation brief, which is not included here.
+
+**3. Verified Current Status**
+
+- The repository is clean on `main`; the latest commit is `Evidence` from September 21, 2026.
+- The Firebase backend has routes for authentication, activity CRUD/publishing, student registrations, cancellation, and organizer registration views. Auth token verification and role loading are in `api.mjs:76`; registration and cancellation transactions are at `api.mjs:163` and `api.mjs:194`.
+- Firestore rules deny direct client access; the API uses the Admin SDK. The seed script provisions two verified demo users and a demo activity, but requires authorized credentials.
+- `npm test` passes **5/5 tests**. Those tests cover integration helper validation/configuration, not API routes, Firestore behavior, or authorization. `node --check` passes for both backend modules.
+- The public Render `/health` endpoint currently returns `{"status":"ok"}`. This is a process liveness check only; it does not prove current Firestore connectivity or authenticated CRUD.
+- The Assignment 5 screenshots and redacted log extract exist in `evidence`. The report records successful September partner tests, but says automatic consumer recovery was not captured; the successful consumer recovery followed a manual call.
+- There is **no React/Vite frontend application** in the tracked files. The checked-in `package.json` describes only the Express API.
+
+**4. Requirements Gap Analysis**
+
+The available lecturer-facing material includes the architecture workshop instructions and a 100-point rubric in `02_architecture_design.md:604`, plus the six-question Firebase database assignment. I found no separate Assignment 5 marking rubric or deadline.
+
+| Area | Assessment |
+|---|---|
+| Problem, users, journey, MVP | Documented; user research remains unverified |
+| Requirements, data model, business rules | Detailed in docs; not all are tested in code |
+| API CRUD and role checks | Implemented in Firebase API; no end-to-end test suite |
+| Registration integrity | Deterministic active-registration lock and Firestore transactions are implemented |
+| Responsive student/organizer experience | Not implemented; no frontend |
+| Usability target | Not verified; the validation plan’s interviews and prototype tests are still required |
+| Deployment | Render API is currently live at health-check level; Firebase-backed API calls were not re-tested |
+| Individual role-review rubric item | Review is consolidated; student names and individual contributions remain missing |
+| Architecture consistency rubric item | Not met across the repo: the canonical docs say Supabase/Vercel, while the implementation is Firebase/Render |
+
+**5. Technical Issues to Resolve**
+
+- **Lifecycle behavior differs from the PRD.** The PRD says `CLOSED` activities remain visible and cannot be reopened. The API lists only `PUBLISHED` activities and hides non-published activities from students; its update logic also allows `CLOSED → PUBLISHED`. Compare `PRD.md:379` with `api.mjs:102`, `api.mjs:117`, and `api.mjs:132`.
+- **Cancellation API contracts differ.** The PRD documents `PATCH /api/registrations/:id/cancel`; Firebase implements `PATCH /api/registrations/:id` with `{"status":"CANCELLED"}`. Align the frontend, Postman collection, and final contract before integration.
+- **The API has no CORS configuration.** The `DEPLOY.md:108` explicitly says browser calls from a different origin need it. A Vercel-hosted frontend cannot call the Render API reliably until allowed origins and preflight requests are configured.
+- **Runtime models differ.** Firebase starts a persistent Express listener and an interval worker in `api.mjs:221`; the worker retries webhooks and partner requests in `integration.mjs:195`. That is designed for a persistent host such as Render, not the stateless Vercel Function described by the main architecture. Moving it as-is would break or undermine background retries.
+- **Integration logs deserve tighter access.** Any authenticated Organizer can read `/api/integration/logs`; logs can include partner payloads and responses. See `api.mjs:95` and `integration.mjs:129`. Restrict access or redact/partition data before treating this as production-ready.
+- Registration lists are capped at 50 without pagination, which the Firebase assignment itself acknowledges. The partner webhook retry loop also has no maximum attempt count.
+- I did not use private credentials or write to Firebase. Consequently, current authenticated CRUD, deployed indexes, and live database permissions remain unverified.
+
+**6. Development Roadmap**
+
+Effort is relative: S = small, M = medium, L = large.
+
+| Order / task | Purpose, files, dependency | Effort and acceptance criteria |
+|---|---|---|
+| 1. Confirm graded scope and architecture | Obtain lecturer brief; compare README, PRD, Firebase assignment, and Assignment 5 evidence. Required before architecture changes. | S. Written decision identifies required assignments, stack, demo, individual deliverables, and deadline. |
+| 2. Lock the product requirements | Complete research using the validation plan; update PRD and review names/contributions. Depends on task 1. | M. Required interviews/usability evidence is recorded anonymously; high-priority assumptions have decisions; each reviewer is credited. |
+| 3. Reconcile API contract and lifecycle | Align route, `CLOSED` visibility/reopening, and list limits across PRD, `api.mjs`, and Postman collections. | M. One published contract; closed/reopen behavior matches approved rules; every route has permission and error expectations. |
+| 4. Add backend integration tests | Extend `integration.test.mjs`; use Firebase Emulator or a controlled test project. Depends on task 3. | L. Tests cover Student/Organizer authorization, ownership, invalid input, concurrent duplicate registration, cancellation/idempotency, lifecycle, and failure rollback. |
+| 5. Build the required user interface | No frontend exists. Add the approved frontend structure only after task 1; implement sign-in, browse/detail, register, My Registrations/cancel, and organizer management. | L. Student and Organizer journeys work at 360–1440 px, with loading, empty, error, success, and denied states. |
+| 6. Secure browser-to-API integration | Configure explicit CORS, secrets, auth flow, log access/retention, and pagination in `DEPLOY.md`, `api.mjs`, and `integration.mjs`. Depends on tasks 1, 3, and 5. | M–L. Browser preflight and API calls work only from approved origins; no secrets enter client assets/logs; organizer access is appropriately scoped. |
+| 7. Validate and demonstrate the deployed system | Run feature, security, performance, and partner integration checks; update evidence report and README. Depends on implementation. | M. Authenticated CRUD works against the deployed database; core journey and required partner scenarios have reproducible evidence; cost assumptions are checked. |
+
+**7. Testing Strategy**
+
+Use layered checks: existing helper unit tests; API tests against the Firebase Emulator for roles, ownership, validation, transaction races, and cancellation; frontend journey tests at narrow and desktop widths; and deployed smoke tests for health **and authenticated data operations**. For Assignment 5, repeat provider, consumer, webhook idempotency, retry, degraded mode, and automatic recovery tests. Measure the PRD’s usability and performance targets rather than claiming them from code inspection.
+
+**8. Deployment and Demonstration**
+
+If Firebase is approved, keep the API on a persistent host such as Render, add the frontend only after confirming CORS and Firebase client-auth setup, and test with dedicated demo accounts. The Render guide is preparation guidance; it is not itself proof of a current database-backed deployment. If Supabase/Vercel is required, treat that as a deliberate backend implementation/migration decision: the current Firebase API and persistent integration worker cannot simply be deployed unchanged to the documented stateless architecture.
+
+**Priorities**
+
+Mandatory: identify the graded assignment, select one architecture, complete required core flows, prove authorization/data integrity, provide required evidence and individual contributions, and demonstrate the deployed system. Optional unless the lecturer requires them: capacity limits, registration deadlines, payments, chat, analytics, QR check-in, and other features already listed out of scope.
+
+To settle the architecture without guessing, the missing input is the lecturer’s current implementation brief and any Assignment 5 rubric/submission instructions. No files were modified during this investigation.

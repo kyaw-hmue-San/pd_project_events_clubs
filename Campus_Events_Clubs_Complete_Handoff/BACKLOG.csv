@@ -1,0 +1,32 @@
+task_id,priority,phase,title,instruction,acceptance,dependencies
+001,P0,0,Inventory repository and verify report,Read files/history/scripts; note actual implemented routes and git state,Route and feature inventory with code links; no modifications made,none
+002,P0,0,Match final lecturer requirements,Collect current brief and map each rubric criterion,Written scoped must-have checklist; unknown items explicitly flagged,001
+003,P0,0,Record architecture decision,Choose Firebase reuse vs mandatory migration; document history,Decision approved and final diagram matches plan,001;002
+004,P0,0,Choose safe demo environment and provision roles,Inspect seed script/project ID/role policy,Dedicated Student and Organizer valid roles; no secret leak,003
+005,P0,0,Record baseline tests and lint/build,Run existing npm tests and syntax checks,Commands/results saved; failures tracked,001
+006,P0,1,Inventory and publish authoritative API contract,Inspect each endpoint/request/response/code/status,Contract suitable for typed frontend; no guessed fields,001;003
+007,P1,1,Resolve CLOSED lifecycle mismatch,Decide approved rule and update API/tests/docs,Visible/status transitions match decision and tests,006
+008,P0,1,Resolve cancellation route mismatch,Align client/server/docs and keep compatibility if needed,Real cancellation works with documented method/body,006
+009,P0,1,Add cross-origin browser CORS,Explicit origin allowlist and preflight,Deployed/local browser frontend can call API and auth still enforced,003;006
+010,P0,1,Audit auth ownership/privacy,Roles from server; own events/registrations; restrict logs,403/401 privacy tests pass and logs redacted,006
+011,P1,1,Expand emulator backend tests,"Auth, transaction duplicate, cancel, invalid, lifecycle",Automated integration suite with honest output,006;007;008
+012,P1,1,Audit Team 10 retry worker behavior,Preserve integration; inspect backoff/recovery/logging,Documented safe worker behavior and test plan,006
+013,P0,2,Scaffold frontend and shared design system,"React Vite routing, shell, tokens, reusable components",Local app builds and responsive structure exists,003;006
+014,P0,2,Integrate real Firebase client login,"Token/session, role routing, protected route UX",Both accounts sign in and protected API is called,004;009;013
+015,P0,2,Events browse/details from API,"Real list and detail, all async states","Events shown match Firestore via API, refresh works",014
+016,P0,2,Student register real event,"Register, conflict handling, pending state","One persisted active registration, no duplicate",015;008
+017,P0,2,My Registrations and cancel,"Own list, cancellation confirmation, refetch",Cancellation persists and unauthorized own-only tested,016
+018,P0,3,Organizer event list and role gate,"Real own events, permission check",Student denied; Organizer sees only own records,014;010
+019,P0,3,Organizer create/edit/publish event,API-backed form and lifecycle states,New event persists and appears for Student,018;007
+020,P0,3,Organizer registration roster,Real registrations for owned event,Student registration appears; cross-owner denial,019;016
+021,P0,3,Cross-role end-to-end journey,"Two profiles, create→publish→register→roster→cancel",Whole real flow passes after reload,017;020
+022,P0,4,Responsive/accessibility/error QA,"360/768/1440, keyboard, offline/403/empty",No blocked interactions; screenshots and issues logged,021
+023,P0,4,Controlled demo accounts and seed events,Idempotent safe seed; no false real-world claims,"4–6 sample events, roles valid, seeded labels shown",004;021
+024,P0,4,Deploy frontend/API safely,"Environment secrets, SPA deep-link rewrite, CORS",Live HTTPS UI connects to persistent backend,021;009
+025,P0,4,Run deployed authenticated smoke suite,Test real Firestore read/write and auth privacy,Live P0 checks pass with timestamp and evidence,024;023
+026,P1,4,Verify partner integration honestly,Recheck if partner accessible; historical fallback labeled,Integration evidence/limitations accurate,012;025
+027,P0,4,Prepare final demo/docs/submission,"Demo walkthrough, README, credits, rubric mapping",Rehearsed live demo and genuine evidence pack,025;002
+028,P2,5,Paginate large lists when needed,Avoid silent 50-record truncation,UI/API show correct paging with tests,021
+029,P1,5,Automate UI E2E tests,Auth and role journeys with test environment,Repeatable browser tests with documented fixture isolation,021
+030,P1,5,Capture automatic consumer recovery evidence,"If required, demonstrate genuinely without manual trigger",Redacted verified recovery trace; or honest gap,026
+031,P2,5,Add lightweight search/filter if required,"Only on verified data, no fake counts",Correct search/filter with empty states,025

@@ -1,0 +1,53 @@
+{
+  "READ_ME": "Illustrative seed contents only. Map to actual Firestore schema and adjust dates before live demo; do not import blindly.",
+  "events": [
+    {
+      "sample_id": "demo-welcome-01",
+      "demo_only": true,
+      "title": "[DEMO] New Student Welcome Meetup",
+      "category": "Campus Community",
+      "description": "Sample campus event used to demonstrate real registration. Not an advertised real event.",
+      "venue": "Student Activity Hall (sample venue)",
+      "start_local": "2026-12-05T10:00:00",
+      "end_local": "2026-12-05T12:00:00",
+      "timezone": "Asia/Bangkok",
+      "desired_status": "PUBLISHED"
+    },
+    {
+      "sample_id": "demo-tech-02",
+      "demo_only": true,
+      "title": "[DEMO] Tech Club Mini Workshop",
+      "category": "Club Workshop",
+      "description": "Illustrative event for demo-only registration and organizer workflow.",
+      "venue": "Computer Lab (sample venue)",
+      "start_local": "2026-12-12T14:00:00",
+      "end_local": "2026-12-12T16:00:00",
+      "timezone": "Asia/Bangkok",
+      "desired_status": "PUBLISHED"
+    },
+    {
+      "sample_id": "demo-art-03",
+      "demo_only": true,
+      "title": "[DEMO] Creative Arts Afternoon",
+      "category": "Arts & Culture",
+      "description": "Sample event, not a real university announcement.",
+      "venue": "Arts Room (sample venue)",
+      "start_local": "2026-12-19T13:00:00",
+      "end_local": "2026-12-19T15:00:00",
+      "timezone": "Asia/Bangkok",
+      "desired_status": "PUBLISHED"
+    },
+    {
+      "sample_id": "demo-vol-04",
+      "demo_only": true,
+      "title": "[DEMO] Volunteering Orientation",
+      "category": "Volunteering",
+      "description": "Sample event to demonstrate status and registration rules.",
+      "venue": "Community Room (sample venue)",
+      "start_local": "2027-01-09T09:00:00",
+      "end_local": "2027-01-09T10:30:00",
+      "timezone": "Asia/Bangkok",
+      "desired_status": "DRAFT"
+    }
+  ]
+}
