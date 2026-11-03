@@ -1,23 +1,24 @@
 # Progress tracker (initially based on pasted report; must reverify)
-**Project branch:** TBD  **Implementer:** TBD  **Current commit:** TBD  **Demo environment:** TBD  **Last checked:** TBD  
+**Project branch:** `implementation/phase-1-verified-baseline`  **Implementer:** GitHub Copilot  **Base commit:** `6d02a3d`  **Demo environment:** Firebase/Render configuration present; authenticated CRUD not tested  **Last checked:** 2026-11-03
 Status vocabulary: `NOT STARTED`, `IN PROGRESS`, `DONE (verified)`, `BLOCKED`, `NOT REQUIRED`.
 
-## Known inherited state (DO NOT label as fully verified by this pack)
-- Firebase/Express backend: *reported implemented; inspect on current branch*.
-- Team 10 integration: *reported implemented + dated September evidence; revalidate as needed*.
-- Existing five helper tests: *reported pass on inspection date; expand coverage*.
-- React frontend: *not observed in inspected repo; verify current state*.
-- Deployment: *health was live on 2026-11-02; auth/Firestore live functions not reverified*.
+## Verified starting state (2026-11-03)
+- Firebase/Express backend and Team 10 integration exist in the current checkout; see [implementation baseline](../docs/implementation-decisions.md). No remote API writes or partner calls were made in this session.
+- `npm test --prefix firebase`: 6 passed, 0 failed. These are integration-helper tests, not API/Firestore end-to-end coverage.
+- `node --check firebase/api.mjs` and `node --check firebase/integration.mjs`: passed.
+- No frontend app or root package manifest exists yet.
+- `firebase/.env` exists and is ignored; names only were inspected, never values. This does not verify credential validity or Firestore access.
+- Current lecturer implementation brief and final rubric are not in the repository; continue the reversible Firebase-backed MVP while tracking this risk.
 
 ## Working board
 | Task ID | Status | Implementer | Commit / PR | Test result / evidence | Blocker / next action |
 |---|---|---|---|---|---|
-| 001 | NOT STARTED | | | | |
-| 002 | BLOCKED | | | | Need current lecturer brief/rubric |
-| 003 | NOT STARTED | | | | |
-| 004 | NOT STARTED | | | | |
-| 005 | NOT STARTED | | | | |
-| 006 | NOT STARTED | | | | |
+| 001 | DONE (verified) | Copilot | — | Current tree, routes, dependencies, environment-key presence and branch verified; see [implementation baseline](../docs/implementation-decisions.md) | Continue to Task 006 |
+| 002 | BLOCKED | Team | | Current implementation brief/final rubric unavailable in repo | Request from lecturer; reversible work continues |
+| 003 | IN PROGRESS | Team | | User selected Firebase/Express/Render provisionally; decision recorded | Confirm no lecturer-mandated Supabase migration |
+| 004 | NOT STARTED | Team | | `.env` values not inspected; demo account UIDs not present among checked variable names | Confirm isolated demo project/accounts before seeding |
+| 005 | DONE (verified) | Copilot | — | 6 tests pass; both Node syntax checks and dependency resolution pass | Add API/Firestore regression coverage in Task 011 |
+| 006 | DONE (verified) | Copilot | — | Current routes, auth, inputs/outputs, limits, and known mismatches documented in [API contract](../docs/API_CONTRACT.md) | Resolve lifecycle, cancel adapter, CORS, and log authorization in Tasks 007–010 |
 | 007 | NOT STARTED | | | | |
 | 008 | NOT STARTED | | | | |
 | 009 | NOT STARTED | | | | |
