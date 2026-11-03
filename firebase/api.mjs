@@ -6,12 +6,48 @@ import { getAuth } from 'firebase-admin/auth';
 import { FieldValue, Timestamp, getFirestore } from 'firebase-admin/firestore';
 
 if (!process.env.FIREBASE_PROJECT_ID) throw new Error('Set FIREBASE_PROJECT_ID');
-initializeApp({ credential: applicationDefault(), projectId: process.env.FIREBASE_PROJECT_ID });
+const usingFirebaseEmulators = Boolean(process.env.FIRESTORE_EMULATOR_HOST && process.env.FIREBASE_AUTH_EMULATOR_HOST);
+initializeApp(usingFirebaseEmulators
+  ? { projectId: process.env.FIREBASE_PROJECT_ID }
+  : { credential: applicationDefault(), projectId: process.env.FIREBASE_PROJECT_ID });
 const db = getFirestore();
 const app = express();
 const integration = createIntegration({ db });
+const frontendOrigins = (process.env.FRONTEND_ORIGINS || 'http://localhost:5173')
+  .split(',').map(origin => origin.trim()).filter(Boolean);
+for (const origin of frontendOrigins) {
+  const parsed = new URL(origin);
+  if (!['http:', 'https:'].includes(parsed.protocol) || parsed.origin !== origin) {
+    throw new Error('FRONTEND_ORIGINS must contain comma-separated exact HTTP(S) origins without paths');
+  }
+}
+const allowedFrontendOrigins = new Set(frontendOrigins);
+const corsMethods = new Set(['GET', 'POST', 'PATCH', 'DELETE']);
+const corsHeaders = new Set(['authorization', 'content-type', 'x-request-id']);
+const integrationLogViewers = new Set((process.env.INTEGRATION_LOG_VIEWER_UIDS || '').split(',').map(uid => uid.trim()).filter(Boolean));
+const publicIntegrationLogFields = new Set(['kind', 'requestId', 'eventId', 'at', 'source', 'attempt', 'httpStatus', 'outcome', 'recovered', 'durationMs']);
 app.disable('x-powered-by');
 app.use(requestEvidence(db));
+app.use((req, res, next) => {
+  const origin = req.get('Origin');
+  if (!origin) return next();
+  if (!allowedFrontendOrigins.has(origin)) return res.status(403).json({ error: { code: 'ORIGIN_NOT_ALLOWED' } });
+
+  res.setHeader('Access-Control-Allow-Origin', origin);
+  res.setHeader('Access-Control-Allow-Methods', [...corsMethods].join(', '));
+  res.setHeader('Access-Control-Allow-Headers', [...corsHeaders].join(', '));
+  res.setHeader('Access-Control-Expose-Headers', 'X-Request-ID');
+  res.vary('Origin');
+  if (req.method === 'OPTIONS') {
+    const requestedMethod = req.get('Access-Control-Request-Method');
+    const requestedHeaders = (req.get('Access-Control-Request-Headers') || '').split(',').map(header => header.trim().toLowerCase()).filter(Boolean);
+    if ((requestedMethod && !corsMethods.has(requestedMethod)) || requestedHeaders.some(header => !corsHeaders.has(header))) {
+      return res.status(403).json({ error: { code: 'CORS_PREFLIGHT_DENIED' } });
+    }
+    return res.status(204).end();
+  }
+  next();
+});
 app.use(express.json({ limit: '32kb' }));
 const fail = (status, code) => { throw Object.assign(new Error(code), { status }); };
 const stamp = () => FieldValue.serverTimestamp();
@@ -97,21 +133,27 @@ app.get('/api/integration/partner', async (req, res) => {
   res.json(await integration.consumePartner('api-request', req.requestId));
 });
 app.get('/api/integration/logs', async (req, res) => {
-  if (req.user.role !== 'ORGANIZER') fail(403, 'FORBIDDEN');
+  if (req.user.role !== 'ORGANIZER' || !integrationLogViewers.has(req.user.uid)) fail(403, 'FORBIDDEN');
   const raw = req.query.limit ?? '20';
   if (typeof raw !== 'string' || !/^\d+$/.test(raw) || Number(raw) < 1 || Number(raw) > 50) fail(400, 'INVALID_LIMIT');
   const result = await db.collection('integrationLogs').orderBy('at', 'desc').limit(Number(raw)).get();
-  res.json({ data: result.docs.map(row) });
+  const data = result.docs.map(snap => ({
+    id: snap.id,
+    ...Object.fromEntries(Object.entries(snap.data())
+      .filter(([key]) => publicIntegrationLogFields.has(key))
+      .map(([key, value]) => [key, serialize(value)]))
+  }));
+  res.json({ data });
 });
 app.get('/api/activities', async (req, res) => {
   const raw = req.query.limit ?? '20';
   if (typeof raw !== 'string' || !/^\d+$/.test(raw)) fail(400, 'INVALID_LIMIT');
   const limit = Number(raw);
   if (limit < 1 || limit > 50) fail(400, 'INVALID_LIMIT');
-  let q = db.collection('activities').where('status', '==', 'PUBLISHED').orderBy('dateTime').orderBy('__name__');
+  let q = db.collection('activities').where('status', 'in', ['PUBLISHED', 'CLOSED']).orderBy('dateTime').orderBy('__name__');
   if (req.query.after) {
     const last = await db.doc(`activities/${docId(req.query.after)}`).get();
-    if (!last.exists || last.data().status !== 'PUBLISHED') fail(400, 'INVALID_CURSOR');
+    if (!last.exists || !['PUBLISHED', 'CLOSED'].includes(last.data().status)) fail(400, 'INVALID_CURSOR');
     q = q.startAfter(last);
   }
   const result = await q.limit(limit + 1).get();
@@ -122,7 +164,7 @@ app.get('/api/activities/:id', async (req, res) => {
   const snap = await db.doc(`activities/${docId(req.params.id)}`).get();
   if (!snap.exists) fail(404, 'NOT_FOUND');
   const data = snap.data();
-  if (data.status !== 'PUBLISHED' && data.organizerId !== req.user.uid) fail(404, 'NOT_FOUND');
+  if (!['PUBLISHED', 'CLOSED'].includes(data.status) && data.organizerId !== req.user.uid) fail(404, 'NOT_FOUND');
   res.json(row(snap));
 });
 app.post('/api/activities', async (req, res) => {
@@ -142,6 +184,7 @@ app.patch('/api/activities/:id', async (req, res) => {
     if (!snap.exists) fail(404, 'NOT_FOUND');
     own(req, snap.data());
     const merged = { ...snap.data(), ...update };
+    if (snap.data().status === 'CLOSED' && merged.status !== 'CLOSED') fail(409, 'CANNOT_REOPEN_CLOSED_ACTIVITY');
     if (merged.status === 'PUBLISHED') {
       validateActivity({ title: merged.title, description: merged.description, location: merged.location, activityType: merged.activityType, dateTime: merged.dateTime.toDate().toISOString(), status: merged.status });
     }
@@ -182,6 +225,7 @@ app.post('/api/activities/:id/registrations', async (req, res) => {
   res.status(201).json(row(await rRef.get()));
 });
 app.get('/api/me/registrations', async (req, res) => {
+  if (req.user.role !== 'STUDENT') fail(403, 'FORBIDDEN');
   const results = await db.collection('registrations').where('studentId', '==', req.user.uid).where('status', '==', 'ACTIVE').orderBy('registeredAt', 'desc').limit(50).get();
   res.json({ data: results.docs.map(row) });
 });
@@ -195,9 +239,13 @@ app.get('/api/activities/:id/registrations', async (req, res) => {
   });
   res.json({ data: result.docs.map(row) });
 });
-app.patch('/api/registrations/:id', async (req, res) => {
+const cancelRegistration = async (req, res) => {
   if (req.user.role !== 'STUDENT') fail(403, 'FORBIDDEN');
-  if (!req.body || Object.keys(req.body).length !== 1 || req.body.status !== 'CANCELLED') fail(400, 'ONLY_CANCELLATION_ALLOWED');
+  const legacyRoute = req.path === `/api/registrations/${req.params.id}`;
+  const hasCancellationBody = req.body && Object.keys(req.body).length === 1 && req.body.status === 'CANCELLED';
+  if ((legacyRoute && !hasCancellationBody) || (!legacyRoute && req.body !== undefined && !hasCancellationBody)) {
+    fail(400, 'ONLY_CANCELLATION_ALLOWED');
+  }
   const ref = db.doc(`registrations/${docId(req.params.id)}`);
   await db.runTransaction(async tx => {
     const snap = await tx.get(ref);
@@ -214,7 +262,9 @@ app.patch('/api/registrations/:id', async (req, res) => {
     tx.update(aRef, { registrationCount: activity.data().registrationCount - 1, updatedAt: stamp() });
   });
   res.json(row(await ref.get()));
-});
+};
+app.patch('/api/registrations/:id', cancelRegistration);
+app.patch('/api/registrations/:id/cancel', cancelRegistration);
 app.use((_req, res) => res.status(404).json({ error: { code: 'NOT_FOUND' } }));
 app.use((err, _req, res, _next) => {
   const status = err.status || 500;

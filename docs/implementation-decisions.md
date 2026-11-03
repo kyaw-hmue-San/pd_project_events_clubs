@@ -2,8 +2,8 @@
 
 **Last checked:** 2026-11-03  
 **Branch:** `implementation/phase-1-verified-baseline`  
-**Base commit:** `6d02a3d`  
-**Status:** Phase 1 repository/environment inventory complete; no runtime behavior changed.
+**Phase 2 base commit:** `e4b038a`
+**Status:** Phase 2 backend contract/security changes pass isolated emulator regressions; no production writes or deployment changes made.
 
 ## Architecture decision
 
@@ -13,6 +13,7 @@ The project will provisionally reuse Firebase Authentication, Firestore, Express
 
 - Root repository was clean on `main` at `6d02a3d` before this work; no React/Vite app or root `package.json` was tracked.
 - `firebase/package.json` defines an Express 5 API with `firebase-admin`, Node `>=22`, and `start`, `seed`, and `test` scripts. Installed versions are Express 5.2.1 and Firebase Admin 13.10.0.
+- Firebase CLI 15.34.2 is a development dependency for isolated emulators. Its transitive `superstatic` package warns that it supports Node 20/22/24, while this machine uses Node 26.12.1; the CLI and emulator suite nevertheless ran successfully here.
 - Local runtime is Node 26.12.1 and npm 11.20.0. Firebase dependencies are installed.
 - `firebase/.env` exists and is ignored by `.gitignore`. Only variable names were checked; values were not read or recorded. It contains project/service-account path, integration credential, partner URL, and partner auth variable names. This does not verify that credentials are valid or that remote Firestore access works.
 - Firebase client configuration for a future browser app and the provisioned demo account UIDs were not identified in the frontend (none exists) or the checked environment variable names. Obtain client config and dedicated demo account details through approved private setup; never put Admin SDK credentials in the frontend.
@@ -27,16 +28,17 @@ The project will provisionally reuse Firebase Authentication, Firestore, Express
 | `GET /partner/activities` | Partner API key | Returns published activities using a sanitized partner projection. |
 | `GET /api/me` | Firebase bearer token, provisioned Student/Organizer | Returns the caller's profile. |
 | `GET /api/integration/partner` | Organizer | Calls the configured partner consumer endpoint. |
-| `GET /api/integration/logs` | Any authenticated Organizer | Returns integration logs; access is not scoped to an owner. Review privacy/access before frontend exposure. |
-| `GET /api/activities` | Authenticated Student/Organizer | Lists only `PUBLISHED` activities with a page limit/cursor. |
-| `GET /api/activities/:id` | Authenticated Student/Organizer | Returns published activity or the caller's own activity. Other states are hidden from non-owners. |
+| `GET /api/integration/logs` | Organizer UID in `INTEGRATION_LOG_VIEWER_UIDS` | Returns sanitized operational metadata only. |
+| `GET /api/activities` | Authenticated Student/Organizer | Lists `PUBLISHED` and `CLOSED` activities with a page limit/cursor. |
+| `GET /api/activities/:id` | Authenticated Student/Organizer | Returns published/closed activities or the caller's own draft. |
 | `POST /api/activities` | Organizer | Creates a validated draft owned by the authenticated Organizer. |
 | `PATCH /api/activities/:id` | Owning Organizer | Updates fields and changes lifecycle status; publishing enqueues partner webhook delivery in the same Firestore transaction. |
 | `DELETE /api/activities/:id` | Owning Organizer | Permanently deletes an unused draft only. |
 | `POST /api/activities/:id/registrations` | Student | Transactionally creates registration and active lock, increments activity count. |
-| `GET /api/me/registrations` | Authenticated user | Returns caller's active registrations, maximum 50. Route currently lacks an explicit Student-role guard. |
+| `GET /api/me/registrations` | Student | Returns caller's active registrations, maximum 50. Organizer is denied. |
 | `GET /api/activities/:id/registrations` | Owning Organizer | Returns activity registrations, maximum 50. |
 | `PATCH /api/registrations/:id` | Student who owns registration | Cancels idempotently and updates lock/count transactionally; body must be `{"status":"CANCELLED"}`. |
+| `PATCH /api/registrations/:id/cancel` | Student who owns registration | PRD-compatible alias; accepts no body or the legacy cancellation body. |
 
 ## Verified baseline checks
 
@@ -45,15 +47,18 @@ The project will provisionally reuse Firebase Authentication, Firestore, Express
 - `npm ls --depth=0 --prefix firebase`: dependencies resolve.
 - No authenticated API call, Firestore write, seed, deployment, or partner request was run in this inventory.
 
-## Known contract gaps for the next phase
+## Phase 2 contract status
 
-1. PRD cancellation path is `PATCH /api/registrations/:id/cancel`; existing backend path is `PATCH /api/registrations/:id`. Keep the existing route and add a compatible adapter only after tests define both behaviors.
-2. PRD says `CLOSED` activities remain visible and cannot reopen. The list/detail routes currently hide closed activities from Students, and update validation allows `CLOSED` to `PUBLISHED`. Confirm/record the rule before altering code.
-3. No CORS middleware or origin allowlist is configured; a browser-hosted frontend needs explicit local/deployed origins and preflight support.
-4. Integration logs are available to any Organizer and need a deliberate authorization/redaction policy before being exposed in the UI.
-5. The current backend is a persistent Express process with an interval worker; retain a persistent host for the existing integration worker.
-6. Lecturer final implementation brief, final rubric, deadline, and any required Assignment 5 rubric remain unavailable in this repository. Continue reversible Firebase-backed MVP work and revisit if supplied.
+Lifecycle visibility/reopening, cancellation compatibility, CORS allowlisting, and integration-log authorization/redaction are implemented and covered by isolated emulator tests. See [API contract](API_CONTRACT.md).
+
+- `npm run test:emulator`: 13 passed, 0 failed against local Auth/Firestore emulators using only `demo-campus-events-tests`.
+- `npm test`: 6 passed, 0 failed; the emulator test file is skipped when emulator endpoints are not present.
+- `node --check api.mjs` and `node --check integration.mjs`: passed after implementation.
+- The compatible production audit update removed the high `body-parser` and moderate `qs` findings. `npm audit --omit=dev` still reports 8 moderate `uuid` transitive findings through Firebase Admin; the available fix requires a major `firebase-admin@14` upgrade and was not applied.
+- Team 10 provider/webhook HTTP contracts pass locally with emulator data and test-only secrets; no external request or automatic recovery cycle was run.
+
+The deployed host must receive its exact frontend origin in `FRONTEND_ORIGINS` and any intended diagnostic Organizer UIDs in `INTEGRATION_LOG_VIEWER_UIDS`; local `.env` values were not changed. The current backend uses a persistent Express process with an interval worker, so retain a persistent host. Production CORS, Auth/Firestore CRUD, deployed indexes, and log-viewer configuration have not been verified. Lecturer final implementation brief, final rubric, deadline, and any required Assignment 5 rubric remain unavailable; continue reversible Firebase-backed MVP work and revisit if supplied.
 
 ## Next implementation gate
 
-Proceed with backlog Task 006: publish a contract based on the actual routes, then add narrow regression tests before Tasks 007–010 change lifecycle, cancellation, CORS, or log authorization. Do not seed or write to the connected Firebase project until the demo environment and accounts are confirmed.
+Phase 2 code and isolated API regressions are complete on the feature branch. Review and approve the Phase 2 implementation before starting the React frontend. The lecturer brief remains unavailable; keep the Firebase architecture provisional and do not seed or write to the connected Firebase project until the demo environment and accounts are confirmed.

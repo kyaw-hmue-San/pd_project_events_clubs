@@ -54,7 +54,15 @@ Add the variables from [.env.example](.env.example):
 FIREBASE_PROJECT_ID=events-management-4d8ce
 GOOGLE_APPLICATION_CREDENTIALS=/etc/secrets/firebase-service-account.json
 NODE_ENV=production
+FRONTEND_ORIGINS=https://your-actual-frontend.example
 ```
+
+Set `FRONTEND_ORIGINS` to the exact HTTPS origin shown by the frontend host (no
+path or trailing slash). For local development, the API defaults to
+`http://localhost:5173`. To authorize a dedicated Organizer to view sanitized
+integration diagnostics, set `INTEGRATION_LOG_VIEWER_UIDS` to one or more
+comma-separated Firebase Auth UIDs. It is deny-by-default when unset. Do not
+grant this to every Organizer merely to make the diagnostics page visible.
 
 `GOOGLE_APPLICATION_CREDENTIALS` is a file path, not the JSON text. Do not set
 `PORT` manually on Render. Do not run the seed script as a build/start command;
@@ -104,10 +112,35 @@ access to appropriate test accounts through a private channel. Their requests us
 `Authorization: Bearer <Firebase ID token>`. They do not need the service-account
 JSON, Firebase console access, or hosting credentials to call your API.
 
-The current API can be tested with Postman, curl, or another backend. It does not
-yet configure CORS for browser calls from a different origin. If a teammate's
-frontend will call it directly, configure an explicit allowed-origin list and
-OPTIONS handling for its frontend URLs before browser integration.
+The API uses an explicit CORS origin allowlist and handles preflight requests.
+Verify the deployed `FRONTEND_ORIGINS` value with a browser preflight before
+frontend integration. CORS is not authentication; protected requests still
+require a valid Firebase ID token and server-side role/ownership checks.
+
+## Isolated API regression tests
+
+The emulator suite requires Node.js 22+, a Java runtime, and the Firebase CLI
+installed by `npm ci`. It creates disposable Auth users and Firestore records
+only in the `demo-campus-events-tests` emulator project; it does not read `.env`,
+use Application Default Credentials, seed the configured Firebase project, or
+call Team 10. Run from `firebase/`:
+
+```bash
+npm ci
+npm run test:emulator
+```
+
+On macOS with Homebrew OpenJDK, if `java` is not on `PATH`:
+
+```bash
+export JAVA_HOME="$(brew --prefix openjdk)/libexec/openjdk.jdk/Contents/Home"
+export PATH="$JAVA_HOME/bin:$PATH"
+npm run test:emulator
+```
+
+The ordinary `npm test` command runs helper tests and skips API emulator tests
+when emulator endpoints are absent. Do not remove the `demo-` project guard from
+the emulator suite.
 
 ## Optional local run
 

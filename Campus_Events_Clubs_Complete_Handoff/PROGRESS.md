@@ -1,5 +1,5 @@
 # Progress tracker (initially based on pasted report; must reverify)
-**Project branch:** `implementation/phase-1-verified-baseline`  **Implementer:** GitHub Copilot  **Base commit:** `6d02a3d`  **Demo environment:** Firebase/Render configuration present; authenticated CRUD not tested  **Last checked:** 2026-11-03
+**Project branch:** `implementation/phase-1-verified-baseline`  **Implementer:** GitHub Copilot  **Phase 2 base commit:** `e4b038a`  **Demo environment:** Local emulator tests pass; production authenticated CRUD not tested  **Last checked:** 2026-11-03
 Status vocabulary: `NOT STARTED`, `IN PROGRESS`, `DONE (verified)`, `BLOCKED`, `NOT REQUIRED`.
 
 ## Verified starting state (2026-11-03)
@@ -18,13 +18,13 @@ Status vocabulary: `NOT STARTED`, `IN PROGRESS`, `DONE (verified)`, `BLOCKED`, `
 | 003 | IN PROGRESS | Team | | User selected Firebase/Express/Render provisionally; decision recorded | Confirm no lecturer-mandated Supabase migration |
 | 004 | NOT STARTED | Team | | `.env` values not inspected; demo account UIDs not present among checked variable names | Confirm isolated demo project/accounts before seeding |
 | 005 | DONE (verified) | Copilot | — | 6 tests pass; both Node syntax checks and dependency resolution pass | Add API/Firestore regression coverage in Task 011 |
-| 006 | DONE (verified) | Copilot | — | Current routes, auth, inputs/outputs, limits, and known mismatches documented in [API contract](../docs/API_CONTRACT.md) | Resolve lifecycle, cancel adapter, CORS, and log authorization in Tasks 007–010 |
-| 007 | NOT STARTED | | | | |
-| 008 | NOT STARTED | | | | |
-| 009 | NOT STARTED | | | | |
-| 010 | NOT STARTED | | | | |
-| 011 | NOT STARTED | | | | |
-| 012 | NOT STARTED | | | | |
+| 006 | DONE (verified) | Copilot | `e4b038a` | Current routes, auth, inputs/outputs, limits, and known mismatches documented in [API contract](../docs/API_CONTRACT.md) | Contract is ready for frontend use after Phase 2 review |
+| 007 | DONE (verified) | Copilot | — | Emulator verifies Students can list/open CLOSED events and cannot reopen closed events | Production behavior not re-tested |
+| 008 | DONE (verified) | Copilot | — | Emulator verifies old body route and new `/cancel` route, repeat cancellation, and cross-user denial | Existing Postman route remains supported |
+| 009 | DONE (verified) | Copilot | — | Emulator verifies explicit-origin preflight, rejected origin, auth still required, and request-header allowlist | Set deployed `FRONTEND_ORIGINS` before browser deployment |
+| 010 | DONE (verified) | Copilot | — | Emulator verifies UID allowlist, deny-other-Organizer, payload/response redaction, Student role denial | Configure intended viewer UID privately on host |
+| 011 | DONE (verified) | Copilot | — | 13/13 emulator tests pass using `demo-campus-events-tests`; 6/6 ordinary helper tests pass | Run browser/E2E tests in later phases |
+| 012 | DONE (verified) | Copilot | — | Worker code reviewed; provider/webhook HTTP contracts pass emulator tests; worker remains unchanged and persistent | No external call or automatic recovery test; retry loop has no maximum-attempt policy, carry to Task 030 |
 | 013–017 | NOT STARTED | | | | Student flow |
 | 018–021 | NOT STARTED | | | | Organizer flow |
 | 022–027 | NOT STARTED | | | | Deploy/demo/evidence |
