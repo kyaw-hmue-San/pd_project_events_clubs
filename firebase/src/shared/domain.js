@@ -47,4 +47,3 @@ export function validateActivity(body, partial = false) {
   if (partial && !Object.keys(out).length) fail(400, 'EMPTY_UPDATE');
   return out;
 }
-

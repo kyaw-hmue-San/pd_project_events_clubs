@@ -6,6 +6,21 @@ Date: 2026-11-04 (Asia/Bangkok). Branch:
 Status: **Connected local implementation. Production release not verified.**
 The work reuses the user-supplied Campus Pulse prototype and current skills pack.
 
+## Release publication state
+
+The implementation is committed locally as `baaeac7` on
+`implementation/campus-pulse-full-stack`, with Codex attribution and explicit
+credit that the original prototype came from the user. Private configuration and
+the user-uploaded skills pack were not included.
+
+Automatic approval review rejected the attempted public GitHub push because the
+user had not explicitly authorized exporting the complete implementation to
+`https://github.com/kyaw-hmue-San/pd_project_events_clubs`. The rejected command
+never executed: no push, PR, merge or production deployment occurred. There is no
+PR URL to report. See [the concrete release review](docs/RELEASE_REVIEW.md) for
+payload, verification, exclusions and outstanding live setup. Local-only cleanup
+and documentation remain permitted; no alternate publication route is being used.
+
 ## Current release — Organizer requests and Admin review
 
 Confirmed by the user: implement Request Organizer access, one Admin Approve /
@@ -43,8 +58,8 @@ Live deployment still needs the updated API, required Firestore indexes and exac
 frontend origins. GitHub access is available; Render was found as an uninstalled
 integration and has not been confirmed connected. The local server credential
 file is also unavailable. No production roles, profiles or event records were
-changed. A feature-branch PR is being prepared; record its URL/commit below once
-created. Historical verification counts and proposals follow for traceability.
+changed. The public feature-branch push was blocked by automatic approval review;
+see the release publication state above. Historical verification counts and proposals follow for traceability.
 
 ## Latest update — school Google sign-in
 
@@ -174,7 +189,8 @@ performance targets, actual student usability results, or lecturer approval.
 The initial prototype and skills/specification pack were supplied by the user.
 The implementation, integration fixes, tests and documentation above were made
 in this Codex session. No teammate contributions, reviews or approvals are
-invented. No commit, push, PR, production deployment or production seed was
-performed; consequently there is no new commit SHA or PR URL to report. The
+invented. The later implementation commit is identified above. No public push, PR,
+production deployment or production seed was performed; publication is pending
+explicit authorization. The
 original user uploads are preserved. `firebase/firestore-debug.log` remains
 local and is now ignored rather than staged or deleted.
