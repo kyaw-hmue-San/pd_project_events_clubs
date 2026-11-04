@@ -6,15 +6,18 @@ import { FieldValue, Timestamp, getFirestore } from 'firebase-admin/firestore';
 const projectId = process.env.FIREBASE_PROJECT_ID;
 const organizerUid = process.env.ORGANIZER_UID;
 const studentUid = process.env.STUDENT_UID;
+const adminUid = process.env.ADMIN_UID;
 if (!projectId || !organizerUid || !studentUid || organizerUid === studentUid) {
   throw new Error('Set FIREBASE_PROJECT_ID, ORGANIZER_UID and STUDENT_UID to distinct existing Auth users');
 }
+if (adminUid && [organizerUid, studentUid].includes(adminUid)) throw new Error('ADMIN_UID must identify a distinct existing Auth user');
 initializeApp({ credential: applicationDefault(), projectId });
 const db = getFirestore();
 const auth = getAuth();
 const profiles = [
   { uid: organizerUid, universityId: process.env.ORGANIZER_UNIVERSITY_ID, role: 'ORGANIZER', name: 'Demo Organizer' },
-  { uid: studentUid, universityId: process.env.STUDENT_UNIVERSITY_ID, role: 'STUDENT', name: 'Demo Student' }
+  { uid: studentUid, universityId: process.env.STUDENT_UNIVERSITY_ID, role: 'STUDENT', name: 'Demo Student' },
+  ...(adminUid ? [{ uid: adminUid, universityId: process.env.ADMIN_UNIVERSITY_ID, role: 'ADMIN', name: 'Demo Admin' }] : [])
 ];
 // Provisioning is a trusted operator action, never a public role-edit endpoint.
 for (const profile of profiles) {
@@ -39,8 +42,8 @@ const ref = db.doc('activities/demo-welcome-event');
 await db.runTransaction(async tx => {
   if ((await tx.get(ref)).exists) return;
   tx.create(ref, {
-    title: 'Campus Welcome Event', description: 'Meet students and discover campus activities.',
-    activityType: 'EVENT', dateTime: Timestamp.fromDate(new Date('2026-10-01T03:00:00Z')),
+    title: 'Sample: Campus Welcome Event', description: 'Sample demo activity: meet students and discover campus activities.',
+    activityType: 'EVENT', dateTime: Timestamp.fromMillis(Date.now() + 7 * 86400000),
     location: 'University Main Hall', organizerId: organizerUid, status: 'PUBLISHED',
     registrationCount: 0, createdAt: FieldValue.serverTimestamp(), updatedAt: FieldValue.serverTimestamp()
   });

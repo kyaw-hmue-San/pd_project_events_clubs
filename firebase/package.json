@@ -9,7 +9,7 @@
     "start": "node api.mjs",
     "seed": "node seed.mjs",
     "test": "node --test",
-    "test:emulator": "firebase emulators:exec --project demo-campus-events-tests --only auth,firestore \"FIREBASE_PROJECT_ID=demo-campus-events-tests node --test\""
+    "test:emulator": "firebase emulators:exec --config firebase.test.json --project demo-campus-events-tests --only auth,firestore \"FIREBASE_PROJECT_ID=demo-campus-events-tests node --test\""
   },
   "dependencies": {
     "express": "^5.1.0",

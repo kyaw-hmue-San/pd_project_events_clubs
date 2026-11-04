@@ -1,0 +1,39 @@
+{
+  "name": "campus-pulse",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "dev": "vite --host localhost --strictPort",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "setup:firebase": "node --env-file-if-exists=firebase/.env firebase/inspect-auth-setup.mjs",
+    "dev:api": "node --env-file-if-exists=firebase/.env firebase/api.mjs",
+    "test": "npm test --prefix firebase",
+    "test:emulator": "npm run test:emulator --prefix firebase",
+    "test:e2e": "playwright test",
+    "test:stack": "node scripts/test-stack.mjs",
+    "admin:appoint": "node --env-file-if-exists=firebase/.env firebase/appoint-admin.mjs"
+  },
+  "dependencies": {
+    "firebase": "^12.4.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "overrides": {
+    "@grpc/grpc-js": "^1.13.6"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.1",
+    "@tailwindcss/vite": "^4.1.16",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^5.0.4",
+    "tailwindcss": "^4.1.16",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.12"
+  }
+}

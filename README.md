@@ -2,6 +2,34 @@
 
 This repository contains the discovery, requirements, data design, architecture, technology selection, PRD, review, validation, and stress-test documents for the Events & Clubs campus-service MVP.
 
+## Run the current application
+
+Campus Pulse uses **Google sign-in** with three server-controlled roles.
+Students must use `@lamduan.mfu.ac.th` and complete their university ID once.
+Other verified Google accounts can request Organizer access; Admin approves or
+rejects requests. Admin appointment is manual, with no public Admin signup.
+See [the access workflow](docs/ACCESS_WORKFLOW.md).
+
+```sh
+npm ci
+npm run dev
+```
+
+Open **http://localhost:5173**. Real Firebase public web configuration is saved in
+ignored `.env.local` in this workspace. A fresh checkout needs its own public
+config. The updated backend must be deployed with the exact frontend CORS origin
+before real-account end-to-end access will work; the checked live API currently
+rejects the browser preflight.
+
+See [Google setup and current blockers](docs/GOOGLE_SIGN_IN.md),
+[development setup](docs/LOCAL_DEVELOPMENT.md),
+[implementation evidence](PROGRESS.md), and the [API contract](docs/API_CONTRACT.md).
+Use `npm run build`, `npm run test:emulator`, and `npm run test:e2e` for automated
+checks. Disposable test fixtures are isolated from normal app operation.
+
+The Firebase/Express implementation remains a recorded deviation from the older
+Supabase/Vercel PRD.
+
 ## Submission Documents
 
 - [PRD.md](docs/PRD.md) — canonical implementation-ready Product Requirements Document
@@ -42,7 +70,7 @@ The reusable prompts are stored under `docs/prompt/` and follow the same lifecyc
 
 Replace bracketed inputs such as `[Requirements]` with the corresponding approved document content. AI output must be reviewed by the team and must not be treated as validated user evidence.
 
-## Current Status
+## Original document review status
 
 **READY WITH CHANGES**
 
@@ -50,11 +78,11 @@ The documents are internally aligned, but the following evidence is still requir
 
 - Complete student and organizer validation.
 - Record each student's name and individual review contribution.
-- Deploy and smoke-test the frontend and API on Vercel.
+- Resolve the recorded stack deviation and verify the approved production frontend/API deployment.
 - Run the high-severity integration and security tests in the stress-test document.
 - Recheck official Vercel and Supabase free-tier conditions immediately before deployment.
 
-## Constraints
+## Original PRD constraints
 
 - Team: 5 students
 - Schedule: one semester
@@ -64,4 +92,4 @@ The documents are internally aligned, but the following evidence is still requir
 
 ## Git Workflow
 
-See [git_guide.md](docs/git_guide.md) for the team Git workflow. Work on a feature branch, review changes before staging, and open a pull request before merging into `main`.
+See [git_guide.md](docs/git_guide.md) for the team Git workflow. Work on a feature branch, review changes before staging, and open a pull request before merging into `main`.

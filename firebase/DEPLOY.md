@@ -1,5 +1,12 @@
 # Host the assignment API on Render
 
+The 2026-11-04 implementation adds a root React/Vite frontend and modular backend
+features while preserving `npm start` / `api.mjs`. See
+[local development](../docs/LOCAL_DEVELOPMENT.md) and the
+[current API contract](../docs/API_CONTRACT.md). This guide is deployment
+preparation, not evidence of a deployment performed by the implementation work.
+Recheck the host's current pricing and limits before release.
+
 The Express API runs on Render; the existing Firestore database and Firebase
 Authentication remain in project `events-management-4d8ce`. No database migration
 or frontend is needed to test with Postman. This guide prepares deployment; it
@@ -102,7 +109,7 @@ Common blockers:
 | Startup credential-file error | Secret filename, full JSON, and credential path |
 | `INVALID_TOKEN` | Sign in again; ensure client and server use the same Firebase project |
 | `EMAIL_NOT_VERIFIED` | Complete email verification, then sign in again |
-| `ACCOUNT_NOT_PROVISIONED` | Matching `users/{Auth UID}` profile with `STUDENT` or `ORGANIZER` role |
+| `ACCOUNT_NOT_PROVISIONED` | Matching `users/{Auth UID}` profile with `STUDENT`, `ORGANIZER`, or read-only `ADMIN` role |
 | `/` returns `404` | Expected: use `/health` or an `/api/...` route |
 
 ## 4. Give teammates the client details

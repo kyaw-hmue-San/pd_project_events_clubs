@@ -8,3 +8,8 @@ node_modules/
 firebase-debug.log
 firepit-log.txt
 .firebase/
+dist/
+playwright-report/
+test-results/
+firestore-debug.log
+ui-debug.log
