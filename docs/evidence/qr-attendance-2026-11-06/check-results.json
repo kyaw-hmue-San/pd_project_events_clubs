@@ -1,0 +1,36 @@
+{
+  "date": "2026-11-06",
+  "timezone": "Asia/Bangkok",
+  "environment": "local isolated Firebase Auth/Firestore emulators and Chromium",
+  "build": "passed",
+  "sideEffectFreeAppImport": "passed",
+  "backend": {
+    "passed": 46,
+    "failed": 0,
+    "apiScenarios": 29,
+    "mockedAiChecks": 9,
+    "helperChecks": 8
+  },
+  "browser": {
+    "fullSuitePassed": 12,
+    "failed": 0,
+    "newQrScenarios": 2,
+    "viewportWidths": [360, 768, 1024, 1440],
+    "downloadedQrImageDecoding": "passed",
+    "syntheticCameraFrameDecoding": "passed",
+    "cameraDeniedFallback": "passed",
+    "cameraStreamCleanup": "passed",
+    "explicitConfirmationAndRepeatScan": "passed",
+    "manualRosterCheckIn": "passed",
+    "studentAttendanceReceipt": "passed",
+    "physicalCamera": "not verified",
+    "realAccountQrWalkthrough": "not verified",
+    "initialTestIssue": "The download path had no file extension; supplying PNG filename/MIME in the upload test resolved it. Both targeted rerun and full suite passed."
+  },
+  "liveAiOrPartnerCallsDuringAutomatedChecks": false,
+  "connectedProjectTestWrites": false,
+  "newCompositeIndexesRequired": false,
+  "localServices": { "apiPort": 3000, "frontendPort": 5173, "healthHttp": 200, "frontendHttp": 200 },
+  "screenshotPolicy": "QR image and ticket code masked; other screenshots use synthetic demo identities only.",
+  "pushOrDeployment": false
+}

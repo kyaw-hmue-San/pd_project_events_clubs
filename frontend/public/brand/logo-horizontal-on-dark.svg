@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="740" height="166" viewBox="0 0 740 166" role="img" aria-label="Campus Events and Clubs">
+    <svg x="0" y="0" width="182" height="138" viewBox="0 0 180 135"><defs>
+  <linearGradient id="blueSwoosh" x1="0" y1="0.2" x2="1" y2="1"><stop offset="0%" stop-color="#6ED3FF"/><stop offset="100%" stop-color="#2EA9FF"/></linearGradient>
+  <linearGradient id="capFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#FFFFFF"/><stop offset="100%" stop-color="#DCEBFF"/></linearGradient>
+</defs>
+<!-- Calendar body sits behind the mortarboard and ribbon -->
+<path d="M65 58 L115 36 Q123 33 133 34 Q142 36 143 46 L143 83 Q134 99 103 110 Q77 121 65 108 Q59 101 59 89 L59 70 Q59 64 65 58Z" fill="#0D2D60" stroke="#FFFFFF" stroke-width="6.6" stroke-linejoin="round"/>
+<!-- Calendar binding and header -->
+<path d="M124 34 V40 Q125 44 131 43 V34" fill="none" stroke="#FFFFFF" stroke-linecap="round" stroke-width="6"/>
+<path d="M113 54 L143 52" fill="none" stroke="#FFFFFF" stroke-width="7"/>
+<!-- Rear underside of graduation cap -->
+<path d="M48 47 L109 36 Q114 43 114 57 Q113 63 105 64 L65 69 Q58 72 55 76 Q49 77 47 69 Z" fill="#FFFFFF"/>
+<!-- White/light brim underside highlight -->
+<path d="M26 43 L82 55 Q85 56 89 53 L129 27 L133 30 L90 58 Q85 61 81 59Z" fill="#0D2D60"/>
+<!-- Mortarboard cap -->
+<path d="M23 40 Q21 38 25 35 L72 9 Q75 7 79 8 L129 21 Q133 22 130 26 L88 51 Q83 55 78 53 L24 43 Q20 42 23 40 Z" fill="url(#capFill)"/>
+<!-- Tassel -->
+<path d="M34 44 L34 66" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+<circle cx="34" cy="65" r="3.5" fill="#FFFFFF"/>
+<path d="M31.5 67 Q28.5 77 29.2 81 Q34 84 39 81 Q39.5 77 36.7 67Z" fill="#FFFFFF"/>
+<!-- Calendar day cells -->
+<g fill="#6ED3FF">
+  <rect x="75" y="69" width="10" height="11" rx="1.5" transform="rotate(-5 80 74)"/>
+  <rect x="91" y="66" width="10" height="11" rx="1.5" transform="rotate(-5 96 71)"/>
+  <rect x="107" y="64" width="10" height="11" rx="1.5" transform="rotate(-5 112 69)"/>
+  <rect x="123" y="61" width="10" height="11" rx="1.5" transform="rotate(-5 128 66)"/>
+  <rect x="75" y="85" width="10" height="11" rx="1.5" transform="rotate(-5 80 90)"/>
+  <rect x="91" y="82" width="10" height="11" rx="1.5" transform="rotate(-5 96 87)"/>
+  <rect x="107" y="80" width="10" height="11" rx="1.5" transform="rotate(-5 112 85)"/>
+  <rect x="123" y="77" width="10" height="11" rx="1.5" transform="rotate(-5 128 82)"/>
+</g>
+<!-- Blue orbital swoosh wraps around calendar -->
+<path d="M60 88 Q59 105 73 110 Q86 117 112 107 Q147 94 155 66 Q158 84 143 99 Q123 116 95 122 Q73 127 62 116 Q54 108 60 88Z" fill="url(#blueSwoosh)" />
+</svg>
+    <line x1="185" y1="25" x2="185" y2="133" stroke="#BFDEFE" stroke-opacity=".45" stroke-width="2"/>
+    <text x="209" y="77" fill="#FFFFFF" font-family="Inter,Arial,sans-serif" font-size="44" font-weight="750" letter-spacing="-1">Campus</text>
+    <text x="209" y="121" fill="#FFFFFF" font-family="Inter,Arial,sans-serif" font-size="44" font-weight="750" letter-spacing="-1">Events &amp; Clubs</text>
+    </svg>

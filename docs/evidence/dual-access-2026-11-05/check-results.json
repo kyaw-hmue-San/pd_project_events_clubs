@@ -1,0 +1,20 @@
+{
+  "date": "2026-11-05",
+  "timezone": "Asia/Bangkok",
+  "scope": "Local isolated Firebase emulators and browser; not a hosted deployment",
+  "build": "passed",
+  "backend": {
+    "passed": 26,
+    "failed": 0,
+    "apiScenarios": 20,
+    "helperChecks": 6
+  },
+  "browser": {
+    "passed": 7,
+    "failed": 0
+  },
+  "regression": "Enrolled MFU Student keeps registration create/list/cancel after Organizer approval; can switch workspaces and publish; personal Organizers, unenrolled school Organizers and Admins do not receive Student access",
+  "realProjectWritesForThisFix": 0,
+  "pushed": false,
+  "deployed": false
+}

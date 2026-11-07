@@ -1,0 +1,47 @@
+{
+  "date": "2026-11-04",
+  "timezone": "Asia/Bangkok",
+  "policy": {
+    "provider": "google.com",
+    "schoolEmailDomain": "lamduan.mfu.ac.th",
+    "newProfileRole": "STUDENT",
+    "universityIdRequired": true
+  },
+  "apiEmulatorChecks": {
+    "tests": 20,
+    "pass": 20,
+    "fail": 0
+  },
+  "browserChecks": {
+    "passed": 4
+  },
+  "profileValidationRecheck": {
+    "passed": 1
+  },
+  "build": "TypeScript + Vite passed",
+  "realProject": {
+    "projectId": "events-management-4d8ce",
+    "publicConfigSavedToIgnoredFile": true,
+    "emulatorModeForNormalApp": false,
+    "googleOAuthInitiationHTTPStatus": 200,
+    "authorizedDomains": [
+      "localhost",
+      "events-management-4d8ce.firebaseapp.com",
+      "events-management-4d8ce.web.app"
+    ],
+    "interactiveRealAccountSignInTested": false
+  },
+  "liveAPI": {
+    "baseURL": "https://pd-project-events-clubs.onrender.com",
+    "healthHTTPStatus": 200,
+    "localhostPreflightHTTPStatus": 401,
+    "localhostCorsHeaderPresent": false,
+    "updatedBackendDeployed": false
+  },
+  "liveSetupBlockers": [
+    "Firebase CLI not authenticated",
+    "Configured local backend credential file not found",
+    "Chrome computer-use access not approved"
+  ],
+  "businessDataChangedInRealProject": false
+}

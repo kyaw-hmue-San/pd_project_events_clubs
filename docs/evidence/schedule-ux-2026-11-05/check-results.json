@@ -1,0 +1,22 @@
+{
+  "date": "2026-11-05",
+  "scope": "Local isolated browser checks; no real AI/partner calls or production data changes",
+  "build": "passed",
+  "targetedBrowserScenarios": {
+    "passed": 2,
+    "failed": 0
+  },
+  "coverage": [
+    "Native calendar opener and manual date/time input",
+    "Explicit 24-hour selected-schedule preview",
+    "Campus timezone preserved across a New York device and UTC viewer",
+    "Create/save/reopen/publish/edit/close/delete workflows"
+  ],
+  "qrFeature": "Proposal only; not implemented",
+  "pushed": false,
+  "deployed": false,
+  "finalPickerStylingBrowserCheck": {
+    "passed": 1,
+    "failed": 0
+  }
+}

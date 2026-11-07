@@ -1,0 +1,47 @@
+{
+  "date": "2026-11-06",
+  "timezone": "Asia/Bangkok",
+  "branch": "implementation/campus-pulse-full-stack",
+  "scope": "Local source with uncommitted changes; isolated demo Firebase emulators and injected partner doubles",
+  "backend": {
+    "passed": 79,
+    "failed": 0,
+    "command": "PATH=/opt/homebrew/opt/openjdk/bin:$PATH npm run test:emulator"
+  },
+  "browser": {
+    "passed": 17,
+    "failed": 0,
+    "command": "npm run test:e2e",
+    "new_scenario": "Reviewed send, cancellation without POST, busy state, uncertain result, immutable retry, duplicate receipt, reload persistence, signed automatic completion, stale update ignored",
+    "responsive_widths": [
+      360,
+      768,
+      1024,
+      1440
+    ]
+  },
+  "build": "npm run build passed",
+  "app_import": "Side-effect-free import passed",
+  "diff_check": "git diff --check passed",
+  "backend_focus": [
+    "Role/ownership and exact request fields",
+    "Stale first preview rejected",
+    "Concurrent send lease and duplicate submission",
+    "Canonical immutable retry bytes and stable key",
+    "Creation receipt correlation and unique association conflict",
+    "Definitive partner rejection stops retries",
+    "Early signed webhook preserved on receipt linking",
+    "Raw-byte HMAC and matching lifecycle versions",
+    "Older versions cannot regress completion"
+  ],
+  "screenshots": "Visually inspected, synthetic demo identities and work orders only; no ticket credentials",
+  "live_creation_test": "Not performed. No external Team 10 work-order API call or real AI call during automated checks.",
+  "manual_inbound_evidence": "See ../maintenance-live-2026-11-06/check-results.json; separate earlier user-coordinated test",
+  "publication": "No push, merge or deployment",
+  "local_runtime": {
+    "api": "Started dev:api:facilities on localhost:3000; GET /health returned status ok",
+    "frontend": "Started dev on localhost:5173; HTTP 200",
+    "tunnel": "No running ngrok process observed during local listener check; user must run the port-3000 tunnel for external status delivery",
+    "partner_call_on_startup": false
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "date": "2026-11-06",
+  "verificationKind": "manual peer report plus narrowly scoped read-only server verification",
+  "projectId": "events-management-4d8ce",
+  "workOrderId": "88888888-8888-4888-8888-888888888888",
+  "eventId": "f82ab543-7de7-4fce-91f2-15d6611dbead",
+  "occurredAt": "2026-11-06T08:00:01.921Z",
+  "peerReported": {
+    "firstDelivery": { "status": 201, "duplicate": false, "requestId": "034a68b0-7cee-4315-8388-3a31bd911d5e" },
+    "replay": { "status": 200, "duplicate": true, "requestId": "365866e6-0bfc-4981-9a57-05306df04c90" }
+  },
+  "independentlyVerified": {
+    "inboxEventExists": true,
+    "secretVerified": true,
+    "eventType": "maintenance.status_changed",
+    "workOrderAndStatusMatch": true,
+    "firstRequest": { "method": "POST", "path": "/webhooks/partner", "status": 201 },
+    "replayRequest": { "method": "POST", "path": "/webhooks/partner", "status": 200 },
+    "latestStatus": "ASSIGNED",
+    "latestReferencesReportedEvent": true,
+    "orderingConflict": false,
+    "linkedActivityId": null
+  },
+  "linkFollowup": {
+    "authorization": "User selected the activity URL for this association",
+    "activityId": "iGR6mXYnQMDHBYV8GnZ4",
+    "activityStatus": "PUBLISHED",
+    "dryRunPassed": true,
+    "applied": true,
+    "bothMappingDirectionsIndependentlyVerified": true,
+    "source": "TRUSTED_OPERATOR",
+    "latestStatusAfterLink": "ASSIGNED",
+    "latestMatchesReportedEvent": true,
+    "orderingConflict": false,
+    "connectedProjectWriteScope": "Two unique work-order/activity association records only; no activity, role, registration or status mutation"
+  },
+  "pending": ["Real Organizer browser status confirmation"],
+  "initialReadOnlyVerificationWroteConnectedRecords": false,
+  "verificationCalledPartner": false,
+  "pushOrDeployment": false,
+  "limits": "Inbound delivery/receipt and stored status only. No automatic work-order creation, outbound delivery, recovery cycle or venue reservation is demonstrated. No secret, raw token, full operational log or environment contents included."
+}

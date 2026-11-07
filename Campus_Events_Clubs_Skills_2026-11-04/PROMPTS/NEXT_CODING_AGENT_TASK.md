@@ -1,0 +1,5 @@
+# Short first instruction for next agent session
+
+Read root `AGENTS.md`, `START_HERE.md`, `SPECS/BUILD_WAVES.md`, `SPECS/API_GAP_AND_ROLE_MATRIX.md` and `SPECS/MODULE_BLUEPRINT.md`, plus the *actual* repo `firebase/api.mjs`, `firebase/integration.mjs`, `package.json` and tests. The PRD describes a Supabase product, but user-selected current implementation is Firebase; keep Firebase provisional until lecturer resolves stack. Admin is a **new strictly read-only** extension.
+
+Begin **Wave 1B: modularize backend without changing behavior**. Create feature-based `.js` ESM files while preserving existing API URLs, Firebase role checks, transactions, Team 10 worker, tests, and compatible entrypoint. Do not implement new Admin/Organizer endpoints in this pure refactor commit. Before editing, summarize exact files and routing extraction plan. Then implement one module group, run syntax + applicable baseline tests, commit with truthful author, update PROGRESS.md. Continue domains incrementally. No production changes or secrets. Build complete functional modules before the big later QA pass, but never deliberately break known endpoints.

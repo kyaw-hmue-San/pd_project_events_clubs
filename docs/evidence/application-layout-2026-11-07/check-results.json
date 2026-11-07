@@ -1,0 +1,44 @@
+{
+  "date": "2026-11-07",
+  "timezone": "Asia/Bangkok",
+  "scope": "User-authorized frontend/backend folder naming; no architecture or permission change",
+  "layout": {
+    "frontend": "frontend/",
+    "api": "backend/",
+    "frontendDependenciesAndOrchestration": "root package",
+    "buildOutput": "frontend/dist/"
+  },
+  "preserved": {
+    "frontendEnvironmentBytes": true,
+    "serverEnvironmentValuesExceptCredentialPath": true,
+    "adminCredentialBytes": true,
+    "runtimeAssetBytes": true,
+    "ignoreRules": true,
+    "operatorEntrypointBasenames": true,
+    "rootNpmCommands": true,
+    "existingFacilitiesModeAndPorts": true,
+    "originalUploadedPacks": true
+  },
+  "verification": {
+    "build": "Passed",
+    "offlineLocalEnvironment": "Passed",
+    "helperTests": {
+      "passed": 46,
+      "skipped": 1,
+      "failed": 0
+    },
+    "isolatedBackendTests": {
+      "passed": 98,
+      "failed": 0,
+      "skipped": 0
+    },
+    "isolatedBrowserJourneysPassed": 1,
+    "appFactoryImportWithoutInitialization": "Passed",
+    "checkedMarkdownDocuments": 62,
+    "brokenLinks": 0,
+    "frontendHtmlEntryLogoFaviconManifestHttp": 200,
+    "ownLocalAndPublicApiHealthHttp": 200,
+    "productionGuard": "Expected refusal of current localhost API origin"
+  },
+  "boundaries": "No Git commands, staging, commit, branch/remote operation, dependency upgrade, push or deployment. Automated providers mocked and demo emulators only. Manual HTTP checks accessed our own health/static endpoints, not Team 10. No real campus data/role/work-order mutation or secret disclosure. Backend private env changed only credential filesystem path. Broader UI review remains with user."
+}

@@ -1,0 +1,21 @@
+{
+  "date": "2026-11-04",
+  "timezone": "Asia/Bangkok",
+  "studentDomain": "lamduan.mfu.ac.th",
+  "roles": [
+    "STUDENT",
+    "ORGANIZER",
+    "ADMIN"
+  ],
+  "adminAppointment": "trusted manual operator only",
+  "api": {
+    "tests": 24,
+    "pass": 24,
+    "fail": 0
+  },
+  "browser": {
+    "passed": 6
+  },
+  "build": "TypeScript + Vite passed",
+  "productionVerified": false
+}

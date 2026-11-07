@@ -1,0 +1,25 @@
+{
+  "date": "2026-11-06",
+  "timezone": "Asia/Bangkok",
+  "scope": "Blue/cyan orbiting edge glow for mobile navigation and sign-out across all three roles",
+  "build": "npm run build passed",
+  "existing_all_role_menu_browser_check": "Passed; hover and reduced-motion screenshots captured",
+  "offline_browser_smoke": {
+    "Chromium": {
+      "orbitAdvances": true,
+      "pointerSafe": true,
+      "reducedMotionStatic": true
+    },
+    "WebKit": {
+      "orbitAdvances": true,
+      "pointerSafe": true,
+      "reducedMotionStatic": true
+    }
+  },
+  "screenshots": "Four synthetic screenshots visually inspected",
+  "behavior": "Idle hidden and paused; hover-capable pointer hover, keyboard focus or active press reveals the border; reduced motion keeps a static edge; pointer-events none on the decoration",
+  "diff_check": "Passed",
+  "limits": "No full regression or backend rerun for this styling-only change",
+  "external_calls": "No live AI/partner calls or real-project fixtures",
+  "publication": "No push or deployment"
+}

@@ -1,0 +1,40 @@
+{
+  "date": "2026-11-05",
+  "timezone": "Asia/Bangkok",
+  "build": "passed",
+  "backend": {
+    "passed": 37,
+    "failed": 0,
+    "apiScenarios": 22,
+    "mockedAiServiceChecks": 9,
+    "existingIntegrationHelpers": 6
+  },
+  "browser": {
+    "existingScenariosPassed": 8,
+    "newScenariosPassed": 2,
+    "newScenarios": "AI template/apply/publish and delayed loading lifecycle",
+    "initialNewLoadingHarnessFailure": "Corrected request gate to hold React development duplicate reads; both new scenarios passed on rerun"
+  },
+  "liveAimlCompletionVerified": true,
+  "realAiCreditsUsedByAutomatedTests": false,
+  "realProjectSeeded": false,
+  "pushed": false,
+  "deployed": false,
+  "screenshots": [
+    "session-loading.png",
+    "activities-loading.png",
+    "profile-loading-mobile.png",
+    "profile-saving.png",
+    "ai-draft-loading.png",
+    "ai-template-preview.png"
+  ],
+  "manualLiveProviderCheck": {
+    "evidence": "manual-live-provider-check.json",
+    "providerStatus": 200,
+    "source": "AI",
+    "tokens": 981,
+    "separateFromAutomatedTests": true,
+    "eventsSaved": 0,
+    "profilesChanged": 0
+  }
+}

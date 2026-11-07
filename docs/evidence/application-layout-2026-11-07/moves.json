@@ -1,0 +1,11 @@
+{
+  "src": "frontend/src",
+  "public": "frontend/public",
+  "firebase": "backend",
+  "dist": "frontend/dist",
+  "vite.config.ts": "frontend/vite.config.ts",
+  "tsconfig.json": "frontend/tsconfig.json",
+  "index.html": "frontend/index.html",
+  ".env.local": "frontend/.env.local",
+  ".env.example": "frontend/.env.example"
+}

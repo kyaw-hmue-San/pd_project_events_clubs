@@ -1,0 +1,27 @@
+{
+  "date": "2026-11-05",
+  "timezone": "Asia/Bangkok",
+  "scope": "Isolated local Auth/Firestore emulators and browser; no real-user mutation or hosted deployment",
+  "build": "passed",
+  "backend": {
+    "passed": 27,
+    "failed": 0,
+    "apiScenarios": 21,
+    "helperChecks": 6
+  },
+  "browser": {
+    "passed": 8,
+    "failed": 0
+  },
+  "profileCoverage": [
+    "Student, Organizer, Admin username editing",
+    "Personal-email Organizer and Admin API access",
+    "Username persists across reload and fresh Google sign-in",
+    "Failed save preserves input; reset restores saved name",
+    "Roles, capabilities, Google identity, university ID and other profiles unchanged",
+    "Updated Organizer/participant names appear in activity/roster projections",
+    "360px mobile navigation and profile layout"
+  ],
+  "pushed": false,
+  "deployed": false
+}

@@ -1,0 +1,49 @@
+{
+  "name": "campus-events-clubs",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "dev": "vite --config frontend/vite.config.ts --host localhost --strictPort",
+    "build": "tsc --noEmit --project frontend/tsconfig.json && vite build --config frontend/vite.config.ts",
+    "preview": "vite preview --config frontend/vite.config.ts --host 127.0.0.1",
+    "setup:firebase": "node --env-file-if-exists=backend/.env backend/inspect-auth-setup.mjs",
+    "dev:api": "node --env-file-if-exists=backend/.env backend/dev-api.mjs",
+    "dev:api:maintenance": "node --env-file-if-exists=backend/.env backend/dev-api.mjs --maintenance-test",
+    "dev:api:facilities": "node --env-file-if-exists=backend/.env backend/dev-api.mjs --facilities-test",
+    "test": "npm test --prefix backend",
+    "test:emulator": "npm run test:emulator --prefix backend",
+    "test:e2e": "playwright test",
+    "test:stack": "node scripts/test-stack.mjs",
+    "admin:appoint": "node --env-file-if-exists=backend/.env backend/appoint-admin.mjs",
+    "maintenance:link": "node --env-file-if-exists=backend/.env backend/link-maintenance.mjs",
+    "build:production": "npm run check:env:frontend:production && npm run build",
+    "check:env": "node scripts/check-environment.mjs --target all --mode local",
+    "check:env:frontend:production": "node scripts/check-environment.mjs --target frontend --mode production",
+    "check:env:api:production": "node scripts/check-environment.mjs --target api --mode production"
+  },
+  "dependencies": {
+    "@zxing/browser": "^0.2.1",
+    "firebase": "^12.4.0",
+    "qrcode": "^1.5.4",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "overrides": {
+    "@grpc/grpc-js": "^1.13.6"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.1",
+    "@tailwindcss/vite": "^4.1.16",
+    "@types/qrcode": "^1.5.6",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^5.0.4",
+    "tailwindcss": "^4.1.16",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.12"
+  }
+}
