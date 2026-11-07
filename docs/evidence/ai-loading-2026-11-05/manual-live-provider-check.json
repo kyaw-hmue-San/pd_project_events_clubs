@@ -1,0 +1,18 @@
+{
+  "date": "2026-11-05",
+  "kind": "User-authorized manual live provider check, separate from automated tests",
+  "model": "google/gemini-2.5-flash",
+  "source": "AI",
+  "providerStatus": 200,
+  "usage": {
+    "prompt_tokens": 139,
+    "completion_tokens": 842,
+    "total_tokens": 981
+  },
+  "durationMs": 7113,
+  "validTitle": true,
+  "validDescription": true,
+  "hasAgenda": true,
+  "eventsSaved": 0,
+  "profilesChanged": 0
+}

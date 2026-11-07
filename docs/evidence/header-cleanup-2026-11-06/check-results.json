@@ -1,0 +1,32 @@
+{
+  "date": "2026-11-06",
+  "timezone": "Asia/Bangkok",
+  "scope": "Local frontend header/workspace cleanup; no backend or access policy changes",
+  "build": "npm run build passed",
+  "focused_header_browser": "1 passed",
+  "full_browser_regression": {
+    "passed": 18,
+    "failed": 0,
+    "command": "npm run test:e2e"
+  },
+  "responsive_widths": [
+    320,
+    360,
+    768,
+    1024,
+    1280,
+    1440
+  ],
+  "verified": [
+    "Single header and bounded workspace popup",
+    "Keyboard switching, Escape and focus return",
+    "Outside dismissal",
+    "Mobile navigation",
+    "Workspace persistence after profile reload",
+    "Existing cross-role flows and Chromium/WebKit schedule controls"
+  ],
+  "screenshots": "Visually inspected synthetic demo data only",
+  "providers": "Mocked partner/AI; demo Firebase emulators",
+  "diff_check": "Passed",
+  "publication": "No push or deployment"
+}

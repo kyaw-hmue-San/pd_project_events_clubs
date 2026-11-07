@@ -1,16 +1,94 @@
 # Implementation Baseline and Decisions
 
-**Last checked:** 2026-11-04
+**Last checked:** 2026-11-06
 
 **Branch:** `implementation/campus-pulse-full-stack`
 
 **Phase 2 base commit:** `e4b038a`
-**Status:** Local full-stack implementation is connected across Student, Organizer, and read-only Admin. Emulator and browser evidence is recorded in [PROGRESS.md](../PROGRESS.md). No production writes, deployments, or external partner requests were made.
+**Status:** Local full-stack implementation is connected across Student, Organizer, and read-only Admin. Emulator and browser evidence is recorded in [PROGRESS.md](../PROGRESS.md). Local feature checks use isolated emulators and mocked providers. The later user-authorized real inbound receipt/association is separately recorded; no deployment or new live creation call is claimed.
+
+## AI planning and conditional Organizer approval — 2026-11-06
+
+- User explicitly selected automatic approval for all acceptable verified Google
+  applicants, including personal accounts. Confirmed exact criterion categories
+  and deterministic manual fallback before enabling real approval. This
+  supersedes earlier Admin-only admission and Organizer-drafting-only AI scope,
+  preserving manual Admin appointment, three roles and all ownership boundaries.
+- Policy CAMPUS_ORGANIZER_V1 requires explicit campus activity, purpose/audience,
+  organizer identity and personal responsibility with supporting quotes, plus
+  consistency/safety and no concerns/bypass. Schema validation and final identity/
+  revision/lease/profile checks happen server-side; model cannot grant roles.
+  This assesses self-reported application information, not verified affiliation.
+- Keep provider network work outside transactions, bind exact submission revision,
+  preserve Student profiles/registrations, and atomically record AI decisions.
+  Default config requires Admin; explicit policy/version and auto-approval flag
+  permit conditional AI promotion. No automatic rejection, old-request bulk scan
+  or new arbitrary role-management route. Process interruption falls to Admin.
+- Add structured event-planning endpoint while preserving legacy basic drafting.
+  Validate agenda totals/offsets, limits and strict output schema; label complete
+  deterministic fallback honestly. Review/apply selected text sections, require
+  acknowledgment before replacement, preserve all other manually entered fields.
+  Facilities suggestions remain notes until separate reviewed Send. No automatic
+  save/publish/booking, new plan database collection or planning migration.
+- Existing configured AI/ML API model/credentials are reused server-side. No real
+  provider call or real admission is claimed by mocked/emulator/browser evidence.
 
 ## 2026-11-04 implementation decisions
 
+### Capacity, scheduling and facilities follow-up — 2026-11-06
+
+- User approved optional participant limits, deadlines, end times, facilities
+  requirements and linked maintenance status. This supersedes the earlier MVP
+  exclusion of capacity/end time, without requiring a migration for old events.
+  Dates remain campus-time input/UTC storage, with complete calendar/order
+  validation. Registration and capacity edits contend on the same activity doc.
+- Facilities requirements remain private owner notes on save. The user supplied
+  Team 10's dedicated creation and signed-webhook contracts, confirmed the same
+  existing partner key, and approved a narrow automatic-linking exception. After
+  owner review, the backend may link only a validated HTTPS creation response
+  echoing the exact activity ID. Clients cannot choose order IDs or alter links.
+  Preserve legacy publication/provider payloads, worker and operator setup.
+- Store a durable original reviewed payload, canonical bytes, stable idempotency
+  UUID and 45-second lease. Retry uncertain results without changing details or
+  identity; stop on definitive rejection/link collision. Do not claim acceptance
+  from a local HTTP 200; the persisted SENT receipt is authoritative. A duplicate
+  links the existing work order and does not update its remote details.
+- Verify raw-byte HMAC and all signed sequence/version/header copies. Order by
+  OPEN=1 through CLOSED=5 per work order, reject stale regressions, and preserve
+  early webhook status during receipt linking. Legacy secret-only reception is
+  retained outside HMAC-required mode without downgrading versioned status.
+  Owner polling exposes RESOLVED/CLOSED completion within the active-page refresh
+  cycle. No activity closure, cancellation/rescheduling API, or new role power.
+- Added explicit local facilities-test mode; it does not enable legacy outbound
+  publication or polling and performs no request on startup. Automated checks
+  use injected partners and demo projects only. Live creation/dispatch-board
+  acceptance remains a coordinated manual test, distinct from inbound evidence.
+- Status is a last-received snapshot with time/order uncertainty handled openly,
+  not a room-booking/availability guarantee. Admin gains no private panel or
+  integration-log rights. New lookups use direct document IDs; no new index.
+- Persist only per-person workspace preference in browser session storage to
+  preserve the chosen Student/Organizer view after activity/profile reload. All
+  permissions still derive server-side. The Firebase-vs-Supabase course-stack
+  deviation remains provisional; no lecturer approval is inferred.
+
+### Additive QR attendance follow-up — 2026-11-06
+
+- User approved QR registration tickets and owning-Organizer attendance check-in.
+  Use locally generated opaque 128-bit tickets and on-device ZXing decoding;
+  no third-party QR service, new privileged role or AI decision is involved.
+- Issue tickets lazily so existing registrations work. Verify current server
+  state again at explicit confirmation; keep attendance distinct from enrollment
+  and registration status. Atomic, idempotent writes prevent duplicate counts.
+- Block cancellation after check-in to preserve attendance. No reversal workflow
+  or time-window policy is invented. CLOSED means registration closed and still
+  permits check-in. Organizer confirms the displayed name because a static QR
+  is copyable. Admin remains read-only for events and has no ticket access.
+- Store private code lookup documents with direct reads, so no new query index
+  or production migration is necessary. Preserve Team 10 integration and the
+  provisional Firebase-vs-Supabase course-stack deviation.
+
 - Preserve Firebase/Express and the existing Team 10 contracts. Move backend
-  domains into `firebase/src/features/`; preserve `.mjs` compatibility entrypoints.
+  domains into `backend/src/features/`; preserve `.mjs` compatibility entrypoints.
   App creation is separate from Firebase initialization, listener, and worker.
 - Add Organizer-owned paginated listing. Keep Student history ACTIVE by default
   for old consumers; use explicit status or `includeCancelled=true` for history.
@@ -37,6 +115,22 @@ claims that no frontend existed describe the earlier checkout, not the current
 source. The current route contract is maintained in [API_CONTRACT.md](API_CONTRACT.md).
 
 ## Confirmed presentation scope — Organizer approvals
+
+2026-11-05 profile addition: the user requested editable usernames for all roles.
+This is implemented as a non-unique Campus Pulse display name, not a new login
+identifier. My profile edits only the authenticated person's stored name; Google
+email, university ID, primary role and capabilities cannot be body-selected.
+Admin has this exact own-profile write exception, while event oversight remains
+read-only. Google identity/approval snapshots are not rewritten by name edits.
+
+2026-11-05 user correction: a Student who is approved to organize must remain a
+Student too. The server now derives Student/Organizer capabilities in `/api/me`
+and uses Student capability on registration endpoints. The stored primary role
+and existing Organizer ownership checks stay compatible. Verified MFU Organizers
+with a valid preserved university ID regain Student access, including previously
+approved accounts. Personal Organizers and school Organizers without enrollment
+do not receive it. A responsive workspace switch exposes both sets of screens.
+This supersedes the earlier exclusive-role limitation; Admin remains separate.
 
 The user approved the smaller Organizer-request workflow on 2026-11-04 and
 clarified that Students must use @lamduan.mfu.ac.th. This supersedes earlier
@@ -96,10 +190,10 @@ The project will provisionally reuse Firebase Authentication, Firestore, Express
 ## Verified repository and environment
 
 - Root repository was clean on `main` at `6d02a3d` before this work; no React/Vite app or root `package.json` was tracked.
-- `firebase/package.json` defines an Express 5 API with `firebase-admin`, Node `>=22`, and `start`, `seed`, and `test` scripts. Installed versions are Express 5.2.1 and Firebase Admin 13.10.0.
+- `backend/package.json` defines an Express 5 API with `firebase-admin`, Node `>=22`, and `start`, `seed`, and `test` scripts. Installed versions are Express 5.2.1 and Firebase Admin 13.10.0.
 - Firebase CLI 15.34.2 is a development dependency for isolated emulators. Its transitive `superstatic` package warns that it supports Node 20/22/24, while this machine uses Node 26.12.1; the CLI and emulator suite nevertheless ran successfully here.
 - Local runtime is Node 26.12.1 and npm 11.20.0. Firebase dependencies are installed.
-- `firebase/.env` exists and is ignored by `.gitignore`. Only variable names were checked; values were not read or recorded. It contains project/service-account path, integration credential, partner URL, and partner auth variable names. This does not verify that credentials are valid or that remote Firestore access works.
+- `backend/.env` exists and is ignored by `.gitignore`. Only variable names were checked; values were not read or recorded. It contains project/service-account path, integration credential, partner URL, and partner auth variable names. This does not verify that credentials are valid or that remote Firestore access works.
 - Firebase client configuration for a future browser app and the provisioned demo account UIDs were not identified in the frontend (none exists) or the checked environment variable names. Obtain client config and dedicated demo account details through approved private setup; never put Admin SDK credentials in the frontend.
 - Firestore rules deny all direct client reads and writes. The API is expected to access Firestore through the Admin SDK.
 
@@ -126,9 +220,9 @@ The project will provisionally reuse Firebase Authentication, Firestore, Express
 
 ## Verified baseline checks
 
-- `npm test --prefix firebase`: 6 passed, 0 failed. These are integration helper/configuration tests, not API/Firestore end-to-end tests.
-- `node --check firebase/api.mjs` and `node --check firebase/integration.mjs`: passed.
-- `npm ls --depth=0 --prefix firebase`: dependencies resolve.
+- `npm test --prefix backend`: 6 passed, 0 failed. These are integration helper/configuration tests, not API/Firestore end-to-end tests.
+- `node --check backend/api.mjs` and `node --check backend/integration.mjs`: passed.
+- `npm ls --depth=0 --prefix backend`: dependencies resolve.
 - No authenticated API call, Firestore write, seed, deployment, or partner request was run in this inventory.
 
 ## Phase 2 contract status

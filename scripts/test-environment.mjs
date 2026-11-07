@@ -2,7 +2,7 @@
 export function testEnvironment() {
   const env = { ...process.env };
   for (const name of Object.keys(env)) {
-    if (/^(PARTNER_|WEBHOOK_|GOOGLE_APPLICATION_CREDENTIALS$|INTEGRATION_LOG_VIEWER_UIDS$)/.test(name)) delete env[name];
+    if (/^(AIML_|ORGANIZER_AI_|PARTNER_|WEBHOOK_|TEAM10_|GOOGLE_APPLICATION_CREDENTIALS$|INTEGRATION_LOG_VIEWER_UIDS$)/.test(name)) delete env[name];
   }
   return { ...env, FIREBASE_PROJECT_ID: 'demo-campus-pulse-e2e',
     FIREBASE_AUTH_EMULATOR_HOST: '127.0.0.1:9199', FIRESTORE_EMULATOR_HOST: '127.0.0.1:8180',

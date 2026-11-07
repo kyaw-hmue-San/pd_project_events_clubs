@@ -1,0 +1,20 @@
+{
+  "date": "2026-11-06",
+  "timezone": "Asia/Bangkok",
+  "build": "passed",
+  "fullIsolatedBrowserSuite": { "passed": 16, "failed": 0 },
+  "newPickerScenarios": [
+    { "engine": "Chromium", "nativePickerFailure": "showPicker exists but opens no UI", "result": "passed" },
+    { "engine": "WebKit", "nativePickerFailure": "showPicker throws NotSupportedError", "result": "passed" }
+  ],
+  "nativePickerCallsAfterFix": 0,
+  "viewportWidths": [360, 768, 1024, 1440],
+  "verified": ["visible calendar and clock dialogs", "leap and non-leap February", "month/year selection", "arrow-key month rollover and selection", "Tab trap and focus restore", "Escape/cancel preserves time", "year Enter and dialog close do not submit activity", "start/end/deadline selection", "direct time typing", "persisted UTC timestamps using campus timezone"],
+  "backendOrContractShapesChanged": false,
+  "newBackendTestRun": false,
+  "liveAiOrPartnerCalls": false,
+  "connectedProjectTestWrites": false,
+  "manualSafariOrPhysicalMobileCheck": "not performed",
+  "pushOrDeployment": false,
+  "screenshots": "Actual isolated browser UI with synthetic activities only; no credentials or QR codes."
+}

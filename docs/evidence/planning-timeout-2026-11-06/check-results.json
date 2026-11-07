@@ -1,0 +1,37 @@
+{
+  "date": "2026-11-06",
+  "timezone": "Asia/Bangkok",
+  "manual_provider_diagnostic": {
+    "authorization": "User explicitly requested diagnosis of AI fallback",
+    "input": "Synthetic beginner workshop brief; no identity, account or event write",
+    "model": "google/gemini-2.5-flash",
+    "keyConfigured": true,
+    "providerEnabled": true,
+    "diagnosticTimeoutMs": 45000,
+    "httpStatus": 200,
+    "source": "AI",
+    "fallbackReason": null,
+    "durationMs": 13259,
+    "finishReason": "stop",
+    "outputCharacters": 3365,
+    "totalTokens": 2132,
+    "agendaTotalMinutes": 120
+  },
+  "cause_assessment": "Existing planner deadline was 12 seconds; user HTTP request duration 12472ms and valid manual provider result at 13259ms strongly support premature timeout. Historical user fallback reason was not logged.",
+  "fix": "Planning-only timeout 45 seconds; admission/basic drafting unchanged; reason-specific template messages",
+  "duration_ux": "Hours/minutes with 30m/1h/1h30m/2h/3h presets; API still receives validated total minutes",
+  "verification": {
+    "unit_service_passed": 18,
+    "targeted_browser_passed": 2,
+    "build": "Passed",
+    "responsive_widths": [
+      360,
+      768,
+      1440
+    ],
+    "diff_check": "Passed",
+    "local_api": "Restarted verified project API in same facilities mode; health ok"
+  },
+  "boundaries": "One manual real provider diagnostic consumed credits. Automated checks mocked providers and used demo Firebase. No real approval/event/work order write, push or deployment.",
+  "screenshots": "Two visually inspected synthetic screenshots"
+}

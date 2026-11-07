@@ -1,0 +1,45 @@
+{
+  "date": "2026-11-07",
+  "timezone": "Asia/Bangkok",
+  "verificationKind": "User-performed manual partner-local test, scoped receipt/link verification and observed Organizer UI",
+  "creationEndpoint": "https://ethanol-prayer-skyline.ngrok-free.dev/api/partner/work-orders",
+  "receiver": "https://veneering-decipher-entire.ngrok-free.dev/webhooks/partner",
+  "activityId": "rXTvjUumz1aTJDwiq9yt",
+  "workOrderId": "39a8f615-6561-406d-8c4f-c30ecb063f0a",
+  "receipt": {
+    "httpStatus": 201,
+    "state": "SENT",
+    "duplicate": false,
+    "initialStatus": "OPEN",
+    "attempts": 3,
+    "updatedAt": "2026-11-07T07:52:34.636Z"
+  },
+  "independentlyVerified": {
+    "originalPayloadPreserved": true,
+    "retryIdentityPreserved": true,
+    "bothMappingDirectionsMatch": true,
+    "bindingSource": "TEAM10_CREATION_RESPONSE",
+    "latestStatus": "OPEN",
+    "sequence": 1,
+    "version": 1,
+    "lastEventId": null,
+    "organizerUiShowsAcceptedLinkedAndOpen": true,
+    "localAndPublicReceiverHealthHttpStatus": 200,
+    "receiverHealthCheckedAt": "2026-11-07T07:52:49.860Z",
+    "suppliedPartnerLocalHealthAcceptedAgreedKey": true
+  },
+  "operatorActions": {
+    "privateEndpointOverrideConfigured": true,
+    "credentialsChanged": false,
+    "verifiedFacilitiesApiRestarted": true,
+    "agentOpenedReviewOnly": true,
+    "userPerformedFinalRetry": true,
+    "roleBypassOrImpersonation": false
+  },
+  "pending": [
+    "Team 10 confirms local Dispatch Board visibility",
+    "Team 10 sends signed ASSIGNED/IN_PROGRESS/RESOLVED/CLOSED transitions with versions 2/3/4/5",
+    "Verify each real callback HTTP result, stored status and Organizer UI"
+  ],
+  "boundaries": "Manual partner-local integration, not a deployed production creation result or automated test. No credentials, idempotency key, lease, response body or facilities payload included. OPEN is the validated creation snapshot, not a received lifecycle webhook. No push or deployment. Preserve this local work-order link; use another activity for a later deployed-environment creation test."
+}

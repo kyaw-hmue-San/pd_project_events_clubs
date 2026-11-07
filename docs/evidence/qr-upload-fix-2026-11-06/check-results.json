@@ -1,0 +1,19 @@
+{
+  "date": "2026-11-06",
+  "environment": "isolated Auth/Firestore emulators and Chromium",
+  "beforeFix": "A genuine ticket PNG with missing MIME metadata was rejected with the generic unreadable-QR message.",
+  "build": "passed",
+  "targetedBrowserScenarios": { "passed": 3, "failed": 0 },
+  "validImageCases": ["ordinary app Download QR PNG", "PNG with empty MIME and no extension", "PNG with generic MIME", "transparent PNG", "rotated QR in tall screenshot", "JPEG", "WebP"],
+  "recoveryCases": ["unsupported bytes despite PNG name/type", "over 5 MiB", "damaged PNG", "image without QR", "over dimension limit", "unrelated readable QR"],
+  "invalidImagesSentToVerificationApi": 0,
+  "viewportWidths": [360, 768, 1024, 1440],
+  "keyboardRecovery": "Enter ticket code focuses the manual input; upload is a standard keyboard-accessible button.",
+  "camera": "Existing simulated-video decoding, permission-denied fallback and cleanup checks passed; physical camera not verified.",
+  "backendOrPermissionsChanged": false,
+  "liveAiOrPartnerCalls": false,
+  "connectedProjectTestWrites": false,
+  "pushOrDeployment": false,
+  "originalUserFile": "Not supplied; its exact device/browser failure is not independently confirmed.",
+  "evidence": "Synthetic identities; ticket-code inputs masked. No raw downloaded QR, credentials, logs or traces included."
+}

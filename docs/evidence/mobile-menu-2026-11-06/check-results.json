@@ -1,0 +1,31 @@
+{
+  "date": "2026-11-06",
+  "timezone": "Asia/Bangkok",
+  "scope": "Shared mobile navigation styling and disclosure behavior for Student, Organizer and Admin",
+  "browser": {
+    "passed": 4,
+    "failed": 0,
+    "selection": [
+      "mobile menu across all roles",
+      "compact header workspace switching",
+      "mobile navigation and network errors",
+      "all-role profile save/reload/mobile sign-out"
+    ]
+  },
+  "verified": [
+    "44px animated menu toggle",
+    "All-role panel bounds at 320/360/768px",
+    "Short 360px viewport with internal scroll and reachable sign-out",
+    "Escape/focus return and outside/focus-leave dismissal",
+    "Route navigation closes panel without changing header height",
+    "Desktop resize closes panel and restores visible navigation focus",
+    "Workspace menu remains within narrow viewport"
+  ],
+  "screenshots": "Six visually inspected synthetic emulator screenshots only",
+  "build": "npm run build passed",
+  "diff_check": "git diff --check passed",
+  "backend": "Unchanged; no backend suite rerun required",
+  "full_browser_suite": "The prior header version passed 18 scenarios; this follow-up ran four targeted scenarios, not the entire expanded suite",
+  "providers": "Demo Firebase emulators and mocked partners; no real AI or partner calls",
+  "publication": "No push or deployment"
+}

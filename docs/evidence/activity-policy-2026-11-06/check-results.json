@@ -1,0 +1,36 @@
+{
+  "date": "2026-11-06",
+  "timezone": "Asia/Bangkok",
+  "environment": "isolated local Auth/Firestore emulators and Chromium",
+  "build": "passed",
+  "sideEffectFreeAppImport": "passed",
+  "backend": { "passed": 56, "failed": 0, "apiScenarios": 36, "mockedAiChecks": 9, "helpers": 11 },
+  "targetedPolicyAndPartnerProjectionHelpers": { "passed": 9, "failed": 0 },
+  "finalFullBrowserSuite": { "passed": 14, "failed": 0 },
+  "viewportWidths": [360, 768, 1024, 1440],
+  "changedBehavior": [
+    "last-seat concurrency and cancellation reopening a seat",
+    "capacity reduction versus registration races",
+    "deadline/end enforcement and nullable legacy defaults",
+    "merged schedule validation and overnight campus-time persistence",
+    "owner-only facilities notes and unchanged Team 10 payload projection",
+    "trusted mapping dry-run/uniqueness/idempotency",
+    "HTTP webhook authentication, duplicate and stale-update handling",
+    "equal-time conflicting statuses marked uncertain",
+    "maintenance loading/unlinked/waiting/status/network/retry screens",
+    "dual workspace selection retained after activity-page reload"
+  ],
+  "browserFixtureMethod": "A guarded demo-only process establishes a trusted mapping and invokes the actual maintenance receiver; it never calls Team 10. HTTP webhook delivery is independently tested in the API suite.",
+  "initialFailuresResolved": [
+    "Activity reload lost the dual user's chosen workspace; session-scoped per-person preference now preserves it.",
+    "Two older schedule assertions became ambiguous with the review summary; they now target the schedule-preview paragraph."
+  ],
+  "maintenanceWorkOrderCreation": "Not implemented without an agreed Team 10 contract; notes are saved only and existing work orders can be linked by a trusted operator.",
+  "newCompositeIndexesRequired": false,
+  "connectedProjectTestRecordsOrLinks": false,
+  "livePartnerOrAiCallsDuringChecks": false,
+  "productionConnectivityVerified": false,
+  "pushOrDeployment": false,
+  "localServices": { "apiPort": 3000, "frontendPort": 5173, "processHealthHttp": 200, "frontendHttp": 200, "partnerIntegrations": "disabled" },
+  "screenshots": "Synthetic emulator identities and notes only. No QR credentials, private environment values, operational logs or traces are included."
+}

@@ -1,0 +1,38 @@
+{
+  "date": "2026-11-05",
+  "timezone": "Asia/Bangkok",
+  "scope": "Local React UI using isolated Auth/Firestore emulator accounts",
+  "build": "passed",
+  "fullBrowserRegression": {
+    "passed": 8,
+    "failed": 0
+  },
+  "finalTargetedChecks": {
+    "crossRoleAndOnboardingPassed": 2,
+    "formAndProfilePassed": 2,
+    "failed": 0
+  },
+  "responsiveProfileWidths": [
+    360,
+    768,
+    1024,
+    1440
+  ],
+  "roles": [
+    "Student",
+    "Organizer",
+    "Admin"
+  ],
+  "screenshots": [
+    "profile-desktop.png",
+    "profile-mobile.png",
+    "student-discovery.png",
+    "organizer-activities.png",
+    "admin-overview.png",
+    "organizer-form.png"
+  ],
+  "realDataSeeded": false,
+  "apiPermissionChangesInUiRefinement": false,
+  "pushed": false,
+  "deployed": false
+}

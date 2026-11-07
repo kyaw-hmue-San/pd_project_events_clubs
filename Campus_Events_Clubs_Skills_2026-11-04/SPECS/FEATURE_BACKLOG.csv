@@ -1,0 +1,20 @@
+ID,Wave,Feature,Priority,Skill,Status_2026_11_04,Definition_of_done
+F01,1A,Shared Figma Campus Pulse design,P0,figma-design-foundation,NOT STARTED,All tokens and common UI available
+F02,1A,Student Figma screens,P0,figma-student-experience,NOT STARTED,Student prototype + states
+F03,1A,Organizer Figma screens,P0,figma-organizer-experience,NOT STARTED,Organizer prototype + states
+F04,1A,Read-only Admin Figma screens,P0-DEMO,figma-admin-readonly,NOT STARTED,Admin prototype no mutations
+B01,1B,Extract app/config/auth modules,P0,backend-modular-refactor,NOT STARTED,Existing routes continue working
+B02,1B,Extract activities and registrations,P0,backend-modular-refactor,NOT STARTED,Transactions remain atomic
+B03,1B,Extract Team 10 integration,P0,backend-auth-and-integration,NOT STARTED,Provider/webhook/worker unchanged
+B04,2,Organizer-own activities list API,P0,backend-fill-prd-gaps,NOT STARTED,Owner-scoped drafts/list paging
+B05,2,Cancelled Student history API,P0,backend-fill-prd-gaps,NOT STARTED,History includes cancel state without leakage
+B06,2,Safe error messages + organizer identity,P0,backend-fill-prd-gaps,NOT STARTED,Safe envelope + truthful name
+B07,3,ADMIN role and read-only GET APIs,P0-DEMO,backend-admin-readonly,NOT STARTED,Only admin GET; no private roster
+UI01,4,Export Figma UI and build React app,P0,figma-export-to-code,NOT STARTED,Buildable reusable role screens
+UI02,4,Firebase login session and API client,P0,frontend-auth-api-wiring,NOT STARTED,Real token /api/me and role routing
+UI03,5,Student full wiring,P0,frontend-student-wiring,NOT STARTED,Real register refresh cancel history
+UI04,6,Organizer full wiring,P0,frontend-organizer-admin-wiring,NOT STARTED,Publish event roster real
+UI05,6,Admin real read-only wiring,P0-DEMO,frontend-organizer-admin-wiring,NOT STARTED,Real summary list details 403 on writes
+QA01,7,Comprehensive emulator/frontend/E2E/security QA,P0,qa-deployment-and-demo,NOT STARTED,All approved acceptance evidence passed
+REL01,8,HTTPS deployment/free-tier verification,P0,qa-deployment-and-demo,NOT STARTED,Real production demo flows verified
+TEAM01,0-8,True feature PR/commit contributions,P0,git-team-attribution,NOT STARTED,Each member real role evidence

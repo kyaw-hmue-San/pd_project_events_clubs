@@ -97,12 +97,12 @@ success and the OAuth-initiation check do not establish these real-user results.
 
 ## Relevant source
 
-- `src/lib/google-signin.ts`: Google popup, blocked-popup redirect fallback,
+- `frontend/src/lib/google-signin.ts`: Google popup, blocked-popup redirect fallback,
   redirect completion and safe error messages.
-- `src/features/auth/AuthView.tsx`: Google-only sign-in UI.
-- `src/features/auth/ProfileSetup.tsx`: one-time university ID completion.
-- `firebase/src/shared/school-access.js`: exact school-domain/provider policy.
-- `firebase/src/features/users/routes.js`: protected atomic Student onboarding.
+- `frontend/src/features/auth/AuthView.tsx`: Google-only sign-in UI.
+- `frontend/src/features/auth/ProfileSetup.tsx`: one-time university ID completion.
+- `backend/src/shared/school-access.js`: exact school-domain/provider policy.
+- `backend/src/features/users/routes.js`: protected atomic Student onboarding.
 
 Implementation follows the official
 [Firebase Google sign-in](https://firebase.google.com/docs/auth/web/google-signin),

@@ -1,0 +1,24 @@
+{
+  "date": "2026-11-06",
+  "timezone": "Asia/Bangkok",
+  "scope": "Display-only published description formatting across Student/Organizer and read-only Admin details",
+  "cause": "Existing paragraph renderer collapsed stored newlines and lists",
+  "changes": [
+    "Preserve paragraphs and line breaks",
+    "Known generated agenda headings and minute ranges render as readable rows",
+    "Bullets/numbered lists and checklist stages render structurally",
+    "Preparation checklist is keyboard-accessible and collapsed by default",
+    "Shared plain-text renderer; no raw HTML interpretation or stored-data change"
+  ],
+  "verification": {
+    "build": "Passed",
+    "targeted_browser_passed": 2,
+    "scenarios": [
+      "Published AI/template description has separate agenda rows and expandable checklist; no overflow at 360/768/1440",
+      "Existing Student/Organizer/Admin publish/register/cancel/roster/read-only detail journey"
+    ],
+    "diff_check": "Passed",
+    "screenshots": "Two synthetic screenshots visually inspected"
+  },
+  "boundaries": "Backend/DTO/access rules unchanged; preparation text remains available to existing readers. No real events edited, AI/partner calls, push or deployment. Full backend/browser suites not rerun for this display-only change."
+}
