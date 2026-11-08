@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+
+# Private local/deployment settings; keep public example templates
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Vite/TypeScript output and caches
+dist/
+dist-ssr/
+.vite/
+.cache/
+*.tsbuildinfo
+
+# Local hosting state and test output
+.firebase/
+.vercel/
+coverage/
+test-results/
+playwright-report/
+blob-report/
+
+# Logs and local editor/OS files
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
