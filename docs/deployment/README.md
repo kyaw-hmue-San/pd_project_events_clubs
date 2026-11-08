@@ -1,7 +1,15 @@
 # Deployment preparation
 
-Preparation only: no hosting, production acceptance or lecturer stack approval
-is claimed. Keep the Firebase/Express deviation from the original PRD explicit.
+Current user-selected setup: [Firebase Hosting + existing Render service](firebase-render.md).
+Prepared Firebase Hosting configuration publishes only frontend/dist. Render
+uses the full `main` branch; lowercase master is an empty skeleton. Deployment
+results are recorded in root PROGRESS.md after verification.
+
+Hosting released on 2026-11-08. Live static assets, API version/CORS/denials and
+user-confirmed school Google sign-in are recorded in
+[release evidence](../evidence/hosted-release-2026-11-08/check-results.json).
+Broader production acceptance and lecturer stack approval are not implied.
+Keep the Firebase/Express deviation from the original PRD explicit.
 
 ## Static frontend
 
@@ -47,9 +55,12 @@ and credential/network validation still belong to the existing server.
 
 Facilities sending needs explicit enabled flag, confirmed HTTPS creation URL,
 agreed dedicated key, HMAC mode and secret. Do not copy temporary ngrok URLs to
-production or relink local-test orders; use another activity for new hosted
+production by default. The user approved the exact old Team 10 tunnel for the
+coordinated demo; TEAM10_APPROVED_TEST_URL records that narrow exception. Do not
+relink local-test orders; use another activity for new hosted
 tests. AI admission needs the explicit confirmed policy/version; uncertain or
-unavailable assessments remain for Admin. Other pods await contracts.
+unavailable assessments remain for Admin. Internship and Library contracts are
+implemented; Notification Hub remains pending.
 
 ## Verify before sharing
 

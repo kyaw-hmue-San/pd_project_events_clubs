@@ -13,6 +13,8 @@ existing working private files; do not overwrite them with examples in cleanup.
 `frontend/.env.example` and `backend/.env.example` remain fresh-local-setup templates,
 not deployment defaults. Copy examples only for a fresh setup and fill in your
 own project values. Frontend and backend Firebase project IDs must match.
+For the selected release, see [Firebase Hosting + Render](../../docs/deployment/firebase-render.md).
+Private `backend/.env.render` is a dashboard import file, not a tracked template.
 
 ## Local
 

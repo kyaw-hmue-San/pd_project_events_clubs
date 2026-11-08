@@ -9,6 +9,7 @@ reports and real manual deliveries are different evidence types.
 - [Library learning resources](library-resources-2026-11-08/check-results.json)
 - [Single progress feedback](single-progress-2026-11-08/check-results.json)
 - [Library relevance gating](library-relevance-2026-11-08/check-results.json)
+- [Firebase Hosting + Render release](hosted-release-2026-11-08/check-results.json)
 - [Earlier maintenance receipt](maintenance-live-2026-11-06/check-results.json)
 - [AI checks](ai-flows-2026-11-06/)
 - [Description formatting](description-format-2026-11-06/check-results.json)

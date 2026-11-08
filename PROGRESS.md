@@ -1,10 +1,46 @@
 # Campus Pulse implementation progress
 
-Latest update: 2026-11-08 (Asia/Bangkok). Previously recorded branch:
-`implementation/campus-pulse-full-stack`.
+Latest update: 2026-11-08 (Asia/Bangkok). Current working branch: `main`.
 
-Status: **Connected local implementation. Production release not verified.**
+Status: **Hosted on Firebase Hosting + Render. School Google sign-in confirmed
+by the user; broader hosted workflows and partner lifecycle acceptance remain separate.**
 The work reuses the user-supplied Campus Pulse prototype and current skills pack.
+
+## Hosted release — 2026-11-08
+
+- User authorized Firebase Hosting + existing Render deployment, superseding the
+  earlier no-deploy instruction for this release. User updated Render through
+  its dashboard; agent published the static frontend with the owner-authorized
+  Firebase CLI. Frontend https://events-management-4d8ce.web.app; backend
+  https://pd-project-events-clubs.onrender.com. No Git push/commit or billing-plan
+  change. Release setup/docs remain uncommitted on main; master is the skeleton.
+- Added Hosting-only configuration, production build/artifact guard and deploy
+  command. Only frontend/dist was published. Live HTML/entry module hash-match
+  the build; logo/favicon/manifest200, private env/Admin-key/handover URLs404,
+  root HTML no-store and correct Render API origin verified. Render health200
+  with current API marker, correct frontend CORS204, denied origin403 and
+  unauthenticated account401. Google provider enabled and all seven required
+  Firestore indexes READY via read-only checks. No database seed or schema/rules
+  deployment. User confirmed school Google login opens their hosted workspace;
+  this is user-reported, not an agent-observed full cross-role production test.
+- Production build, artifact checks (including synthetic private-file/key
+  rejection) and two environment tests pass. Full isolated browser suite:
+  **24 passed**, using mock AI/partners and disposable Firebase emulators. Fixed
+  the QR test's outdated download filename to match the already supplied brand;
+  no ticket behavior change. No automated live partner writes or AI credits.
+- Preserved separate private localhost and deployment environments. Backend
+  import file retains AI/Internship/Library/HMAC and dedicated facilities config,
+  with legacy polling/publication disabled. User explicitly approved the exact
+  old Team 10 HTTPS ngrok creation URL as a temporary demo exception, recorded
+  by TEAM10_APPROVED_TEST_URL; frontend/API addresses remain permanent. Team 10
+  deployed health returned200 but its old creation tunnel was offline. Their
+  tunnel must return online and their webhook target must become
+  https://pd-project-events-clubs.onrender.com/webhooks/partner. No partner
+  message, new work order or relinking was performed.
+- Render Free idle sleep still pauses the in-process worker; an always-on plan
+  was not enabled. Firebase/Express PRD deviation and lecturer approval remain
+  unchanged. [Release guide](docs/deployment/firebase-render.md),
+  [sanitized evidence](docs/evidence/hosted-release-2026-11-08/check-results.json).
 
 ## Relevance-gated Library AI button — 2026-11-08
 

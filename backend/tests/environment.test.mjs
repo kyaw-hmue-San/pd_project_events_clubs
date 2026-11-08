@@ -19,4 +19,8 @@ test('production API checks preserve exact-origin, explicit facilities/HMAC and 
   const facilities = { ...api, TEAM10_WORK_ORDERS_ENABLED: 'true', TEAM10_PARTNER_KEY: 'private-test-key', TEAM10_WORK_ORDER_API_URL: 'https://maintenance.campus.test/api/partner/work-orders', WEBHOOK_REQUIRE_HMAC: 'true', WEBHOOK_INBOUND_SECRET: 'isolated-test-secret-not-a-real-key-12345' };
   assert.deepEqual(validateApiEnvironment(facilities, 'production'), []);
   assert.ok(validateApiEnvironment({ ...facilities, TEAM10_WORK_ORDER_API_URL: 'https://temporary.ngrok-free.dev/api/partner/work-orders' }, 'production').length);
+  const temporary = 'https://temporary.ngrok-free.dev/api/partner/work-orders';
+  assert.deepEqual(validateApiEnvironment({ ...facilities, TEAM10_WORK_ORDER_API_URL: temporary, TEAM10_APPROVED_TEST_URL: temporary }, 'production'), []);
+  assert.ok(validateApiEnvironment({ ...facilities, TEAM10_WORK_ORDER_API_URL: temporary, TEAM10_APPROVED_TEST_URL: 'https://another.ngrok-free.dev/api/partner/work-orders' }, 'production').length);
+  for (const url of ['http://temporary.ngrok-free.dev/api/partner/work-orders', 'https://temporary.ngrok-free.dev/api/partner/health', 'https://localhost/api/partner/work-orders']) assert.ok(validateApiEnvironment({ ...facilities, TEAM10_WORK_ORDER_API_URL: url, TEAM10_APPROVED_TEST_URL: url }, 'production').length);
 });

@@ -434,7 +434,7 @@ test('QR ticket image, permission fallback, explicit attendance confirmation and
     const downloadEvent = student.waitForEvent('download')
     await student.getByRole('link', { name: 'Download QR', exact: true }).click()
     const download = await downloadEvent
-    expect(download.suggestedFilename()).toBe('campus-pulse-ticket.png')
+    expect(download.suggestedFilename()).toBe('campus-events-clubs-ticket.png')
     const imagePath = await download.path()
     expect(imagePath).toBeTruthy()
     await student.reload()

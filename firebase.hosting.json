@@ -1,0 +1,15 @@
+{
+  "hosting": {
+    "site": "events-management-4d8ce",
+    "public": "frontend/dist",
+    "ignore": ["**/.*", "**/node_modules/**"],
+    "predeploy": ["npm run build:production", "npm run check:hosting"],
+    "headers": [
+      { "source": "/", "headers": [{ "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }] },
+      { "source": "/index.html", "headers": [{ "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }] },
+      { "source": "/site.webmanifest", "headers": [{ "key": "Cache-Control", "value": "no-cache" }] },
+      { "source": "/assets/**", "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }] },
+      { "source": "**", "headers": [{ "key": "X-Content-Type-Options", "value": "nosniff" }, { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }] }
+    ]
+  }
+}

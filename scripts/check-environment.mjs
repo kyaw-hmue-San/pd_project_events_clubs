@@ -46,7 +46,8 @@ export function validateApiEnvironment(env, mode = 'local') {
   const secret = value => !placeholder(value) && value.length >= 32 && value.trim() === value;
   if (env.TEAM10_WORK_ORDERS_ENABLED === 'true') {
     if (placeholder(env.TEAM10_PARTNER_KEY)) errors.push('Facilities sending requires TEAM10_PARTNER_KEY.');
-    if (!validUrl(env.TEAM10_WORK_ORDER_API_URL, production) || new URL(env.TEAM10_WORK_ORDER_API_URL).protocol !== 'https:' || new URL(env.TEAM10_WORK_ORDER_API_URL).pathname !== '/api/partner/work-orders') errors.push('Facilities sending requires the confirmed HTTPS creation URL/path; production must not use a temporary tunnel.');
+    const approvedTestUrl = env.TEAM10_APPROVED_TEST_URL === env.TEAM10_WORK_ORDER_API_URL && validUrl(env.TEAM10_WORK_ORDER_API_URL, false) && new URL(env.TEAM10_WORK_ORDER_API_URL).hostname.endsWith('.ngrok-free.dev');
+    if ((!validUrl(env.TEAM10_WORK_ORDER_API_URL, production) && !approvedTestUrl) || new URL(env.TEAM10_WORK_ORDER_API_URL).protocol !== 'https:' || new URL(env.TEAM10_WORK_ORDER_API_URL).pathname !== '/api/partner/work-orders') errors.push('Facilities sending requires the confirmed HTTPS creation URL/path. A temporary Team 10 tunnel requires its exact TEAM10_APPROVED_TEST_URL.');
     if (env.WEBHOOK_REQUIRE_HMAC !== 'true' || !secret(env.WEBHOOK_INBOUND_SECRET)) errors.push('Facilities integration requires HMAC and the agreed inbound secret.');
   }
   if (env.PARTNER_WEBHOOK_URL && (!validUrl(env.PARTNER_WEBHOOK_URL, production) || new URL(env.PARTNER_WEBHOOK_URL).protocol !== 'https:' || !secret(env.WEBHOOK_OUTBOUND_SECRET))) errors.push('Outgoing publication webhooks require an approved URL and a configured secret.');

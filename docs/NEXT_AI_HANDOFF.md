@@ -1,9 +1,30 @@
 # Next AI session handoff — current implementation status
 
-Updated 2026-11-08, Asia/Bangkok. Previously recorded branch implementation/campus-pulse-full-stack.
+Updated 2026-11-08, Asia/Bangkok. Current working branch main.
 Read AGENTS.md, PROGRESS.md, docs/ACCESS_WORKFLOW.md and API_CONTRACT.md first.
 Preserve uploaded files, existing uncommitted changes, UI polish and access rules.
-User explicitly says **do not push or deploy**. No agents/delegation requested.
+User authorized and completed the Firebase Hosting + Render release, superseding
+the earlier no-deploy restriction for this deployment. No Git push/commit or
+billing-plan change was performed; release setup/docs are uncommitted on main.
+Frontend https://events-management-4d8ce.web.app; backend
+https://pd-project-events-clubs.onrender.com. User handled Render dashboard;
+agent published Hosting-only using the owner's Firebase CLI login. School Google
+workspace login was confirmed by the user; broader production journeys remain
+unverified. Live HTML/entry hashes, assets200, private URLs404, CORS204/403,
+protected API401 and current health marker200 verified. All seven indexes READY,
+Google provider enabled. Full isolated browser suite24 passed; two env tests,
+production build and artifact guard pass. See hosted-release-2026-11-08 evidence.
+Preserve local backend/.env and frontend/.env.local. Deployment files
+backend/.env.render and frontend/.env.production.local are private/ignored.
+Local Admin key was replaced after the user revoked the recovered old key:
+never restore an old checkpoint Admin credential as if it were valid. Render
+must use the new key in /etc/secrets/firebase-service-account.json.
+Team 10's deployed health worked, but the user-approved old ngrok creation URL
+was offline; TEAM10_APPROVED_TEST_URL is a narrow temporary demo exception.
+Team10 must restore their tunnel and target our permanent /webhooks/partner.
+No partner messages or new work orders were sent. Render Free sleeps on idle;
+worker is still persistent/in-process while service runs, not serverless.
+User keeps Git publication control; no agents/delegation requested.
 LATEST Library behavior supersedes the earlier always-visible AI button and
 activity-keyword fallback. Activity details perform a cached relevance check of
 public title/description; only positive LIBRARY_RELEVANCE_V1 results show AI

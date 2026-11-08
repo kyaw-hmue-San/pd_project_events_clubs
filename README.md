@@ -5,6 +5,9 @@
 **Team 12** — A campus platform for discovering activities, managing registrations,
 planning events and coordinating facilities support.
 
+**Live app:** [Campus Events & Clubs](https://events-management-4d8ce.web.app)
+· [API health](https://pd-project-events-clubs.onrender.com/health)
+
 ## Features
 
 - Google-only sign-in with server-verified access.
@@ -142,6 +145,8 @@ Notification Hub's contract remains pending.
 | `npm run test:emulator` | Run the isolated backend suite |
 | `npm run test:e2e` | Run browser workflows against isolated demo services |
 | `npm run build:production` | Validate production frontend settings, then build |
+| `npm run check:hosting` | Check that only safe production frontend assets will be published |
+| `npm run deploy:frontend` | Rebuild, validate and publish to the existing Firebase Hosting site |
 
 Emulator tests require Java 21+; see [local development](docs/LOCAL_DEVELOPMENT.md).
 Automated checks use disposable demo projects and mocked AI/partner providers.

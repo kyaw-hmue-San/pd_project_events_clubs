@@ -21,6 +21,8 @@
     "admin:appoint": "node --env-file-if-exists=backend/.env backend/appoint-admin.mjs",
     "maintenance:link": "node --env-file-if-exists=backend/.env backend/link-maintenance.mjs",
     "build:production": "npm run check:env:frontend:production && npm run build",
+    "check:hosting": "node scripts/check-hosting-artifact.mjs",
+    "deploy:frontend": "node backend/node_modules/firebase-tools/lib/bin/firebase.js deploy --project events-management-4d8ce --config firebase.hosting.json --only hosting",
     "check:env": "node scripts/check-environment.mjs --target all --mode local",
     "check:env:frontend:production": "node scripts/check-environment.mjs --target frontend --mode production",
     "check:env:api:production": "node scripts/check-environment.mjs --target api --mode production"

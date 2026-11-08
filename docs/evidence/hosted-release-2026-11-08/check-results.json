@@ -1,0 +1,130 @@
+{
+  "date": "2026-11-08",
+  "timezone": "Asia/Bangkok",
+  "sourceBranch": "main",
+  "baseCommit": "ee13bb95b0edbf7348c435566d68de1742929db3",
+  "uncommittedReleaseSetup": true,
+  "frontend": {
+    "checkedAt": "2026-11-08T14:13:11.858Z",
+    "origin": "https://events-management-4d8ce.web.app",
+    "release": {
+      "name": "projects/events-management-4d8ce/sites/events-management-4d8ce/channels/live/releases/1794147125336000",
+      "version": "projects/events-management-4d8ce/sites/events-management-4d8ce/versions/370197ef7d47c066",
+      "releasedAt": "2026-11-08T14:12:05.336Z"
+    },
+    "checks": [
+      {
+        "name": "frontend-html",
+        "http": 200,
+        "matchesLocalBuild": true,
+        "cacheControl": "no-cache, no-store, must-revalidate"
+      },
+      {
+        "name": "entry-module",
+        "http": 200,
+        "matchesLocalBuild": true,
+        "usesExpectedApi": true
+      },
+      {
+        "name": "official-logo",
+        "http": 200
+      },
+      {
+        "name": "favicon",
+        "http": 200
+      },
+      {
+        "name": "manifest",
+        "http": 200,
+        "validManifest": true
+      },
+      {
+        "name": "private-env-blocked",
+        "http": 404
+      },
+      {
+        "name": "backend-env-blocked",
+        "http": 404
+      },
+      {
+        "name": "admin-key-blocked",
+        "http": 404
+      },
+      {
+        "name": "private-handover-blocked",
+        "http": 404
+      }
+    ],
+    "passed": true
+  },
+  "backend": {
+    "checkedAt": "2026-11-08T14:11:10.303Z",
+    "base": "https://pd-project-events-clubs.onrender.com",
+    "checks": [
+      {
+        "name": "health",
+        "http": 200,
+        "status": "ok",
+        "apiVersion": "2026-11-04-organizer-access"
+      },
+      {
+        "name": "frontend-cors",
+        "http": 204,
+        "allowOrigin": "https://events-management-4d8ce.web.app"
+      },
+      {
+        "name": "denied-origin",
+        "http": 403,
+        "errorCode": "ORIGIN_NOT_ALLOWED"
+      },
+      {
+        "name": "protected-account",
+        "http": 401,
+        "errorCode": "UNAUTHENTICATED"
+      }
+    ],
+    "ready": true
+  },
+  "indexReadiness": {
+    "required": 7,
+    "missingOrNotReady": 0,
+    "checkedAt": "2026-11-08T09:44:55.669Z"
+  },
+  "googleProviderEnabled": true,
+  "schoolGoogleLogin": {
+    "confirmed": true,
+    "evidenceSource": "User reported that the hosted workspace opens after school Google sign-in"
+  },
+  "automated": {
+    "productionBuild": "passed",
+    "hostingArtifactGuard": "passed",
+    "syntheticPrivateArtifactRejectionChecks": "passed",
+    "environmentTests": {
+      "passed": 2,
+      "failed": 0
+    },
+    "fullIsolatedBrowser": {
+      "passed": 24,
+      "failed": 0,
+      "providers": "Mocked AI/partners; disposable local Firebase emulators"
+    }
+  },
+  "maintenance": {
+    "deployedHealthHttp": 200,
+    "approvedOldTunnelAtLastCheck": "offline",
+    "permanentReceiver": "https://pd-project-events-clubs.onrender.com/webhooks/partner",
+    "workOrdersCreatedByAgent": 0,
+    "partnerMessagesSent": 0
+  },
+  "limits": [
+    "Authenticated sign-in confirmation is user-reported, not an agent-observed complete production journey",
+    "Broader production Organizer/Admin/attendance/AI/partner scenarios remain to be exercised",
+    "Render Free idle sleep pauses the process worker",
+    "Team10 temporary creation tunnel and callback alignment remain external dependencies"
+  ],
+  "firestoreSeeded": false,
+  "firestoreRulesOrIndexesDeployed": false,
+  "gitPushed": false,
+  "gitCommitted": false,
+  "billingPlanChanged": false
+}
