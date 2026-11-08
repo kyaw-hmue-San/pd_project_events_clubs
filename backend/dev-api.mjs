@@ -50,8 +50,8 @@ async function start() {
     SCHOOL_EMAIL_DOMAIN: 'lamduan.mfu.ac.th',
   });
   console.log(facilitiesTest ? 'Starting local API on port 3000 with real Firebase. Explicit facilities requests and signed maintenance webhooks are enabled; legacy outbound publication and polling remain disabled.' : maintenanceTest
-    ? 'Starting local API on port 3000 with real Firebase. Inbound maintenance webhooks are enabled; outbound partner calls and partner provider access are disabled.'
-    : 'Starting local API on port 3000 with real Firebase. Partner integrations are disabled.');
+    ? 'Starting local API on port 3000 with real Firebase. Inbound maintenance webhooks are enabled; outbound Maintenance calls and legacy partner access are disabled. Read-only Internship and Library searches are available when configured.'
+    : 'Starting local API on port 3000 with real Firebase. Maintenance and legacy partner integrations are disabled; read-only Internship and Library searches are available when configured.');
   await import('./api.mjs');
 }
 

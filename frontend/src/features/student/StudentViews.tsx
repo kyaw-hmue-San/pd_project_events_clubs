@@ -176,6 +176,7 @@ export function ActivityDetails({
   onRegister,
   onTicket,
   maintenance,
+  learningResources,
 }: {
   activity: Activity
   registered: boolean
@@ -185,6 +186,7 @@ export function ActivityDetails({
   onRegister: () => Promise<void>
   onTicket: () => void
   maintenance?: ReactNode
+  learningResources?: ReactNode
 }) {
   const now = useNow()
   const unavailable = availability(activity, now)
@@ -234,6 +236,7 @@ export function ActivityDetails({
                 </p>
               </div>
             </div>
+            {learningResources}
           </main>
           <aside>
             <div className="rounded-2xl border border-slate-200 p-5">
@@ -335,7 +338,7 @@ export function ActivityDetails({
             className="flex-1"
             busy={busy}
             disabled={Boolean(unavailable)}
-            busyLabel="Registering…"
+            busyFeedback="notice"
             onClick={async () => {
               setError("")
               try { await onRegister(); setConfirm(false) }
@@ -473,7 +476,7 @@ export function Registrations({
             variant="danger"
             className="flex-1"
             busy={busy}
-            busyLabel="Cancelling…"
+            busyFeedback="notice"
             onClick={async () => {
               setError("")
               try { await onCancel(cancelId!); setCancelId(null) }

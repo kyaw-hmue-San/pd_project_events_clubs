@@ -21,10 +21,20 @@ servers, calling Firebase/partners or printing credentials. The API launcher
 enforces port 3000, `http://localhost:5173`, the confirmed Student domain and no
 emulator routing. It reads `backend/.env` explicitly.
 
-`dev:api` disables integrations. `dev:api:maintenance` enables inbound only;
+`dev:api` disables Maintenance/legacy integrations. `dev:api:maintenance` enables inbound only;
 `dev:api:facilities` enables reviewed owner sends and signed updates. Restart
 only the selected API process after changes. The existing approved Team 10 test
 URL stays in the private file until the coordinator deliberately changes it.
+
+Optional `TEAM17_API_BASE_URL=https://team17-internship.vercel.app` independently
+enables public, read-only Student internship browsing in any mode. No key is
+required or identity forwarded. Leave empty to disable; restart after changing.
+See [Team 17 setup](../../docs/integrations/team17-internships.md).
+Library learning resources likewise use independent `LIBRARY_API_BASE_URL` and
+server-only `LIBRARY_API_KEY` settings in every mode. AI reuses the existing
+server model/key; missing AI falls back to an activity keyword. See
+[Library setup](../../docs/integrations/library-resources.md). Never copy keys
+into a frontend environment or publish the original credential-bearing handover.
 
 ## Production
 

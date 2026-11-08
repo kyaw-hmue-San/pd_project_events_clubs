@@ -13,6 +13,10 @@ import { createFacilities } from '../src/features/integrations/facilities.js';
 import { createApp } from '../src/app.js';
 import { createOrganizerAdmission } from '../src/features/organizer-requests/ai-review.js';
 import { createPlanningAssistant } from '../src/features/draft-assistant/planning.js';
+import { createInternships } from '../src/features/internships/service.js';
+import { internshipFetch } from '../../scripts/fixtures/internship-feed.mjs';
+import { createLibrary } from '../src/features/library/service.js';
+import { libraryFetch, libraryAiFetch } from '../../scripts/fixtures/library-catalog.mjs';
 
 const projectId = process.env.FIREBASE_PROJECT_ID;
 const authEmulatorHost = process.env.FIREBASE_AUTH_EMULATOR_HOST;
@@ -123,7 +127,7 @@ if (!emulatorAvailable) {
       FRONTEND_ORIGINS: 'http://localhost:5173,https://campus-demo.example.edu',
       INTEGRATION_LOG_VIEWER_UIDS: apiUsers.organizer.uid
     };
-    for (const key of Object.keys(childEnv)) if (/^(TEAM10_|WEBHOOK_REQUIRE_|ORGANIZER_AI_)/.test(key)) delete childEnv[key];
+    for (const key of Object.keys(childEnv)) if (/^(TEAM10_|TEAM17_|LIBRARY_|WEBHOOK_REQUIRE_|ORGANIZER_AI_)/.test(key)) delete childEnv[key];
     for (const key of [
       'GOOGLE_APPLICATION_CREDENTIALS',
       'PARTNER_API_URL', 'PARTNER_API_HEADER_NAME', 'PARTNER_API_TOKEN', 'PARTNER_WEBHOOK_URL',
@@ -1365,6 +1369,154 @@ if (!emulatorAvailable) {
       const result = await call('/api/me/activity-plan', { token: apiUsers.organizer.idToken, body: brief });
       assert.equal(result.body.source, 'AI'); assert.equal(result.body.plan.agenda[0].endMinute, 120); assert.match(result.body.plan.draft.description, /Preparation checklist/);
     });
+  });
+
+
+  async function withLibraryApi(run, options = {}) {
+    const library = createLibrary({ config: { enabled: options.enabled !== false, baseUrl: 'https://library.test', key: 'isolated-library-key', timeoutMs: 1000 }, aiConfig: { enabled: options.aiEnabled !== false, apiKey: 'isolated-ai-key', model: 'test/model', timeoutMs: 1000 }, fetchImpl: options.fetchImpl || libraryFetch, aiFetchImpl: options.aiFetchImpl || libraryAiFetch });
+    const integration = createIntegration({ db, config: integrationConfig({}), fetchImpl: () => { throw new Error('External requests forbidden') } });
+    const server = createApp({ db, auth, integration, library, env: { FIREBASE_PROJECT_ID: projectId } }).listen(0, '127.0.0.1');
+    await new Promise(resolve => server.once('listening', resolve));
+    const call = async (activityId, { token = apiUsers.student.idToken, query = '', body, suggest = false, relevance = false } = {}) => {
+      const response = await fetch(`http://127.0.0.1:${server.address().port}/api/activities/${activityId}/library-resources${suggest ? '/suggest' : relevance ? '/relevance' : ''}${query}`, { method: suggest ? 'POST' : 'GET', headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}), ...(suggest ? { 'Content-Type': 'application/json' } : {}) }, ...(suggest ? { body: JSON.stringify(body ?? {}) } : {}) });
+      return { response, body: await response.json() };
+    };
+    try { await run(call) } finally { await new Promise(resolve => server.close(resolve)) }
+  }
+  test('Library resources require Student capability and a visible activity before any provider request', async () => {
+    const draft = await createActivity(apiUsers.organizer.idToken, 'Python library access check');
+    const active = await createActivity(apiUsers.organizer.idToken, 'Python learning workshop');
+    await publishActivity(apiUsers.organizer.idToken, active.id);
+    const dual = await createUser('ORGANIZER'), personal = await createUser('ORGANIZER', { domain: 'gmail.com' });
+    let calls = 0;
+    await withLibraryApi(async call => {
+      assert.equal((await call(active.id, { token: '' })).response.status, 401);
+      for (const token of [apiUsers.admin.idToken, personal.idToken]) {
+        assert.equal((await call(active.id, { token })).response.status, 403);
+        assert.equal((await call(active.id, { token, suggest: true })).response.status, 403);
+        assert.equal((await call(active.id, { token, relevance: true })).response.status, 403);
+      }
+      assert.equal((await call(draft.id)).response.status, 404);
+      assert.equal((await call('not-found', { suggest: true })).response.status, 404);
+      assert.equal(calls, 0);
+      for (const token of [apiUsers.student.idToken, dual.idToken]) {
+        const result = await call(active.id, { token, query: '?q=Python' });
+        assert.equal(result.response.status, 200); assert.equal(result.response.headers.get('cache-control'), 'no-store'); assert.equal(result.body.resources.length, 4);
+      }
+      assert.equal(calls, 2);
+    }, { fetchImpl: async (...args) => { calls++; return libraryFetch(...args) } });
+  });
+  test('Library AI search uses only server-loaded public text; manual paging and fail-closed outcomes are honest', async () => {
+    const activity = await createActivity(apiUsers.organizer.idToken, 'Beginner Python workshop');
+    await db.doc(`activities/${activity.id}`).update({ facilitiesNotes: 'Private facilities notes never sent' });
+    await publishActivity(apiUsers.organizer.idToken, activity.id);
+    await withLibraryApi(async call => {
+      const result = await call(activity.id, { suggest: true });
+      assert.equal(result.body.search.source, 'AI'); assert.equal(result.body.search.query, 'Python'); assert.equal(result.body.resources[0].title, 'Python resource 1');
+      assert.equal((await call(activity.id, { query: '?q=Python&page=2' })).body.resources.length, 2);
+      assert.equal((await call(activity.id, { query: '?q=no-match' })).body.pagination.total, 0);
+      for (const query of ['?q=a&q=b', '?page=0', '?url=https://other.test']) assert.equal((await call(activity.id, { query })).response.status, 400);
+      assert.equal((await call(activity.id, { suggest: true, body: { title: 'Untrusted replacement', uid: 'another-user' } })).response.status, 400);
+      const failure = await call(activity.id, { query: '?q=unavailable' });
+      assert.equal(failure.response.status, 503); assert.equal(failure.body.error.code, 'LIBRARY_UNAVAILABLE'); assert.equal(JSON.stringify(failure.body).includes('private provider details'), false);
+      assert.equal((await call(activity.id, { query: '?q=malformed' })).response.status, 502);
+    }, { aiFetchImpl: async (url, options) => {
+      const input = JSON.parse(JSON.parse(options.body).messages[1].content);
+      assert.deepEqual(input, { title: activity.title, description: activity.description });
+      return libraryAiFetch(url, options);
+    } });
+    await withLibraryApi(async call => {
+      const result = await call(activity.id, { suggest: true });
+      assert.equal(result.response.status, 503); assert.equal(result.body.error.code, 'LIBRARY_RELEVANCE_UNAVAILABLE');
+      assert.equal((await call(activity.id, { relevance: true })).body.eligible, false);
+      assert.equal((await call(activity.id, { query: '?q=Python' })).response.status, 200);
+    }, { aiEnabled: false });
+    await withLibraryApi(async call => {
+      const result = await call(activity.id, { suggest: true });
+      assert.equal(result.response.status, 503); assert.equal(result.body.error.code, 'LIBRARY_NOT_CONFIGURED');
+    }, { enabled: false, aiFetchImpl: () => { throw new Error('AI must not be called') } });
+  });
+  test('Library relevance gates direct suggestions, invalidates after edits and keeps catalog reads explicit', async () => {
+    const activity = await createActivity(apiUsers.organizer.idToken, 'Fresher Welcome for Burmese Students');
+    await db.doc(`activities/${activity.id}`).update({ description: 'Welcome' });
+    await publishActivity(apiUsers.organizer.idToken, activity.id);
+    let reads = 0, assessments = 0;
+    await withLibraryApi(async call => {
+      const social = await call(activity.id, { relevance: true });
+      assert.equal(social.body.status, 'NOT_RELEVANT'); assert.equal(social.body.eligible, false);
+      assert.equal(social.response.headers.get('cache-control'), 'no-store');
+      assert.equal((await call(activity.id, { suggest: true })).response.status, 409);
+      assert.equal(reads, 0); assert.equal(assessments, 1);
+      await db.doc(`activities/${activity.id}`).update({ title: 'Python workshop', description: 'Learn Python with exercises.' });
+      const educational = await call(activity.id, { relevance: true });
+      assert.equal(educational.body.eligible, true); assert.equal(reads, 0); assert.equal(assessments, 2);
+      assert.equal((await call(activity.id, { suggest: true })).response.status, 200);
+      assert.equal(reads, 1); assert.equal(assessments, 2);
+      assert.equal((await call(activity.id, { relevance: true, query: '?title=Python' })).response.status, 400);
+      await db.doc(`activities/${activity.id}`).update({ title: 'Fresher Welcome', description: 'Welcome' });
+      assert.equal((await call(activity.id, { suggest: true })).response.status, 409);
+      assert.equal(reads, 1);
+    }, { fetchImpl: async (...args) => { reads++; return libraryFetch(...args) }, aiFetchImpl: async (...args) => { assessments++; return libraryAiFetch(...args) } });
+  });
+  test('Library AI requests enforce in-flight and five-per-minute limits while manual search remains usable', async () => {
+    const activity = await createActivity(apiUsers.organizer.idToken, 'Python rate-limit workshop');
+    await publishActivity(apiUsers.organizer.idToken, activity.id);
+    let entered, release;
+    const started = new Promise(resolve => { entered = resolve }), gate = new Promise(resolve => { release = resolve });
+    await withLibraryApi(async call => {
+      const first = call(activity.id, { suggest: true }); await started;
+      assert.equal((await call(activity.id, { suggest: true })).response.status, 429);
+      release(); assert.equal((await first).response.status, 200);
+      for (let i = 0; i < 4; i++) assert.equal((await call(activity.id, { suggest: true })).response.status, 200);
+      assert.equal((await call(activity.id, { suggest: true })).response.status, 429);
+      assert.equal((await call(activity.id, { query: '?q=Python' })).response.status, 200);
+    }, { aiFetchImpl: async (...args) => { entered(); await gate; return libraryAiFetch(...args) } });
+  });
+
+  async function withInternshipApi(fetchImpl, run, enabled = true) {
+    const internships = createInternships({ config: { enabled, baseUrl: 'https://team17.test', timeoutMs: 1000 }, fetchImpl });
+    const integration = createIntegration({ db, config: integrationConfig({}), fetchImpl: () => { throw new Error('Unexpected external request') } });
+    const server = createApp({ db, auth, integration, internships, env: { FIREBASE_PROJECT_ID: projectId, SCHOOL_EMAIL_DOMAIN: 'lamduan.mfu.ac.th' } }).listen(0, '127.0.0.1');
+    await new Promise(resolve => server.once('listening', resolve));
+    const base = `http://127.0.0.1:${server.address().port}`;
+    const call = async (query = '', token = apiUsers.student.idToken) => {
+      const response = await fetch(base + '/api/internships' + query, { headers: token ? { Authorization: `Bearer ${token}` } : {} });
+      return { response, body: await response.json() };
+    };
+    try { await run(call) } finally { await new Promise(resolve => server.close(resolve)) }
+  }
+  test('internship API admits enrolled Students including dual Organizers and denies other identities before partner calls', async () => {
+    const dual = await createUser('ORGANIZER');
+    await db.doc(`users/${dual.uid}`).update({ universityId: 'TEST-DUAL-INTERN-001' });
+    const personal = await createUser('ORGANIZER', { domain: 'gmail.com' });
+    const applicant = await createUser('APPLICANT', { domain: 'gmail.com', provisioned: false });
+    let calls = 0;
+    await withInternshipApi(async (...args) => { calls++; return internshipFetch(...args) }, async call => {
+      assert.equal((await call('', '')).response.status, 401);
+      for (const user of [apiUsers.admin, personal, applicant]) assert.equal((await call('', user.idToken)).response.status, 403);
+      assert.equal(calls, 0);
+      for (const user of [apiUsers.student, dual]) {
+        const result = await call('', user.idToken);
+        assert.equal(result.response.status, 200); assert.equal(result.response.headers.get('cache-control'), 'no-store');
+        assert.equal(result.body.data.length, 6); assert.equal(result.body.data[0].is_demo, true);
+      }
+      assert.equal(calls, 2);
+    });
+  });
+  test('internship API proxies page/filter results while keeping failures and invalid queries honest', async () => {
+    await withInternshipApi(internshipFetch, async call => {
+      assert.equal((await call('?page=2')).body.data.length, 2);
+      const filtered = await call('?q=React&work_mode=remote');
+      assert.equal(filtered.body.pagination.total, 4); assert.equal(filtered.body.data[0].application_deadline, '2027-02-05');
+      assert.equal((await call('?q=missing')).body.pagination.total, 0);
+      for (const query of ['?q=a&q=b', '?limit=51', '?url=https://other.test']) assert.equal((await call(query)).response.status, 400);
+      const unavailable = await call('?q=unavailable'); assert.equal(unavailable.response.status, 503);
+      assert.equal(JSON.stringify(unavailable.body).includes('private partner error'), false);
+      assert.equal((await call('?q=malformed')).response.status, 502);
+    });
+    await withInternshipApi(() => { throw new Error('Provider must not be called') }, async call => {
+      const result = await call(); assert.equal(result.response.status, 503); assert.equal(result.body.error.code, 'INTERNSHIPS_NOT_CONFIGURED');
+    }, false);
   });
 
 }

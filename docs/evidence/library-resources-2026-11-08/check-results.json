@@ -1,0 +1,119 @@
+{
+  "recordedDate": "2026-11-08",
+  "timezone": "Asia/Bangkok",
+  "scope": "Student activity learning resources: AI chooses query, Library supplies all book data",
+  "manualCatalogRead": {
+    "checkedAt": "2026-11-08T04:27:45.709Z",
+    "kind": "Manual read-only Library catalog check",
+    "url": "https://campus-library-mu.vercel.app/api/integrations/catalog?q=programming&page=1&limit=4",
+    "http": 200,
+    "requestId": null,
+    "resourceCount": 2,
+    "pagination": {
+      "page": 1,
+      "limit": 4,
+      "total": 2,
+      "total_pages": 1
+    },
+    "resourceFields": [
+      "id",
+      "title",
+      "author",
+      "category",
+      "description",
+      "available_copies",
+      "total_copies",
+      "details_url"
+    ],
+    "fieldTypes": {
+      "id": "string",
+      "title": "string",
+      "author": "string",
+      "category": "string",
+      "description": "string",
+      "available_copies": "number",
+      "total_copies": "number",
+      "details_url": "string"
+    }
+  },
+  "manualAdapterRead": {
+    "kind": "Manual read-only check through application Library adapter; AI not invoked",
+    "checkedAt": "2026-11-08T04:33:50.838Z",
+    "http": 200,
+    "publicUrl": "https://campus-library-mu.vercel.app/api/integrations/catalog?q=programming&page=1&limit=4",
+    "count": 2,
+    "pagination": {
+      "page": 1,
+      "limit": 4,
+      "total": 2,
+      "total_pages": 1,
+      "has_next": false
+    },
+    "allLinksUseLibraryOrigin": true,
+    "allCopyCountsValid": true,
+    "aiConfigurationReady": true
+  },
+  "localRuntime": {
+    "checkedAt": "2026-11-08T04:34:38.570Z",
+    "checks": [
+      {
+        "name": "api-health",
+        "url": "http://localhost:3000/health",
+        "http": 200
+      },
+      {
+        "name": "protected-library",
+        "url": "http://localhost:3000/api/activities/example/library-resources",
+        "http": 401
+      },
+      {
+        "name": "protected-ai-library",
+        "url": "http://localhost:3000/api/activities/example/library-resources/suggest",
+        "http": 401
+      },
+      {
+        "name": "frontend",
+        "url": "http://localhost:5173/",
+        "http": 200
+      }
+    ]
+  },
+  "automated": {
+    "build": "passed",
+    "offlineEnvironment": "passed",
+    "isolatedBackend": {
+      "passed": 114,
+      "failed": 0,
+      "newLibraryHelperTests": 6,
+      "newLibraryApiScenarios": 3
+    },
+    "targetedBrowser": {
+      "passed": 3,
+      "scenarios": [
+        "Library AI/manual search, pagination, availability, empty/error/recovery, fallback and activity-state reset",
+        "Existing Student Internship journey",
+        "Existing cross-role publish/register/cancel/Admin journey"
+      ],
+      "noOverflowWidths": [
+        360,
+        768,
+        1440
+      ]
+    },
+    "providerBoundary": "Mocked Library/AI/partner providers and isolated disposable Firebase emulator records only"
+  },
+  "screenshots": {
+    "library-resources-desktop.png": "Synthetic catalog and mocked successful AI keyword selection, not live AI/catalog UI",
+    "library-resources-mobile-fallback.png": "Synthetic catalog and simulated AI timeout with honest fallback"
+  },
+  "limits": [
+    "No real AI provider call or AI credit consumption during checks",
+    "No real-user authenticated Library UI walkthrough",
+    "Library copy availability is a query-time snapshot",
+    "Original credential-bearing handover preserved privately; not copied here",
+    "No joint team sign-off or Campus Events deployment"
+  ],
+  "gitOperations": false,
+  "push": false,
+  "deployment": false
+}

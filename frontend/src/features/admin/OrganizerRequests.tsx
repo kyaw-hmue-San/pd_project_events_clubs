@@ -28,7 +28,7 @@ export function OrganizerRequests() {
     finally { setBusy(false) }
   }
   return <div className="page-wrap">
-    <PageHeader eyebrow="Admin review" title="Organizer requests" description="Review applicants and manage access to campus event tools." actions={<Button variant="secondary" size="sm" icon="refresh" busy={page.loading} busyLabel="Refreshing…" onClick={page.refresh}>Refresh requests</Button>} />
+    <PageHeader eyebrow="Admin review" title="Organizer requests" description="Review applicants and manage access to campus event tools." actions={<Button variant="secondary" size="sm" icon="refresh" busy={page.loading} busyFeedback="notice" onClick={page.refresh}>Refresh requests</Button>} />
     <div className="mt-6"><SegmentedControl<RequestStatus> label="Request status" value={status} items={[{ value: "PENDING", label: "Pending" }, { value: "APPROVED", label: "Approved" }, { value: "REJECTED", label: "Rejected" }]} onChange={setStatus} /></div>
     {page.error && <ErrorNotice message={page.error} onRetry={page.retry} />}
     <div className="motion-list mt-5 space-y-4">{page.items.map(request => <article key={request.id} className="surface-card p-5 sm:p-6">
@@ -47,7 +47,7 @@ export function OrganizerRequests() {
         {review?.decision === "REJECT" && <Field label="Reason for rejection"><Textarea required maxLength={500} value={reason} onChange={event => setReason(event.target.value)} disabled={busy} /></Field>}
         {error && <ErrorNotice message={error} />}
         {busy && <OperationNotice title={review?.decision === "APPROVE" ? "Approving Organizer access" : "Saving your review decision"} description="Checking the applicant and confirming this request version." />}
-        <div className="flex flex-wrap gap-3"><Button type="button" variant="secondary" disabled={busy} onClick={() => setReview(null)}>Cancel</Button><Button type="submit" variant={review?.decision === "REJECT" ? "danger" : "primary"} busy={busy} busyLabel="Saving decision…">{review?.decision === "APPROVE" ? "Confirm approval" : "Confirm rejection"}</Button></div>
+        <div className="flex flex-wrap gap-3"><Button type="button" variant="secondary" disabled={busy} onClick={() => setReview(null)}>Cancel</Button><Button type="submit" variant={review?.decision === "REJECT" ? "danger" : "primary"} busy={busy} busyFeedback="notice">{review?.decision === "APPROVE" ? "Confirm approval" : "Confirm rejection"}</Button></div>
       </form>
     </Modal>
     {toast && <Toast message={toast} onClose={() => setToast("")} />}

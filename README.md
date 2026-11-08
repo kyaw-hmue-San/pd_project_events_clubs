@@ -14,6 +14,8 @@ planning events and coordinating facilities support.
 - AI Event Planning Copilot with reviewed agenda, checklist and facilities suggestions.
 - Organizer access requests with optional policy-based AI approval and Admin review.
 - Reviewed Maintenance requests and signed work-order status updates.
+- Read-only Team 17 internships with search, filters, demo labels and detail links.
+- AI-assisted Library searches on activity details, with real catalog results and manual search.
 - Editable display names and responsive interfaces across all three roles.
 
 ## Access
@@ -116,7 +118,7 @@ Run only one local API mode at a time:
 
 | Command | Enabled behavior |
 |---|---|
-| `npm run dev:api` | Normal development with partner integrations disabled |
+| `npm run dev:api` | Normal development with Maintenance/legacy integrations disabled |
 | `npm run dev:api:maintenance` | Authenticated incoming maintenance updates only |
 | `npm run dev:api:facilities` | Explicit owner-reviewed facilities requests and signed incoming updates |
 
@@ -124,8 +126,11 @@ Saving or publishing an activity does not send a facilities request. Coordinated
 testing requires the agreed private credentials and an HTTPS callback tunnel to
 API port 3000. See the [Maintenance guide](docs/MAINTENANCE_CONNECTION.md).
 
-Notification Hub, Internship and Library connections are proposed integrations
-pending their API contracts.
+The independent [Team 17 Internship feed](docs/integrations/team17-internships.md)
+works in any API mode when `TEAM17_API_BASE_URL` is configured. Current listings
+are fictional demos. [Library learning resources](docs/integrations/library-resources.md)
+use independent server-only Library credentials and the existing AI provider.
+Notification Hub's contract remains pending.
 
 ## Checks and builds
 

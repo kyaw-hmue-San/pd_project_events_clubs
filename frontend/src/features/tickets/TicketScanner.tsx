@@ -72,7 +72,7 @@ export function TicketScanner({ disabled, onDetected, onEnterCode }: { disabled:
         <span className="mb-3 grid size-9 place-items-center rounded-lg bg-white text-slate-600 ring-1 ring-slate-200"><Icon name="file" className="size-5" /></span>
         <h2 className="text-sm font-semibold text-slate-900">Use a saved ticket</h2>
         <p className="mb-4 mt-1 flex-1 text-xs leading-5 text-slate-500">Choose the downloaded QR or a clear ticket screenshot. PNG, JPEG or WebP · up to 5 MB.</p>
-        <Button variant="secondary" icon="file" busy={state === 'reading'} busyLabel="Reading image…" disabled={disabled} onClick={() => fileInput.current?.click()}>Upload ticket image</Button>
+        <Button variant="secondary" icon="file" busy={state === 'reading'} busyFeedback="notice" disabled={disabled} onClick={() => fileInput.current?.click()}>Upload ticket image</Button>
         <input ref={fileInput} type="file" hidden accept="image/png,image/jpeg,image/webp,.png,.jpg,.jpeg,.webp" aria-label="Upload ticket image" disabled={disabled || state === 'reading'} onChange={event => { const file = event.target.files?.[0]; event.target.value = ''; void readImage(file) }} />
       </section>
     </div>

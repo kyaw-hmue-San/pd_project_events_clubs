@@ -197,7 +197,7 @@ updates cannot downgrade versioned state. Legacy equal-time conflicts expose
 needsReview. Existing 201/duplicate-200/conflict-409 and inbox/log restrictions
 remain. Invalid signature is 401; inconsistent signed metadata is 400.
 
-Normal local dev disables partner integration. `npm run dev:api:maintenance`
+Normal local dev disables Maintenance/legacy integration. `npm run dev:api:maintenance`
 enables inbound-only shared-secret compatibility. `npm run dev:api:facilities`
 enables reviewed creation plus HMAC-required maintenance reception while keeping
 legacy outbound publication/polling disabled. It privately reuses the existing
@@ -388,6 +388,54 @@ The new queries require the checked-in activities organizerId/dateTime,
 organizerId/status/dateTime, registrations studentId/registeredAt, and
 activityId/registeredAt indexes, in addition to existing indexes. Emulator success
 does not prove those composite indexes are deployed on the real project.
+
+## Student internship feed — Team 17
+
+`GET /api/internships` requires authenticated server-derived Student capability.
+Enrolled Student/Organizers qualify; Admin and Organizer-only accounts receive
+403. No enrollment or role is changed. Query: `page` (1–10000, default 1),
+`limit` (1–50, default 6), optional `q`/`location` (100 characters), `category`
+(60), `work_mode` (`remote`, `hybrid`, `on-site`). Unknown/repeated parameters
+return 400 `INVALID_INTERNSHIP_QUERY`. The proxy fixes upstream `status=open`.
+
+200 returns `{data, pagination: {page, limit, total, total_pages, has_next},
+meta: {api_version, request_id, timestamp, data_source}}` with validated placement
+fields from Team 17's contract, including `is_demo`, application deadline and a
+same-provider details URL. No authentication/identity is forwarded upstream.
+No persistence, application submission or webhooks are introduced. Responses
+are `no-store`. Disabled configuration returns 503 `INTERNSHIPS_NOT_CONFIGURED`,
+provider failures 503 `INTERNSHIPS_UNAVAILABLE`, malformed data 502
+`INTERNSHIPS_INVALID_RESPONSE`, all using fixed safe error messages.
+See [provider setup and constraints](integrations/team17-internships.md).
+
+## Activity Library learning resources — 2026-11-08
+
+Student capability plus a PUBLISHED/CLOSED activity is required for both routes:
+
+- `GET /api/activities/:id/library-resources`: optional `q` and `category` ≤100
+  characters, `page` 1–10000 (default 1), `limit` 1–12 (default 4). Unknown or
+  repeated parameters return 400 `INVALID_LIBRARY_QUERY`.
+- `POST /api/activities/:id/library-resources/suggest`: JSON `{}`, no query
+  parameters. Server loads current public activity text, requires a positive
+  reading-relevance assessment and uses its grounded query to search Library.
+  No client-supplied activity/prompt is accepted. Irrelevant is 409
+  `LIBRARY_NOT_RELEVANT`; unavailable is 503 `LIBRARY_RELEVANCE_UNAVAILABLE`.
+- `GET /api/activities/:id/library-resources/relevance`, no query parameters:
+  `{eligible, status: RELEVANT|NOT_RELEVANT|UNAVAILABLE, query?}`. A miss in the
+  bounded process-local public-text/model/policy cache can call AI; it does not
+  retrieve catalog books. Uncertainty/failure cannot enable the button. Manual
+  search stays available. Auth/activity checks apply before cache/provider access.
+
+200: `{resources, pagination: {page, limit, total, total_pages, has_next},
+search: {query, source: AI|MANUAL}}` for catalog/search routes.
+Resources project ID/title/author/category/description, available/total copies
+and a same-provider `/books/{id}` URL. No student data or Firebase credentials
+are sent to either provider; no records are written. `Cache-Control: no-store`.
+Admin/Organizer-only access is 403; draft/missing activity 404. AI requests have
+per-process in-flight and five-per-minute limits (429 `LIBRARY_AI_RATE_LIMITED`).
+Library unavailable/disabled: 503 `LIBRARY_UNAVAILABLE`/`LIBRARY_NOT_CONFIGURED`;
+malformed responses: 502 `LIBRARY_INVALID_RESPONSE`. No raw provider errors.
+See [setup, contract and limits](integrations/library-resources.md).
 
 ## Partner routes
 

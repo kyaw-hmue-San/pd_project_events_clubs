@@ -1,4 +1,5 @@
 import { auth } from "./firebase"
+import type { InternshipPage, LibraryResources, LibraryRelevance } from '../models'
 import type { ActivityInput, ActivityRecord, Profile, RegistrationRecord, Summary, Page, OrganizerRequest, RequestStatus, DraftBrief, DraftSuggestion, PlanBrief, PlanSuggestion, RegistrationTicket, CheckInResult, MaintenanceStatus, FacilityPreview, FacilityRequest } from "../models"
 
 export class ApiError extends Error {
@@ -10,7 +11,7 @@ export class ApiError extends Error {
 const rawBase = import.meta.env.VITE_API_BASE_URL || ""
 const base = rawBase.replace(/\/$/, "")
 if (base && !/^https?:\/\//.test(base)) throw new Error("VITE_API_BASE_URL must be an HTTP(S) URL")
-export async function request<T>(path: string, options: { method?: string; body?: unknown } = {}): Promise<T> {
+export async function request<T>(path: string, options: { method?: string; body?: unknown; timeoutMs?: number; networkMessage?: string } = {}): Promise<T> {
   const user = auth?.currentUser
   if (!user) throw new ApiError(401, "UNAUTHENTICATED", "Sign in to continue.")
   const token = await user.getIdToken()
@@ -20,12 +21,12 @@ export async function request<T>(path: string, options: { method?: string; body?
       method: options.method || "GET",
       headers: { Authorization: `Bearer ${token}`, ...(options.body !== undefined ? { "Content-Type": "application/json" } : {}) },
       ...(options.body !== undefined ? { body: JSON.stringify(options.body) } : {}),
-      signal: AbortSignal.timeout(20000),
+      signal: AbortSignal.timeout(options.timeoutMs || 20000),
     })
   } catch {
-    throw new ApiError(0, "NETWORK_ERROR", options.method && options.method !== "GET"
+    throw new ApiError(0, "NETWORK_ERROR", options.networkMessage || (options.method && options.method !== "GET"
       ? "The server could not confirm the change. Check your connection and refresh the list before trying again."
-      : "Cannot reach the campus API. The service may be unavailable. Please try again shortly.")
+      : "Cannot reach the campus API. The service may be unavailable. Please try again shortly."))
   }
   if (response.status === 204) return undefined as T
   const body = await response.json().catch(() => null)
@@ -40,6 +41,10 @@ function query(values: Record<string, string | undefined>) {
 }
 const id = encodeURIComponent
 export const api = {
+  libraryRelevance: (activityId: string) => request<LibraryRelevance>(`/api/activities/${id(activityId)}/library-resources/relevance`, { timeoutMs: 25000 }),
+  libraryResources: (activityId: string, q: string, page = '1') => request<LibraryResources>(`/api/activities/${id(activityId)}/library-resources${query({ q, page })}`),
+  suggestLibraryResources: (activityId: string) => request<LibraryResources>(`/api/activities/${id(activityId)}/library-resources/suggest`, { method: 'POST', body: {}, timeoutMs: 35000, networkMessage: 'Could not load learning resources. Try again or search the Library manually.' }),
+  internships: (values: { page: string; q?: string; location?: string; work_mode?: string }) => request<InternshipPage>(`/api/internships${query({ ...values, limit: '6' })}`),
   maintenance: (activityId: string) => request<MaintenanceStatus>(`/api/activities/${id(activityId)}/maintenance`),
   facilityPreview: (activityId: string, category: string) => request<FacilityPreview>(`/api/activities/${id(activityId)}/maintenance/preview${query({ category })}`),
   sendFacilityRequest: (activityId: string, body: { category: string; revision: string }) => request<FacilityRequest>(`/api/activities/${id(activityId)}/maintenance/requests`, { method: 'POST', body }),

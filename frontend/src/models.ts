@@ -34,7 +34,25 @@ export interface Registration {
   checkedInAt?: string | null
 }
 
-export type Route = "auth" | "discover" | "registrations" | "activity" | "organizer-activities" | "activity-form" | "roster" | "admin-overview" | "admin-activity" | "organizer-request" | "admin-requests" | "profile" | "ticket" | "check-in"
+export type Route = "auth" | "discover" | "registrations" | "activity" | "organizer-activities" | "activity-form" | "roster" | "admin-overview" | "admin-activity" | "organizer-request" | "admin-requests" | "profile" | "ticket" | "check-in" | "internships"
+
+export interface Internship {
+  id: string; title: string; company: string; description: string; location: string;
+  category: string; work_mode: 'remote' | 'hybrid' | 'on-site'; skills: string[];
+  allowance_thb: number | null; duration_weeks: number; application_deadline: string;
+  status: 'open'; is_demo: boolean; published_at: string; updated_at: string; details_url: string;
+}
+export interface InternshipPage {
+  data: Internship[];
+  pagination: { page: number; limit: number; total: number; total_pages: number; has_next: boolean };
+  meta: { api_version: string; request_id: string; timestamp: string; data_source: string };
+}
+export interface LibraryResources {
+  resources: { id: string; title: string; author: string; category: string; description: string; available_copies: number; total_copies: number; details_url: string }[];
+  pagination: { page: number; limit: number; total: number; total_pages: number; has_next: boolean };
+  search: { query: string; source: 'AI' | 'ACTIVITY_KEYWORD' | 'MANUAL'; fallbackReason?: string };
+}
+export interface LibraryRelevance { eligible: boolean; status: 'RELEVANT' | 'NOT_RELEVANT' | 'UNAVAILABLE'; query?: string }
 
 export interface Profile { id: string; role: "STUDENT" | "ORGANIZER" | "ADMIN"; name?: string | null; email?: string; universityId?: string | null; capabilities: { student: boolean; organizer: boolean } }
 export interface ActivityInput { title: string; description: string; activityType: ActivityType; dateTime: string; location: string; maxParticipants?: number | null; endDateTime?: string | null; registrationDeadline?: string | null; facilitiesNotes?: string | null }

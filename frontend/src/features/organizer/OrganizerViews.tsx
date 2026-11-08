@@ -22,7 +22,7 @@ export function OrganizerActivities({ activities, onForm, onRoster, onOpen, onSt
     <PageHeader eyebrow="Organizer workspace" title="My activities" description="Create, publish and manage your campus activities."
       actions={<Button icon="plus" onClick={() => onForm()}>Create activity</Button>} />
     {!confirmation && error && <ErrorNotice message={error} />}
-    {busy && !confirmation && <OperationNotice title={progress || "Updating your activity"} description="Waiting for the server to confirm this change." />}
+    {busy && progress && !confirmation && <OperationNotice title={progress} description="Please wait while we save your change." />}
     {activities.length ? <div className="motion-list surface-card mt-6 overflow-hidden">
       {activities.map(activity => <article key={activity.id} className="flex flex-col gap-4 border-b border-slate-100 p-5 last:border-0 md:flex-row md:items-center">
         <div className="min-w-0 flex-1"><div className="flex gap-2"><TypeBadge type={activity.type} /><Badge status={activity.status} /></div>
@@ -33,7 +33,7 @@ export function OrganizerActivities({ activities, onForm, onRoster, onOpen, onSt
         <div className="flex flex-wrap gap-2">
           {activity.status !== "CLOSED" && <Button variant="secondary" disabled={busy} onClick={() => onForm(activity.id)}>Edit</Button>}
           {activity.status === "DRAFT" ? <>
-            <Button busy={busy && busyId === activity.id} busyLabel="Publishing…" disabled={busy} onClick={() => void act(() => onStatus(activity.id, "PUBLISHED"))}>Publish</Button>
+            <Button busy={busy && busyId === activity.id} busyFeedback="notice" disabled={busy} onClick={() => void act(() => onStatus(activity.id, "PUBLISHED"))}>Publish</Button>
             <Button variant="danger-ghost" disabled={busy} onClick={() => { setError(""); setConfirmation({ id: activity.id, action: "delete" }) }}>Delete</Button>
           </> : <Button variant="secondary" onClick={() => onRoster(activity.id)}>Roster</Button>}
           {activity.status === "PUBLISHED" && <Button variant="danger-ghost" disabled={busy} onClick={() => { setError(""); setConfirmation({ id: activity.id, action: "close" }) }}>Close</Button>}
@@ -43,9 +43,9 @@ export function OrganizerActivities({ activities, onForm, onRoster, onOpen, onSt
     <Modal open={Boolean(confirmation)} busy={busy} onClose={() => !busy && setConfirmation(null)} title={confirmation?.action === "delete" ? "Delete this draft?" : "Close this activity?"}>
       <p className="text-sm leading-6 text-slate-600">{confirmation?.action === "delete" ? "This unused draft will be permanently removed." : "Registration will close immediately. Closed activities cannot be reopened."}</p>
       {error && <ErrorNotice message={error} />}
-      {busy && <OperationNotice title={progress || "Updating your activity"} description="Your change is being confirmed by the server." />}
+      {busy && <OperationNotice title={progress || "Updating your activity"} description="Please wait while we confirm your change." />}
       <div className="mt-6 flex gap-3"><Button variant="secondary" disabled={busy} onClick={() => setConfirmation(null)}>Keep activity</Button>
-        <Button variant="danger" busy={busy} busyLabel="Confirming…" onClick={() => confirmation && void act(() => confirmation.action === "delete" ? onDelete(confirmation.id) : onStatus(confirmation.id, "CLOSED"))}>{confirmation?.action === "delete" ? "Delete draft" : "Close activity"}</Button></div>
+        <Button variant="danger" busy={busy} busyFeedback="notice" onClick={() => confirmation && void act(() => confirmation.action === "delete" ? onDelete(confirmation.id) : onStatus(confirmation.id, "CLOSED"))}>{confirmation?.action === "delete" ? "Delete draft" : "Close activity"}</Button></div>
     </Modal>
   </div>
 }
@@ -165,8 +165,8 @@ export function ActivityForm({ activity, onBack, onSave, progress }: {
         </section>
         {error && <ErrorNotice message={error} />}
         <div className="flex flex-wrap justify-end gap-3 border-t border-slate-100 pt-6">
-          <Button type="submit" busy={busy && intent === 'draft'} busyLabel="Saving…" variant={activity?.status === "PUBLISHED" ? "primary" : "secondary"} name="intent" value="draft">{activity?.status === "PUBLISHED" ? "Save changes" : "Save draft"}</Button>
-          {activity?.status !== "PUBLISHED" && <Button type="submit" busy={busy && intent === 'publish'} busyLabel="Publishing…" name="intent" value="publish">Publish activity</Button>}
+          <Button type="submit" busy={busy && intent === 'draft'} busyFeedback="notice" variant={activity?.status === "PUBLISHED" ? "primary" : "secondary"} name="intent" value="draft">{activity?.status === "PUBLISHED" ? "Save changes" : "Save draft"}</Button>
+          {activity?.status !== "PUBLISHED" && <Button type="submit" busy={busy && intent === 'publish'} busyFeedback="notice" name="intent" value="publish">Publish activity</Button>}
         </div>
       </fieldset>
       {busy && <OperationNotice title={progress || "Saving your activity"} description="Keep this page open while we confirm the activity details." />}
@@ -202,7 +202,7 @@ export function Roster({ activity, registrations, onBack, onScan, onCheckIn }: {
       <p className="text-sm leading-6 text-slate-600">Confirm that <strong>{selected?.participant?.displayName || selected?.participant?.email || 'this attendee'}</strong> has arrived for {activity.title}. Attendance is counted once.</p>
       {error && <ErrorNotice message={error} />}
       {busy && <OperationNotice title="Recording attendance" description="Checking the registration and updating the event count." />}
-      <div className="mt-5 flex flex-wrap justify-end gap-2"><Button variant="secondary" disabled={busy} onClick={() => setSelected(null)}>Cancel</Button><Button busy={busy} busyLabel="Checking in…" onClick={() => void confirm()}>Confirm check-in</Button></div>
+      <div className="mt-5 flex flex-wrap justify-end gap-2"><Button variant="secondary" disabled={busy} onClick={() => setSelected(null)}>Cancel</Button><Button busy={busy} busyFeedback="notice" onClick={() => void confirm()}>Confirm check-in</Button></div>
     </Modal>
   </div>
 }

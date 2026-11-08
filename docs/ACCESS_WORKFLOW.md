@@ -25,6 +25,28 @@ Confirmed user scope, updated 2026-11-06:
   remains read-only. Admin may review Organizer requests and edit their own
   username through the same bounded self-profile API available to other roles.
 
+## Student internship browsing
+
+Enrolled Student-capable accounts can browse Team 17 internships from their
+Student workspace, including enrolled Students with Organizer access. The
+server enforces that capability. Other Organizers, pending applicants and Admin
+do not inherit it. Search is read-only; details/applications remain on Team 17's
+website. Demo listings are explicitly labelled. No identity data is sent to the
+provider. See [connection guide](integrations/team17-internships.md).
+
+## Activity learning resources
+
+Enrolled Student-capable people can explicitly find Library resources on a
+published/closed activity. A cached AI check of public title/description shows
+the AI search button only for a clear learning purpose and reading subject.
+Social/vague events, uncertainty and AI failure leave that button hidden; manual
+search remains available. Direct suggestion requests enforce the same relevance
+rule. The existing AI provider receives only public activity text; books and availability come
+from the Library catalog. Manual search requires no AI. This grants no borrowing,
+reservation or role-management powers. No Student identity or private activity
+notes are shared. Admin and Organizer-only accounts do not gain access.
+See [Library connection](integrations/library-resources.md).
+
 ## My profile
 
 Student, Organizer and Admin navigation includes **My profile**. Each person may

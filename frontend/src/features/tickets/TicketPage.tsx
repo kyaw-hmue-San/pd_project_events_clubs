@@ -26,7 +26,7 @@ export function TicketPage({ id, onBack }: { id: string; onBack: () => void }) {
   const checkedIn = Boolean(value.registration.checkedInAt)
   return <div className="page-wrap max-w-4xl">
     <Button variant="ghost" icon="arrow-left" onClick={onBack}>Back to my registrations</Button>
-    <div className="mt-5"><PageHeader eyebrow="Your event pass" title="My ticket" description="Show this ticket to the Organizer when you arrive." actions={<Button variant="secondary" icon="refresh" busy={ticket.loading} busyLabel="Refreshing…" onClick={ticket.refresh}>Refresh ticket</Button>} /></div>
+    <div className="mt-5"><PageHeader eyebrow="Your event pass" title="My ticket" description="Show this ticket to the Organizer when you arrive." actions={<Button variant="secondary" icon="refresh" busy={ticket.loading} busyFeedback="notice" onClick={ticket.refresh}>Refresh ticket</Button>} /></div>
     {ticket.loading && <OperationNotice title="Checking your ticket status" />}
     <section className="surface-card mt-6 grid overflow-hidden md:grid-cols-2">
       <div className="space-y-5 p-5 sm:p-7">

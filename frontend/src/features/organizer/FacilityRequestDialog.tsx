@@ -8,7 +8,7 @@ export const facilityError = (code?: string | null) => ({
   FACILITIES_PARTNER_NOT_FOUND: 'The maintenance request endpoint was not found (HTTP 404). Ask the coordinator to confirm Team 10’s deployed creation URL before retrying.',
   FACILITIES_PARTNER_REJECTED: 'Maintenance rejected the request details. Contact the coordinator to resolve it before sending again.',
   FACILITIES_PARTNER_BUSY: 'Maintenance is busy. Wait a moment, then retry the original request.',
-  FACILITIES_PARTNER_UNAVAILABLE: 'Maintenance did not confirm the request. Retry uses the same details and request identity.',
+  FACILITIES_PARTNER_UNAVAILABLE: 'Maintenance has not confirmed your request yet. You can retry without creating a duplicate.',
   FACILITIES_INVALID_RESPONSE: 'The maintenance response could not be verified. Contact the coordinator or retry the same request.',
   FACILITIES_RESULT_UNCERTAIN: 'The result could not be confirmed. Retrying reuses the same request to avoid creating a duplicate.',
   FACILITIES_LINK_CONFLICT: 'The returned work order is already associated with another activity. Contact the coordinator.',
@@ -36,11 +36,11 @@ export function FacilityRequestDialog({ id, onClose, onFinished }: { id: string;
       <dl className="mt-4 space-y-3 rounded-xl bg-slate-50 p-4 text-sm">
         {[['Activity', preview.value.payload.title], ['Requirements', preview.value.payload.description], ['Location', preview.value.payload.location], ['Schedule', preview.value.payload.schedule]].map(([label, value]) => <div key={label}><dt className="text-xs font-semibold text-slate-500">{label}</dt><dd className="mt-1 whitespace-pre-wrap break-words leading-6 text-slate-800">{value}</dd></div>)}
       </dl>
-      {preview.value.previousAttempt && <p className="mt-3 text-xs leading-5 text-amber-800">This retry uses the originally reviewed details and the same request identity. Later activity edits do not change this submission.</p>}
+      {preview.value.previousAttempt && <p className="mt-3 text-xs leading-5 text-amber-800">Retrying sends the original request without creating a duplicate. Later activity edits won’t change the details below.</p>}
       {!preview.value.requestsEnabled && <p className="mt-3 text-xs text-amber-800">Request submission is disabled in this environment.</p>}
     </>}
     {error && <ErrorNotice message={error} />}
-    {busy && <OperationNotice title="Sending the facilities request" description="Waiting for a verified work-order receipt. Please keep this dialog open." />}
-    <div className="mt-5 flex flex-wrap justify-end gap-2"><Button variant="secondary" disabled={busy} onClick={onClose}>Cancel</Button><Button busy={busy} busyLabel="Sending…" disabled={preview.loading || !preview.value?.requestsEnabled || Boolean(preview.error)} onClick={() => void send()}>{preview.value?.previousAttempt ? 'Retry original request' : 'Send facilities request'}</Button></div>
+    {busy && <OperationNotice title="Sending the facilities request" description="Waiting for Maintenance to confirm your request. Please keep this dialog open." />}
+    <div className="mt-5 flex flex-wrap justify-end gap-2"><Button variant="secondary" disabled={busy} onClick={onClose}>Cancel</Button><Button busy={busy} busyFeedback="notice" disabled={preview.loading || !preview.value?.requestsEnabled || Boolean(preview.error)} onClick={() => void send()}>{preview.value?.previousAttempt ? 'Retry original request' : 'Send facilities request'}</Button></div>
   </Modal>
 }

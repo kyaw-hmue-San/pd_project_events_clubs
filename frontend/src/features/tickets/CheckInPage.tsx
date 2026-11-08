@@ -47,7 +47,7 @@ export function CheckInPage({ id, userId, onBack }: { id: string; userId: string
         <form ref={codeForm} className="mt-6 space-y-4 border-t border-slate-100 pt-5" onSubmit={event => { event.preventDefault(); void verify(code.trim()) }}>
           <h2 className="text-sm font-semibold text-slate-900">Or enter a ticket code</h2>
           <Field label="Ticket code" hint="Copy the code from the attendee’s ticket. Spaces and hyphens are accepted."><Input data-ticket-secret autoComplete="off" spellCheck={false} autoCapitalize="characters" placeholder="XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX" className="font-mono" maxLength={128} value={code} onChange={event => { setCode(event.target.value); setError('') }} disabled={Boolean(busy)} required /></Field>
-          <div className="flex flex-wrap gap-2"><Button type="submit" busy={busy === 'verify'} busyLabel="Verifying…" disabled={!code.trim()}>Verify ticket</Button>{code && <Button variant="ghost" disabled={Boolean(busy)} onClick={() => { setCode(''); setError(''); codeForm.current?.querySelector('input')?.focus() }}>Clear</Button>}</div>
+          <div className="flex flex-wrap gap-2"><Button type="submit" busy={busy === 'verify'} busyFeedback="notice" disabled={!code.trim()}>Verify ticket</Button>{code && <Button variant="ghost" disabled={Boolean(busy)} onClick={() => { setCode(''); setError(''); codeForm.current?.querySelector('input')?.focus() }}>Clear</Button>}</div>
         </form>
       </>}
       {busy && <OperationNotice title={busy === 'verify' ? 'Verifying the ticket' : 'Recording attendance'} description="Checking the selected event and current registration status." />}
@@ -58,7 +58,7 @@ export function CheckInPage({ id, userId, onBack }: { id: string; userId: string
         <p className="mt-1 break-all text-sm text-slate-500">{verified.participant.email || 'Email unavailable'}</p>
         {verified.registration.checkedInAt ? <p className="mt-4 text-sm text-slate-600">Checked in {formatDate(verified.registration.checkedInAt, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' })}. This attendee is counted once.</p> : <p className="mt-4 text-sm leading-6 text-slate-600">Confirm this is the person attending before recording their arrival.</p>}
         <div className="mt-5 flex flex-wrap gap-2">
-          {!confirmed && !verified.alreadyCheckedIn && <Button busy={busy === 'check-in'} busyLabel="Checking in…" onClick={() => void checkIn()}>Confirm check-in</Button>}
+          {!confirmed && !verified.alreadyCheckedIn && <Button busy={busy === 'check-in'} busyFeedback="notice" onClick={() => void checkIn()}>Confirm check-in</Button>}
           <Button variant="secondary" disabled={Boolean(busy)} onClick={() => { setVerified(null); setConfirmed(false); setCode(''); setError('') }}>{confirmed || verified.alreadyCheckedIn ? 'Scan next ticket' : 'Use another ticket'}</Button>
         </div>
       </section>}

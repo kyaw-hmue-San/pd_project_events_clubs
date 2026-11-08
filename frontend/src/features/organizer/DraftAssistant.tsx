@@ -7,11 +7,11 @@ type TextFields = Pick<ActivityInput, 'title' | 'description' | 'facilitiesNotes
 type Section = 'title' | 'description' | 'agenda' | 'checklist' | 'facilities'
 const durationLabel = (minutes: number) => [Math.floor(minutes / 60) ? `${Math.floor(minutes / 60)} ${minutes >= 120 ? 'hours' : 'hour'}` : '', minutes % 60 ? `${minutes % 60} ${minutes % 60 === 1 ? 'minute' : 'minutes'}` : ''].filter(Boolean).join(' ')
 const fallbackMessage = (reason?: string) => ({
-  TIMEOUT: 'AI took longer than the allowed wait. Try generating again, or use this planning template.',
-  NOT_CONFIGURED: 'AI is not configured for this environment. A standard planning template is available.',
-  PROVIDER_UNAVAILABLE: 'The AI provider could not complete this request. Try again, or use this planning template.',
-  INVALID_RESPONSE: 'The AI response did not pass the plan checks. A safe planning template is shown instead.',
-}[reason || ''] || 'A standard planning template is shown because the AI result could not be confirmed.')
+  TIMEOUT: 'AI is taking longer than expected. Try again or use this starter plan.',
+  NOT_CONFIGURED: 'AI is unavailable right now. You can use this starter plan.',
+  PROVIDER_UNAVAILABLE: 'AI is unavailable right now. Try again or use this starter plan.',
+  INVALID_RESPONSE: 'We couldn’t create an AI plan this time. You can use this starter plan.',
+}[reason || ''] || 'AI is unavailable right now. You can use this starter plan.')
 export function DraftAssistant({ disabled, current, activityType, onApply }: { disabled: boolean; current: TextFields; activityType: ActivityInput['activityType']; onApply: (draft: Partial<TextFields>) => void }) {
   const [open, setOpen] = useState(false)
   const [topic, setTopic] = useState(''), [audience, setAudience] = useState(''), [purpose, setPurpose] = useState('')
@@ -50,7 +50,7 @@ export function DraftAssistant({ disabled, current, activityType, onApply }: { d
     </div>
     <Modal open={open} size="wide" busy={busy} title="AI Event Planning Copilot" onClose={() => !busy && setOpen(false)}>
       {suggestion && plan ? <div className="motion-plan">
-        <div className={`rounded-xl p-4 text-sm ${suggestion.source === 'AI' ? 'bg-blue-50 text-blue-900' : 'bg-amber-50 text-amber-900'}`}><p className="font-semibold">{suggestion.source === 'AI' ? 'AI-generated event plan' : 'Standard template plan'}</p><p className="mt-1 text-xs leading-5">{suggestion.source === 'AI' ? 'Review all suggestions before applying. Availability and costs have not been verified.' : fallbackMessage(suggestion.fallbackReason)}</p></div>
+        <div className={`rounded-xl p-4 text-sm ${suggestion.source === 'AI' ? 'bg-blue-50 text-blue-900' : 'bg-amber-50 text-amber-900'}`}><p className="font-semibold">{suggestion.source === 'AI' ? 'AI-generated event plan' : 'Starter plan'}</p><p className="mt-1 text-xs leading-5">{suggestion.source === 'AI' ? 'Review the plan and confirm equipment, availability and costs before applying.' : fallbackMessage(suggestion.fallbackReason)}</p></div>
         <h3 className="mt-5 break-words text-xl font-bold">{plan.title}</h3><p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-slate-600">{plan.description}</p>
         <section className="mt-5"><h4 className="text-sm font-semibold">Timed agenda · {durationLabel(suggestion.brief.durationMinutes)}</h4><p className="mt-1 text-xs text-slate-500">Relative minutes from the start; your actual event schedule stays unchanged.</p><ol className="mt-3 space-y-2">{plan.agenda.map((item, index) => <li key={index} className="flex gap-3 rounded-lg bg-slate-50 p-3 text-sm"><span className="shrink-0 font-mono text-xs text-blue-700">{item.startMinute}–{item.endMinute} min</span><span>{item.title}</span></li>)}</ol></section>
         <section className="mt-5"><h4 className="text-sm font-semibold">Preparation checklist</h4><div className="mt-3 grid gap-3 sm:grid-cols-3">{Object.entries(plan.checklist).map(([stage, items]) => <div key={stage} className="rounded-xl border border-slate-200 p-3"><h5 className="text-xs font-semibold capitalize text-blue-700">{stage}</h5><ul className="mt-2 list-disc space-y-2 pl-4 text-xs leading-5 text-slate-600">{items.map((item, index) => <li key={index}>{item}</li>)}</ul></div>)}</div></section>
@@ -61,7 +61,7 @@ export function DraftAssistant({ disabled, current, activityType, onApply }: { d
         {tooLong && <ErrorNotice message="These sections exceed the 5,000-character description limit. Deselect sections or shorten your existing text." />}
         <div className="mt-5 flex flex-wrap justify-end gap-2"><Button variant="secondary" onClick={() => setSuggestion(null)}>Edit brief</Button><Button icon="check" disabled={!selected.length || tooLong || (replace && !confirmed)} onClick={() => { onApply(updates); setOpen(false); setSuggestion(null); setConfirmed(false) }}>Apply selected sections</Button></div>
       </div> : <form onSubmit={generate} className="space-y-4">
-        <p className="text-sm leading-6 text-slate-600">Your brief is sent to AI/ML API when available. A deterministic template is used otherwise. Nothing is saved, published or sent to maintenance here.</p>
+        <p className="text-sm leading-6 text-slate-600">Describe your idea to get an agenda, preparation checklist and facilities suggestions. Review the plan before adding it to your activity.</p>
         <fieldset disabled={busy} className="space-y-4">
           <Field label="Activity idea"><Input required minLength={3} maxLength={160} value={topic} onChange={event => setTopic(event.target.value)} placeholder="Beginner Python workshop" /></Field>
           <Field label="Who is it for?"><Input required minLength={3} maxLength={160} value={audience} onChange={event => setAudience(event.target.value)} placeholder="MFU students new to coding" /></Field>
@@ -78,7 +78,7 @@ export function DraftAssistant({ disabled, current, activityType, onApply }: { d
         </fieldset>
         {busy && <OperationNotice title="Building your event plan" description="Writing the agenda, checklist and facilities suggestions. This can take up to 45 seconds. Your form is preserved." />}
         {error && <ErrorNotice message={error} />}
-        <div className="flex flex-wrap justify-end gap-2"><Button variant="secondary" disabled={busy} onClick={() => setOpen(false)}>Cancel</Button><Button type="submit" icon="spark" disabled={!durationValid} busy={busy} busyLabel="Planning…">Generate event plan</Button></div>
+        <div className="flex flex-wrap justify-end gap-2"><Button variant="secondary" disabled={busy} onClick={() => setOpen(false)}>Cancel</Button><Button type="submit" icon="spark" disabled={!durationValid} busy={busy} busyFeedback="notice">Generate event plan</Button></div>
       </form>}
     </Modal>
   </>

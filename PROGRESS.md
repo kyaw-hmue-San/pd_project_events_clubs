@@ -1,10 +1,128 @@
 # Campus Pulse implementation progress
 
-Latest update: 2026-11-07 (Asia/Bangkok). Branch:
+Latest update: 2026-11-08 (Asia/Bangkok). Previously recorded branch:
 `implementation/campus-pulse-full-stack`.
 
 Status: **Connected local implementation. Production release not verified.**
 The work reuses the user-supplied Campus Pulse prototype and current skills pack.
+
+## Relevance-gated Library AI button — 2026-11-08
+
+- User requested hiding AI Library search for unrelated activities. Added
+  LIBRARY_RELEVANCE_V1: a clear learning purpose plus a concrete, grounded reading
+  subject is required. Social welcomes, vague text, uncertainty, invalid model
+  output and failures cannot enable the button. Manual catalog search remains
+  available. A protected relevance read on activity details checks only public
+  title/description; AI suggestions also recheck current text server-side before
+  touching the catalog. No identity/roles/private notes are sent to AI.
+- Concurrent checks coalesce in a bounded process-local cache keyed by public
+  text/model/policy. Positive/negative results last up to24h, failed checks60s;
+  edits invalidate, cache caps500 entries/eight active checks. Existing per-person
+  request limits apply to misses and explicit suggestions. No new DB writes,
+  collection/index, environment change or partner contract change. This replaces
+  the previous automatic title-keyword fallback with manual search when relevance
+  cannot be confirmed. No actual book relevance/availability is guaranteed by AI.
+- Build/env checks pass; **119 isolated backend tests** and **two browser
+  journeys** pass. Covered social welcome exclusion, positive workshop, grounded
+  evidence/schema, concurrent/cache reuse, expiry/edits, direct-call enforcement,
+  manual recovery and existing Student loading/register/cancel behavior. All
+  AI/partner providers mocked; no real AI credits or external reads/writes.
+- API restarted in existing facilities mode. Local health/frontend200 and new
+  unauthenticated relevance route401. Real-model/UI testing remains with user;
+  no Git operations, push or deployment.
+  [Evidence](docs/evidence/library-relevance-2026-11-08/check-results.json),
+  [policy/configuration](docs/integrations/library-resources.md#relevance-policy-and-cache).
+
+## Plain-language helper text — 2026-11-08
+
+- Replaced provider/API, deterministic-template and server/retry terminology in
+  planning, Organizer application, Library and facilities helper text with short
+  task-focused wording. Planning fallback now says Starter plan and clearly
+  states AI is unavailable; AI source labels, manual review, replacement review
+  and explicit save/publish/maintenance-send behavior remain intact.
+- Copy-only frontend changes. Updated existing text assertions; build and the
+  isolated planning progress/fallback/application browser journey pass. No new
+  tests, backend/config changes, real AI/partner calls, Git operations, push or
+  deployment. Technical configuration/data-flow details remain in the guides.
+
+## Single progress feedback across portals — 2026-11-08
+
+- Reviewed duplicate loading feedback across shared Student, Organizer, Admin,
+  applicant, ticket, profile, AI and integration UI. Added explicit shared Button
+  busyFeedback=notice support and applied it to 27 actions already covered by a
+  progress panel. Their original labels/icons stay visible, with disabled and
+  aria-busy retained; the panel owns the spinner/live announcement. Default
+  standalone button feedback remains available.
+- Removed the second Organizer list refresh notice, overlapping application
+  processing/poll notices and the refresh notice during a pending facilities
+  request. Existing status badges, review evidence, confirmations, requests and
+  access rules remain intact. Frontend-only change; no backend/env changes.
+- Build passes. Four isolated browser journeys pass: AI planning, Student
+  loading/save/register/cancel, Organizer refresh/applicant submission/Admin
+  refresh/approval, and Library AI/manual/fallback. Delayed test requests assert
+  one status/spinner, unchanged disabled action labels, aria-busy, blocked
+  duplicate actions/dialog dismissal and completion/recovery. Providers mocked;
+  no external partner/AI calls, connected-record changes, Git operations, push
+  or deployment. No broader real-user/cross-browser UI claim.
+  [Evidence](docs/evidence/single-progress-2026-11-08/check-results.json).
+
+## AI-assisted Library learning resources — 2026-11-08
+
+- Added a Student-only Learning resources section on published/closed activity
+  details. Explicit Find learning resources uses the existing AI model to select
+  one catalog keyword from public title/description, then retrieves real Library
+  books. No invented book recommendations or availability. Manual search,
+  pagination, available/no-copy states, safe links, loading/empty/error/retry and
+  clearly labelled activity-keyword fallback are included. No borrowing or
+  reservation operation, activity write or new role powers.
+- New protected GET/POST activity Library routes validate Student capability and
+  visibility before provider access. Neither provider receives Student identity,
+  Firebase tokens, private facilities notes or unrelated partner credentials.
+  Catalog reads are bounded/validated; AI output may only select a search, with
+  in-flight/five-per-minute process-local limits. Library settings are independent
+  of Maintenance and Internship. Local server-only key configured from the
+  supplied handover; original credential-bearing campus-event.md is unchanged
+  and must remain private/out of commits. No Git operations performed.
+- Build/offline environment checks pass. **114 isolated backend tests passed**,
+  including six Library helpers and three authenticated Library API scenarios.
+  New Library browser journey passed, as did existing Internship and cross-role
+  journeys. AI/catalog providers were mocked throughout automated verification;
+  no real AI credits or external partner writes. Separate manual deployed catalog
+  and application-adapter reads returned200, with two resources matching
+  programming. Existing AI configuration was verified present without invoking
+  the real model. Live AI generation and a real-user UI walkthrough remain for
+  user testing; no joint team sign-off or production deployment claimed.
+- Local API restarted in its prior facilities mode; frontend/health200, both
+  unauthenticated Library routes401. Original Maintenance/Internship settings
+  preserved. No Git operations, push or deployment.
+  [Guide](docs/integrations/library-resources.md),
+  [sanitized verification](docs/evidence/library-resources-2026-11-08/check-results.json).
+
+## Team 17 read-only Internship connection — 2026-11-08
+
+- Connected the supplied Team17-Team12 handover to an authenticated
+  Student-capability `GET /api/internships` proxy and Student **Internships**
+  page. Submitted keyword/location/work-mode filters, pagination, refresh,
+  safe external detail links and loading/empty/error/retry states are included.
+  Enrolled Student/Organizers retain access; other Organizers, pending applicants
+  and Admin are denied. No application submission, identity forwarding or writes.
+- Independent `TEAM17_API_BASE_URL` is configured privately for the public
+  deployed provider. Maintenance settings are preserved. Bounded reads validate
+  the response/schema/link origin and reject malformed data. Current hosted six
+  listings are explicitly fictional demos, with per-card labels and a notice.
+- Build and offline environment checks pass. Complete isolated backend suite:
+  **105 passed**, including five provider helper tests and two authenticated API
+  scenarios. Internship browser journey and existing cross-role journey pass;
+  Internship browser checks cover loading, filters, pagination, errors/recovery,
+  safe links, mobile menu and no overflow at 360/768/1024/1440px. Providers were
+  mocked throughout automated checks; no real AI credits or partner writes.
+- Separate manual public reads returned HTTP 200, including a read through the
+  actual adapter with six valid demo records. Local frontend/API started on
+  5173/3000, preserving facilities mode; health200 and unauthenticated feed401.
+  No authenticated real-user UI walkthrough or Campus Events deployment claimed.
+  No Git operations, pushes or deployment. Original supplied handover preserved.
+  [Setup](docs/integrations/team17-internships.md),
+  [sanitized evidence](docs/evidence/team17-internships-2026-11-08/check-results.json).
 
 ## Explicit frontend/backend application folders — 2026-11-07
 

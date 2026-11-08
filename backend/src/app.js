@@ -16,9 +16,13 @@ import { createDraftAssistant, draftAssistantConfig } from './features/draft-ass
 import { mountTicketRoutes } from './features/tickets/routes.js';
 import { mountMaintenanceRoutes } from './features/integrations/maintenance.js';
 import { createFacilities, facilitiesConfig } from './features/integrations/facilities.js';
+import { createInternships, internshipsConfig } from './features/internships/service.js';
+import { mountInternshipRoutes } from './features/internships/routes.js';
+import { createLibrary, libraryConfig, libraryAiConfig } from './features/library/service.js';
+import { mountLibraryRoutes } from './features/library/routes.js';
 
 // Importing this factory never starts Firebase, a listener, or the retry worker.
-export function createApp({ db, auth, integration, env = process.env, draftAssistant, facilities, planningAssistant, organizerAdmission }) {
+export function createApp({ db, auth, integration, env = process.env, draftAssistant, facilities, planningAssistant, organizerAdmission, internships, library }) {
   const app = express();
   const frontendOrigins = (env.FRONTEND_ORIGINS || 'http://localhost:5173')
     .split(',').map(origin => origin.trim()).filter(Boolean);
@@ -60,6 +64,8 @@ export function createApp({ db, auth, integration, env = process.env, draftAssis
   } }));
 
   const context = { db, auth, integration,
+    library: library || createLibrary({ config: libraryConfig(env), aiConfig: libraryAiConfig(env) }),
+    internships: internships || createInternships({ config: internshipsConfig(env) }),
     planningAssistant: planningAssistant || createPlanningAssistant({ config: planningAssistantConfig(env) }),
     organizerAdmission: organizerAdmission || createOrganizerAdmission({ db, auth, config: organizerAiConfig(env) }), integrationLogViewers, publicIntegrationLogFields,
     facilities: facilities || createFacilities({ db, config: facilitiesConfig(env) }),
@@ -68,6 +74,8 @@ export function createApp({ db, auth, integration, env = process.env, draftAssis
   mountIntegrationsRoutes(app, context);
   app.use('/api', authenticate({ db, auth, schoolDomain: schoolEmailDomain(env) }));
   mountUsersRoutes(app, context);
+  mountInternshipRoutes(app, context);
+  mountLibraryRoutes(app, context);
   mountDraftAssistantRoutes(app, context);
   mountAdminRoutes(app, context);
   mountOrganizerRequestRoutes(app, context);

@@ -139,6 +139,14 @@ the public description. It remains available to the same readers as before.
 No HTML/Markdown execution, stored-content rewrite, access change or migration.
 Ordinary manually written prose stays plain text with its line breaks preserved.
 
+## Product wording
+
+Use short instructions focused on the person's task. Provider names, API
+transport, deterministic templates, server confirmations and retry identifiers
+belong in technical documentation. Keep useful AI source/fallback labels and
+clear review/send choices. The planning fallback is called Starter plan and
+explicitly explains when AI is unavailable; never present it as generated AI.
+
 ## Verification
 
 Loading is driven by the actual request lifecycle, with no deliberate app delays
@@ -146,8 +154,15 @@ or invented percentages. The full-page branded screen covers initial Google
 session/campus-profile checks and sign-out. Data routes use card/list/form/profile
 skeletons. Refresh/pagination preserves existing records and shows an inline
 progress panel. Save, submit/resubmit, publish, close/delete, register/cancel,
-Admin approval/rejection and AI generation expose busy buttons and operation
-messages. Busy dialogs keep duplicate actions/dismissal disabled until completion.
+Admin approval/rejection and AI generation use one operation message per action.
+When a Loading/OperationNotice already explains progress, buttons use
+`busyFeedback="notice"`: keep the original action label/icon, remain disabled
+and expose `aria-busy`, without a second spinner or progress label. Standalone
+buttons retain the default button spinner/optional busyLabel. Do not add a second
+live region for the same operation. Organizer list refresh uses the shared list
+notice; mutation notices appear only for the actual publish/close/delete action.
+Processing admission and pending Maintenance notices take precedence over a
+duplicate refresh notice. Busy dialogs keep duplicate actions/dismissal disabled until completion.
 Errors release the busy state and preserve relevant form input. Motion honors
 prefers-reduced-motion; skeleton decoration is hidden from assistive technology
 and progress text uses status announcements. The delayed-loading browser check

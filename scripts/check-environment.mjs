@@ -26,7 +26,7 @@ export function validateFrontendEnvironment(env, mode = 'local') {
   if (env.VITE_USE_EMULATORS === 'true' || env.VITE_FIREBASE_PROJECT_ID?.startsWith('demo-')) errors.push('Real-app environment checks do not permit emulator configuration. Use the isolated test commands instead.');
   if (env.VITE_SCHOOL_EMAIL_DOMAIN !== 'lamduan.mfu.ac.th') errors.push('VITE_SCHOOL_EMAIL_DOMAIN must match the confirmed Student domain.');
   try { new Intl.DateTimeFormat('en', { timeZone: env.VITE_CAMPUS_TIME_ZONE || 'Asia/Bangkok' }); } catch { errors.push('VITE_CAMPUS_TIME_ZONE must be a valid timezone.'); }
-  for (const key of Object.keys(env)) if (/^VITE_.*(PRIVATE_KEY|SERVICE_ACCOUNT|AIML_API_KEY|PARTNER.*(KEY|TOKEN)|WEBHOOK.*SECRET)/i.test(key)) errors.push('Server-only credentials must not use the VITE_ prefix.');
+  for (const key of Object.keys(env)) if (/^VITE_.*(PRIVATE_KEY|SERVICE_ACCOUNT|AIML_API_KEY|LIBRARY_API_KEY|PARTNER.*(KEY|TOKEN)|WEBHOOK.*SECRET)/i.test(key)) errors.push('Server-only credentials must not use the VITE_ prefix.');
   return [...new Set(errors)];
 }
 
@@ -38,6 +38,9 @@ export function validateApiEnvironment(env, mode = 'local') {
   const origins = (env.FRONTEND_ORIGINS || '').split(',').map(value => value.trim()).filter(Boolean);
   if (!origins.length || origins.some(origin => !validUrl(origin, production, true) || origin.endsWith('/'))) errors.push('FRONTEND_ORIGINS must contain exact frontend origins without trailing slashes; production requires real HTTPS origins.');
   if (production && env.NODE_ENV !== 'production') errors.push('NODE_ENV must be production on the API host.');
+  if (env.TEAM17_API_BASE_URL && (!validUrl(env.TEAM17_API_BASE_URL, production, true) || new URL(env.TEAM17_API_BASE_URL).protocol !== 'https:')) errors.push('TEAM17_API_BASE_URL must be an approved HTTPS origin.');
+  if (env.LIBRARY_API_BASE_URL && (!validUrl(env.LIBRARY_API_BASE_URL, production, true) || new URL(env.LIBRARY_API_BASE_URL).protocol !== 'https:')) errors.push('LIBRARY_API_BASE_URL must be an approved HTTPS origin.');
+  if (Boolean(env.LIBRARY_API_BASE_URL) !== Boolean(env.LIBRARY_API_KEY) || (env.LIBRARY_API_KEY && (placeholder(env.LIBRARY_API_KEY) || /[\r\n]/.test(env.LIBRARY_API_KEY)))) errors.push('Library setup requires its HTTPS base URL and a private LIBRARY_API_KEY.');
   if (placeholder(env.GOOGLE_APPLICATION_CREDENTIALS)) errors.push('Set GOOGLE_APPLICATION_CREDENTIALS to the server-only credential file path.');
   if (env.ORGANIZER_AI_AUTO_APPROVE === 'true' && env.ORGANIZER_AI_POLICY !== 'CAMPUS_ORGANIZER_V1') errors.push('AI auto-approval requires the confirmed CAMPUS_ORGANIZER_V1 policy.');
   const secret = value => !placeholder(value) && value.length >= 32 && value.trim() === value;

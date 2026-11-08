@@ -8,6 +8,8 @@
 - [Environment templates](../config/env/README.md), [deployment](deployment/README.md)
 - [AI planning](AI_DRAFT_ASSISTANT.md), [Organizer admission](ORGANIZER_AI_ADMISSION.md)
 - [Maintenance](MAINTENANCE_CONNECTION.md), [partner handoff](A5-PARTNER-HANDOFF.md)
+- [Team 17 Internship connection](integrations/team17-internships.md)
+- [Library learning resources](integrations/library-resources.md)
 - [Branding](BRANDING.md), [UI foundation](UI_DESIGN_SYSTEM.md)
 
 ## Coursework and design

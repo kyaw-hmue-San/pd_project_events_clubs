@@ -50,7 +50,7 @@ function ProfileForm({ profile, onSaved }: { profile: Profile; onSaved: () => vo
       </div>
       <div className="flex flex-wrap items-center justify-end gap-2 border-t border-slate-100 bg-slate-50/60 px-5 py-4 sm:px-6">
         <Button type="button" variant="secondary" disabled={busy || name === savedName} onClick={() => { setName(savedName); setError(""); setFieldError(undefined) }}>Reset</Button>
-        <Button type="submit" busy={busy} busyLabel="Saving…" disabled={!changed} icon="check">Save changes</Button>
+        <Button type="submit" busy={busy} busyFeedback="notice" disabled={!changed} icon="check">Save changes</Button>
       </div>
     </form>
     <section className="surface-card overflow-hidden" aria-labelledby="account-details-heading">

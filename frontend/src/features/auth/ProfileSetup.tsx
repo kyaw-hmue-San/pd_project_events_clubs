@@ -30,7 +30,7 @@ export function ProfileSetup({ email, onComplete, onLogout }: { email: string | 
         <Field label="University ID" error={fieldError}><Input required autoComplete="off" maxLength={40} pattern={"[A-Za-z0-9\\-]{1,40}"} value={universityId} onChange={event => setUniversityId(event.target.value)} disabled={busy} /></Field>
         {error && <ErrorNotice message={error} />}
         {busy && <OperationNotice title="Setting up your Student account" description="Checking your university ID and saving your campus profile." />}
-        <Button type="submit" busy={busy} busyLabel="Saving profile…" className="w-full">Continue to campus</Button>
+        <Button type="submit" busy={busy} busyFeedback="notice" className="w-full">Continue to campus</Button>
       </form>
       <Button variant="ghost" className="mt-4 w-full" disabled={busy} onClick={() => { setSigningOut(true); void onLogout().catch(() => { setSigningOut(false); setError("Sign-out failed. Please try again.") }) }}>Use another Google account</Button>
     </section>

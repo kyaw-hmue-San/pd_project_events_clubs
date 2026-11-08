@@ -60,7 +60,7 @@ npm run dev:api
 ```
 
 The local launcher checks that frontend/backend projects match, uses port 3000
-and allows exactly `http://localhost:5173`. It disables partner configuration and
+and allows exactly `http://localhost:5173`. It disables Maintenance/legacy partner configuration and
 emulator routing for this real-account development process. Production
 `npm start --prefix backend` is unchanged and still runs the persistent worker
 with its host configuration.
@@ -73,7 +73,13 @@ diagnostics remain disabled. No public tunnel is opened by this command. Keep
 the frontend at localhost:5173; separately expose API port 3000 and share the
 HTTPS `/webhooks/partner` callback with Team 10. See
 [maintenance testing](MAINTENANCE_CONNECTION.md). Normal `npm run dev:api` remains
-fully integration-disabled.
+Maintenance/legacy-integration-disabled. The optional public Team 17 internship
+feed is independent in all modes; configure `TEAM17_API_BASE_URL` as described in
+[its setup guide](integrations/team17-internships.md).
+Library learning resources are also independent of Maintenance mode. Set the
+private server Library base/key and reuse the existing AI configuration as
+described in [Library setup](integrations/library-resources.md). Both use explicit
+user actions; neither performs startup polling or sends Student identity.
 
 On 2026-11-05 the user supplied `backend/service-account.local.json`. Its project
 was checked, file permissions restricted, and the ignored `backend/.env`

@@ -1,9 +1,66 @@
 # Next AI session handoff — current implementation status
 
-Updated 2026-11-07, Asia/Bangkok. Branch implementation/campus-pulse-full-stack.
+Updated 2026-11-08, Asia/Bangkok. Previously recorded branch implementation/campus-pulse-full-stack.
 Read AGENTS.md, PROGRESS.md, docs/ACCESS_WORKFLOW.md and API_CONTRACT.md first.
 Preserve uploaded files, existing uncommitted changes, UI polish and access rules.
 User explicitly says **do not push or deploy**. No agents/delegation requested.
+LATEST Library behavior supersedes the earlier always-visible AI button and
+activity-keyword fallback. Activity details perform a cached relevance check of
+public title/description; only positive LIBRARY_RELEVANCE_V1 results show AI
+search. General welcomes/vague text/failure hide it; manual search always works.
+Server suggestions recheck current relevance and reject direct bypass attempts.
+See Library guide/relevance policy. Cache is process-local, bounded, coalesced,
+text/model/policy keyed,24h valid/60s failed; restarts/eviction can reassess. No
+DB writes/index/env change. API restarted in facilities mode (session68562).
+Build/env,119 isolated backend tests and two targeted browser journeys pass,
+all providers mocked. Real-model validation remains with user; no real credits,
+partner calls, Git operations, push or deployment in this change.
+
+LATEST copy: user asked to remove abnormal technical helper text. Planning,
+admission, Library and facilities wording is now shorter and task-focused;
+provider/API/server/retry jargon moved out of those normal product messages.
+Starter plan honestly identifies AI fallback. Source/review/send safeguards and
+all behavior unchanged. Build plus existing isolated planning browser journey
+pass. No new tests/backend/config/Git operations, real provider calls or deploy.
+
+LATEST UI: single progress feedback across roles. Buttons with an existing
+Loading/OperationNotice use busyFeedback="notice" to keep their original label
+and static icon while disabled/aria-busy, avoiding duplicate spinners/text. Default
+standalone button progress remains. Organizer list refresh, admission processing
+and Maintenance refresh overlap cleaned up. Build and four isolated targeted
+browser journeys pass; see single-progress-2026-11-08 evidence and UI guide.
+Frontend-only; no backend/env/Git operations, deployment or real provider calls.
+
+LATEST: Library AI-assisted learning resources implemented on Student activity
+details. Read [Library guide](integrations/library-resources.md). Explicit AI
+search uses only server-loaded public title/description to pick one keyword;
+all books/copies come from the Library. Manual search/fallback/error handling,
+pagination and Student/published-closed guards are in place. No borrowing or
+reservations, identity sharing, record writes or role changes. Independent
+LIBRARY_API_BASE_URL/LIBRARY_API_KEY configured in private backend/.env, existing
+AI model/key reused. Original campus-event.md contains their key: do not print,
+commit or share it; source upload was preserved. No Git operations. 114 backend
+tests and three targeted browser journeys pass, all with mock providers. Separate
+manual Library catalog/actual-adapter reads returned200; no real AI credits were
+used. Real-user/live-AI walkthrough remains for user testing. API restarted in
+facilities mode (session48947), Vite existing session17484; recheck listeners.
+Local health/frontend200 and both unauthenticated Library routes401. No push,
+deployment, real Firebase write or change to Maintenance/Internship settings.
+
+LATEST connection: Team 17 public Internship feed implemented. Read
+[connection guide](integrations/team17-internships.md) and dated progress/evidence.
+Student workspace has Internships; GET /api/internships enforces Student
+capability and uses a validated, bounded, read-only provider adapter. No identity
+or credentials forwarded. Current hosted six records are fictional demos, labelled.
+Private backend/.env additionally sets TEAM17_API_BASE_URL to the public provider
+origin; all Maintenance settings preserved. No key needed. Independent of local
+Maintenance modes and disabled against live providers in emulator configuration.
+105 isolated backend tests, two targeted browser journeys, build and env checks
+pass. Separate manual adapter read returned200. No writes to Team17/real Firebase,
+Git operations, push or deployment. API started in facilities mode (session40231),
+Vite session17484; recheck listeners after resets. Local frontend/health200,
+unauthenticated feed401. Live authenticated UI testing remains with the user.
+
 LATEST layout: user explicitly requested frontend/backend folder names.
 React/Vite, public assets, HTML/config/env now live in frontend/; the complete
 former firebase/ tree (API, tests, credentials, local env and dependencies) is

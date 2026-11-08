@@ -6,6 +6,8 @@ export function localIntegrationEnvironment(source, { maintenanceTest = false, f
     throw new Error('Set WEBHOOK_INBOUND_SECRET privately in backend/.env to the agreed secret (at least 32 characters, no surrounding whitespace).');
   }
   const env = { ...source };
+  // Team 17 and Library are independent, opt-in, read-only searches.
+  // They perform no startup polling and never use Maintenance credentials.
   for (const key of Object.keys(env)) {
     if (/^(PARTNER_|WEBHOOK_|TEAM10_|INTEGRATION_LOG_VIEWER_UIDS$)/.test(key) || key.includes('EMULATOR')) delete env[key];
   }

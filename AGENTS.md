@@ -20,6 +20,16 @@ Organizer-request review and the authenticated person's own username edit.
   powers. Admin remains separate. Keep the existing three primary role labels.
 - Other Google accounts may request Organizer access. No campus-data access
   before approval. Clients cannot choose their own effective role.
+- Team 17 internship browsing is read-only and Student-capability protected.
+  Keep its public provider configuration independent of Maintenance; never
+  forward identity or credentials. Preserve demo labels and safe provider links.
+- Library learning resources require Student capability and a published/closed
+  activity. AI suggestions require positive relevance under LIBRARY_RELEVANCE_V1:
+  explicit learning purpose and grounded reading subject/evidence. Cache checks
+  by public text/model/policy, coalesce requests and bound calls. Irrelevant,
+  uncertain or failed assessments hide the button and block direct suggestions;
+  manual search stays available. Only public title/description go to AI; all
+  books/copy counts come from Library. Keep server-only keys and safe links.
 - Admin may approve/reject Organizer requests; event oversight remains read-only.
   Every provisioned role may edit only its own display name through the bounded
   profile endpoint. This grants no identity, enrollment or role-management powers.

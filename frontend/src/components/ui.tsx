@@ -173,6 +173,8 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   size?: "default" | "sm"
   busy?: boolean
   busyLabel?: string
+  // Use notice when a separate Loading/OperationNotice owns progress feedback.
+  busyFeedback?: 'button' | 'notice'
   icon?: IconName
 }
 
@@ -181,12 +183,14 @@ export function Button({
   size = "default",
   busy = false,
   busyLabel,
+  busyFeedback = 'button',
   disabled,
   icon,
   className = "",
   children,
   ...props
 }: ButtonProps) {
+  const showBusy = busy && busyFeedback === 'button'
   const styles = {
     primary:
       "border-blue-600 bg-blue-600 text-white hover:border-blue-700 hover:bg-blue-700 shadow-sm shadow-blue-900/10",
@@ -204,8 +208,8 @@ export function Button({
       className={`motion-press inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg border text-sm font-semibold leading-5 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:pointer-events-none disabled:border-slate-200 disabled:bg-slate-100 disabled:text-slate-500 disabled:shadow-none ${size === "sm" ? "min-h-11 px-3 sm:min-h-9" : "min-h-11 px-4"} ${styles[variant]} ${className}`}
       {...props}
     >
-      {(busy || icon) && <span key={busy ? 'busy' : icon} aria-hidden="true" className="motion-icon inline-flex size-4 shrink-0">{busy ? <span className="size-4 animate-spin rounded-full border-2 border-current border-r-transparent" /> : icon && <Icon name={icon} className="size-4" />}</span>}
-      {busy && busyLabel ? busyLabel : children}
+      {(showBusy || icon) && <span key={showBusy ? 'busy' : icon} aria-hidden="true" className="motion-icon inline-flex size-4 shrink-0">{showBusy ? <span className="size-4 animate-spin rounded-full border-2 border-current border-r-transparent" /> : icon && <Icon name={icon} className="size-4" />}</span>}
+      {showBusy && busyLabel ? busyLabel : children}
     </button>
   )
 }

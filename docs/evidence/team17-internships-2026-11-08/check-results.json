@@ -1,0 +1,102 @@
+{
+  "recordedDate": "2026-11-08",
+  "timezone": "Asia/Bangkok",
+  "scope": "Team 17 read-only Internship connection",
+  "manualPublicProviderCheck": {
+    "checkedAt": "2026-11-07T16:13:58.999Z",
+    "kind": "Manual public read-only provider check",
+    "list": {
+      "url": "https://team17-internship.vercel.app/api/placements?page=1&limit=6&status=open",
+      "http": 200,
+      "requestId": "237ae230-e123-4ecc-89ac-7b9fe1cd625b",
+      "timestamp": "2026-11-07T16:13:54.901Z",
+      "dataSource": "postgresql",
+      "apiVersion": "1.0",
+      "count": 6,
+      "total": 6,
+      "allDemo": true,
+      "allOpen": true,
+      "allDetailLinksUseProviderOrigin": true
+    },
+    "detailPage": {
+      "url": "https://team17-internship.vercel.app/opportunities/10000000-0000-4000-8000-000000000001",
+      "http": 200
+    },
+    "durationMs": 4507
+  },
+  "manualApplicationAdapterCheck": {
+    "kind": "Manual live read through the application adapter, outside automated tests",
+    "checkedAt": "2026-11-08T04:07:57.401Z",
+    "url": "https://team17-internship.vercel.app/api/placements?page=1&limit=6&status=open",
+    "http": 200,
+    "count": 6,
+    "total": 6,
+    "allDemo": true,
+    "allOpen": true,
+    "requestId": "6decf51f-79c6-4a8f-866c-f66fb2249449",
+    "timestamp": "2026-11-08T04:07:55.470Z",
+    "dataSource": "postgresql",
+    "apiVersion": "1.0"
+  },
+  "localRuntimeCheck": {
+    "checkedAt": "2026-11-08T04:08:24.610Z",
+    "checks": [
+      {
+        "name": "api-health",
+        "url": "http://localhost:3000/health",
+        "http": 200
+      },
+      {
+        "name": "protected-internships",
+        "url": "http://localhost:3000/api/internships",
+        "http": 401
+      },
+      {
+        "name": "frontend",
+        "url": "http://localhost:5173/",
+        "http": 200
+      }
+    ]
+  },
+  "automated": {
+    "build": "passed",
+    "offlineEnvironment": "passed",
+    "isolatedBackend": {
+      "tests": 105,
+      "passed": 105,
+      "failed": 0
+    },
+    "targetedBrowser": {
+      "passed": 2,
+      "scenarios": [
+        "Existing cross-role publish/register/Admin overview journey",
+        "Student internships: loading/search/filter/pagination/demo labels/empty/error recovery/safe links/mobile menu"
+      ],
+      "noOverflowWidths": [
+        360,
+        768,
+        1024,
+        1440
+      ]
+    },
+    "providers": "Synthetic mocked partner providers; isolated Firebase emulators; no external partner calls or real AI credits in automated checks"
+  },
+  "screenshots": {
+    "internships-desktop.png": "Synthetic emulator catalogue; not the live provider response",
+    "internships-mobile.png": "Synthetic emulator catalogue; not the live provider response"
+  },
+  "limitations": [
+    "No live authenticated Campus Events UI walkthrough",
+    "No joint Team17 sign-off or deployment of Campus Events",
+    "Current hosted provider content is six fictional demo listings",
+    "Read-only discovery; no application API or internship webhook"
+  ],
+  "preserved": [
+    "Maintenance configuration and retry/linking contract",
+    "Student/Organizer/Admin access boundaries",
+    "Original user handover assets"
+  ],
+  "gitOperations": false,
+  "pushed": false,
+  "deployed": false
+}

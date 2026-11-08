@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react"
 import { useMotionPresence } from './hooks/useMotionPresence'
 import { BrandLogo } from './components/BrandLogo'
+import { InternshipsPage } from './features/internships/InternshipsPage'
+import { LearningResources } from './features/student/LearningResources'
 import type { ActivityInput, ActivityStatus, Profile, RegistrationStatus, Role, Route } from "./models"
 import { Button, EmptyState, ErrorNotice, Loading, LoadingScreen, OperationNotice, Toast, Icon, type IconName } from "./components/ui"
 import { AuthView } from "./features/auth/AuthView"
@@ -24,7 +26,7 @@ import { campusTimeZone, useEmulators } from "./lib/firebase"
 const defaultRoute: Record<Role, Route> = { student: "discover", organizer: "organizer-activities", admin: "admin-overview" }
 type NavItem = { label: string; route: Route; icon: IconName }
 const allowed: Record<Role, Route[]> = {
-  student: ["discover", "activity", "registrations", "organizer-request", "profile", "ticket"],
+  student: ["discover", "activity", "registrations", "organizer-request", "profile", "ticket", "internships"],
   organizer: ["organizer-activities", "activity", "activity-form", "roster", "profile", "check-in"],
   admin: ["admin-overview", "admin-activity", "admin-requests", "profile"],
 }
@@ -96,6 +98,7 @@ function Workspace({ profile, onLogout, onRefreshAccess }: { profile: Profile; o
       {(route === "discover" || route === "organizer-activities" || route === "admin-overview") && <ActivityListPage key={role} role={role} navigate={navigate} notify={setToast} />}
       {(route === "activity" || route === "admin-activity") && <DetailPage key={`${role}/${id}`} id={id} userId={profile.id} role={role} onTicket={registrationId => navigate('ticket', registrationId)} back={() => navigate(defaultRoute[role])} notify={setToast} />}
       {route === "registrations" && <RegistrationPage navigate={navigate} notify={setToast} />}
+      {route === "internships" && <InternshipsPage />}
       {route === "activity-form" && <FormPage key={id} id={id} back={() => navigate("organizer-activities")} notify={setToast} />}
       {route === "roster" && <RosterPage key={id} id={id} back={() => navigate("organizer-activities")} onScan={() => navigate('check-in', id)} notify={setToast} />}
       {route === 'ticket' && <TicketPage key={id} id={id} onBack={() => navigate('registrations')} />}
@@ -139,10 +142,10 @@ function ActivityListPage({ role, navigate, notify }: { role: Role; navigate: Na
   if (!page.items.length && page.error) return <div className="page-wrap"><ErrorNotice message={page.error} onRetry={page.retry} /></div>
   return <>
     {role === "student" && <Discover activities={activities} onOpen={id => navigate("activity", id)} />}
-    {role === "organizer" && <OrganizerActivities activities={activities} busy={busy || page.loading} busyId={pending?.id} progress={pending?.label || "Refreshing your activities"} onForm={id => navigate("activity-form", id)} onRoster={id => navigate("roster", id)} onOpen={id => navigate("activity", id)} onStatus={(id, status) => mutate(id, status)} onDelete={id => mutate(id)} />}
+    {role === "organizer" && <OrganizerActivities activities={activities} busy={busy || page.loading} busyId={pending?.id} progress={pending?.label} onForm={id => navigate("activity-form", id)} onRoster={id => navigate("roster", id)} onOpen={id => navigate("activity", id)} onStatus={(id, status) => mutate(id, status)} onDelete={id => mutate(id)} />}
     {role === "admin" && (summary.loading && !summary.value ? <Loading text="Loading campus totals…" /> : summary.error ? <div className="page-wrap"><ErrorNotice message={summary.error} onRetry={summary.refresh} /></div> : summary.value && <AdminOverview activities={activities} summary={summary.value} onOpen={id => navigate("admin-activity", id)} />)}
     <Paging page={page} />
-    <div className="app-container flex flex-wrap items-center justify-between gap-3 pb-6 text-xs text-slate-500"><p>{activities.length} activities loaded{role === "student" ? " · Search and filters apply to this list." : ""}</p><Button variant="secondary" size="sm" icon="refresh" disabled={busy} busy={page.loading} busyLabel="Refreshing…" onClick={() => { page.refresh(); if (role === 'admin') summary.refresh() }}>Refresh activities</Button></div>
+    <div className="app-container flex flex-wrap items-center justify-between gap-3 pb-6 text-xs text-slate-500"><p>{activities.length} activities loaded{role === "student" ? " · Search and filters apply to this list." : ""}</p><Button variant="secondary" size="sm" icon="refresh" disabled={busy} busy={page.loading} busyFeedback="notice" onClick={() => { page.refresh(); if (role === 'admin') summary.refresh() }}>Refresh activities</Button></div>
   </>
 }
 function DetailPage({ id, userId, role, back, notify, onTicket }: { id: string; userId: string; role: Role; back: () => void; notify: Notify; onTicket: (registrationId: string) => void }) {
@@ -159,7 +162,7 @@ function DetailPage({ id, userId, role, back, notify, onTicket }: { id: string; 
     catch (cause) { remote.refresh(); throw cause }
     finally { setBusy(false) }
   }
-  return <>{remote.loading && <div className="app-container"><OperationNotice title="Updating your registration status" /></div>}<ActivityDetails activity={activityView(record)} role={role} busy={busy || remote.loading} registered={Boolean(record.viewerRegistrationId)} onTicket={() => { if (record.viewerRegistrationId) onTicket(record.viewerRegistrationId) }} onBack={back} onRegister={register} maintenance={role === 'organizer' && record.organizerId === userId ? <MaintenancePanel id={id} /> : undefined} /></>
+  return <>{remote.loading && <div className="app-container"><OperationNotice title="Updating your registration status" /></div>}<ActivityDetails activity={activityView(record)} role={role} busy={busy || remote.loading} registered={Boolean(record.viewerRegistrationId)} onTicket={() => { if (record.viewerRegistrationId) onTicket(record.viewerRegistrationId) }} onBack={back} onRegister={register} learningResources={role === 'student' && ['PUBLISHED', 'CLOSED'].includes(record.status) ? <LearningResources key={JSON.stringify([id, record.title, record.description])} id={id} /> : undefined} maintenance={role === 'organizer' && record.organizerId === userId ? <MaintenancePanel id={id} /> : undefined} /></>
 }
 function RegistrationPage({ navigate, notify }: { navigate: Navigate; notify: Notify }) {
   const [tab, setTab] = useState<RegistrationStatus>("ACTIVE")
@@ -176,7 +179,7 @@ function RegistrationPage({ navigate, notify }: { navigate: Navigate; notify: No
   return <>
     <Registrations tab={tab} onTab={setTab} busy={busy} activities={page.items.flatMap(record => record.activity ? [activityView(record.activity)] : [])} registrations={page.items.map(registrationView)} onOpen={id => navigate("activity", id)} onTicket={id => navigate('ticket', id)} onCancel={cancel} />
     <Paging page={page} />
-    <div className="app-container pb-6"><Button variant="secondary" size="sm" icon="refresh" busy={page.loading} busyLabel="Refreshing…" onClick={page.refresh}>Refresh registrations</Button></div>
+    <div className="app-container pb-6"><Button variant="secondary" size="sm" icon="refresh" busy={page.loading} busyFeedback="notice" onClick={page.refresh}>Refresh registrations</Button></div>
   </>
 }
 function FormPage({ id, back, notify }: { id: string; back: () => void; notify: Notify }) {
@@ -212,7 +215,7 @@ function RosterPage({ id, back, onScan, notify }: { id: string; back: () => void
     notify(result.alreadyCheckedIn ? 'This attendee was already checked in.' : 'Attendance recorded.')
     page.refresh(); detail.refresh()
   }
-  return <>{detail.loading && !page.loading && <div className="app-container"><OperationNotice title="Updating the activity totals" /></div>}<Roster activity={activityView(detail.value)} registrations={page.items} onBack={back} onScan={onScan} onCheckIn={checkIn} /><Paging page={page} /><div className="app-container pb-6"><Button variant="secondary" size="sm" icon="refresh" busy={page.loading || detail.loading} busyLabel="Refreshing…" onClick={() => { page.refresh(); detail.refresh() }}>Refresh roster</Button></div></>
+  return <>{detail.loading && !page.loading && <div className="app-container"><OperationNotice title="Updating the activity totals" /></div>}<Roster activity={activityView(detail.value)} registrations={page.items} onBack={back} onScan={onScan} onCheckIn={checkIn} /><Paging page={page} /><div className="app-container pb-6"><Button variant="secondary" size="sm" icon="refresh" busy={page.loading || detail.loading} busyFeedback="notice" onClick={() => { page.refresh(); detail.refresh() }}>Refresh roster</Button></div></>
 }
 function Header({
   role,
@@ -241,6 +244,7 @@ function Header({
     student: [
       { label: "Discover", route: "discover", icon: "compass" },
       { label: "My registrations", route: "registrations", icon: "ticket" },
+      { label: "Internships", route: "internships", icon: "file" },
       { label: "Organizer access", route: "organizer-request", icon: "users" },
       { label: "My profile", route: "profile", icon: "user" },
     ],
@@ -293,6 +297,7 @@ function Header({
     }
   }, [open])
   const descriptions: Record<string, string> = {
+    internships: 'Explore opportunities from Team 17',
     discover: 'Find your next campus activity', registrations: 'Your tickets and upcoming activities',
     'organizer-request': 'Apply to host campus activities', profile: 'Manage your account details',
     'organizer-activities': 'Your events, attendees and facilities', 'activity-form': 'Bring a new idea to campus',

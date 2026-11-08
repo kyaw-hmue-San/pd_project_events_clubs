@@ -1,14 +1,14 @@
-import { expect, test, type Page } from "@playwright/test"
+import { expect, test, type Page, type Locator } from "@playwright/test"
 import { readFile } from 'node:fs/promises'
 import { execFileSync } from 'node:child_process'
 import { testEnvironment } from '../scripts/test-environment.mjs'
 
-async function publishTicketEvent(page: Page) {
-  await login(page, 'organizer')
+async function publishTicketEvent(page: Page, prefix = 'Ticket workshop', signedIn = false, description = 'Isolated QR attendance browser verification.') {
+  if (!signedIn) await login(page, 'organizer')
   await page.getByRole('navigation').getByRole('button', { name: 'Create activity', exact: true }).click()
-  const title = `Ticket workshop ${Date.now()}`
+  const title = `${prefix} ${Date.now()}`
   await page.getByLabel('Activity title', { exact: true }).fill(title)
-  await page.getByLabel('Description', { exact: true }).fill('Isolated QR attendance browser verification.')
+  await page.getByLabel('Description', { exact: true }).fill(description)
   await page.getByLabel('Location', { exact: true }).fill('Ticket Test Hall')
   await page.getByLabel('Date', { exact: true }).fill('2027-03-12')
   await page.getByLabel('Start time', { exact: true }).fill('10:00')
@@ -169,7 +169,7 @@ test('Organizer reviews and retries an idempotent facilities request, then recei
     await expect(support).not.toContainText('Request accepted by Team 10')
     await support.getByRole('button', { name: 'Review and retry request', exact: true }).click()
     dialog = page.getByRole('dialog', { name: 'Review facilities request', exact: true })
-    await expect(dialog).toContainText('same request identity')
+    await expect(dialog).toContainText('without creating a duplicate')
     await expect(dialog.getByLabel('Maintenance category', { exact: true })).toBeDisabled()
     for (const width of [360, 768, 1024, 1440]) {
       await page.setViewportSize({ width, height: 900 })
@@ -583,6 +583,15 @@ async function holdRequest(page: Page, pattern: string, method = 'GET') {
     await route.continue().catch(() => {})
   })
   return { release: () => { released = true; unblock() }, wait: () => expect.poll(() => entered).toBeTruthy() }
+}
+
+async function expectSingleProgress(scope: Page | Locator, action: string) {
+  const button = scope.getByRole('button', { name: action, exact: true })
+  await expect(button).toBeDisabled()
+  await expect(button).toHaveAttribute('aria-busy', 'true')
+  await expect(button.locator('.animate-spin')).toHaveCount(0)
+  await expect(scope.locator('[role="status"]')).toHaveCount(1)
+  await expect(scope.locator('.animate-spin')).toHaveCount(1)
 }
 
 test("real cross-role publish, register, refresh, cancel, roster and read-only Admin flow", async ({ browser }) => {
@@ -1076,12 +1085,12 @@ test('planning copilot falls back transparently, shows progress, and applies onl
     await dialog.getByRole('button', { name: 'Generate event plan', exact: true }).click()
     await held.wait()
     await expect(dialog.getByText('Building your event plan', { exact: true })).toBeVisible()
-    await expect(dialog.getByRole('button', { name: 'Planning…', exact: true })).toBeDisabled()
+    await expectSingleProgress(dialog, 'Generate event plan')
     await expect(dialog.getByRole('button', { name: 'Close dialog', exact: true })).toBeDisabled()
     await page.screenshot({ path: 'test-results/ai-draft-loading.png', fullPage: true, animations: 'disabled' })
     held.release()
-    await expect(dialog.getByText('Standard template plan', { exact: true })).toBeVisible()
-    await expect(dialog).toContainText('AI took longer than the allowed wait.')
+    await expect(dialog.getByText('Starter plan', { exact: true })).toBeVisible()
+    await expect(dialog).toContainText('AI is taking longer than expected.')
     await expect(dialog.getByRole('heading', { name: topic, exact: true })).toBeVisible()
     await page.screenshot({ path: 'test-results/ai-template-preview.png', fullPage: true, animations: 'disabled' })
     await dialog.getByRole('button', { name: 'Apply selected sections', exact: true }).click()
@@ -1140,7 +1149,7 @@ test('loading states cover session, data, refresh, profile save, registration an
     await refresh.wait()
     await expect(page.getByText('Updating this list…', { exact: true })).toBeVisible()
     await expect(page.getByRole('article').first()).toBeVisible()
-    await expect(page.getByRole('button', { name: 'Refreshing…', exact: true })).toBeDisabled()
+    await expectSingleProgress(page, 'Refresh activities')
     refresh.release()
     await expect(page.getByRole('button', { name: 'Refresh activities', exact: true })).toBeEnabled()
 
@@ -1160,7 +1169,7 @@ test('loading states cover session, data, refresh, profile save, registration an
     await page.getByRole('button', { name: 'Save changes', exact: true }).click()
     await save.wait()
     await expect(page.getByText('Saving your username', { exact: true })).toBeVisible()
-    await expect(page.getByRole('button', { name: 'Saving…', exact: true })).toBeDisabled()
+    await expectSingleProgress(page, 'Save changes')
     await page.screenshot({ path: 'test-results/profile-saving.png', fullPage: true, animations: 'disabled' })
     save.release()
     await expect(page.getByText('Username updated.', { exact: true })).toBeVisible()
@@ -1172,7 +1181,7 @@ test('loading states cover session, data, refresh, profile save, registration an
     await page.getByRole('dialog').getByRole('button', { name: 'Confirm', exact: true }).click()
     await register.wait()
     await expect(page.getByText('Confirming your registration', { exact: true })).toBeVisible()
-    await expect(page.getByRole('button', { name: 'Registering…', exact: true })).toBeDisabled()
+    await expectSingleProgress(page.getByRole('dialog'), 'Confirm')
     register.release()
     await expect(page.getByText('You’re registered', { exact: true })).toBeVisible()
     await page.getByRole('navigation').getByRole('button', { name: 'My registrations', exact: true }).click()
@@ -1181,8 +1190,172 @@ test('loading states cover session, data, refresh, profile save, registration an
     await page.getByRole('dialog').getByRole('button', { name: 'Cancel registration', exact: true }).click()
     await cancel.wait()
     await expect(page.getByText('Cancelling your registration', { exact: true })).toBeVisible()
+    await expectSingleProgress(page.getByRole('dialog'), 'Cancel registration')
     cancel.release()
     await expect(page.getByRole('dialog')).toHaveCount(0)
     await expect(page.getByRole('article').filter({ hasText: 'Sample: Campus Welcome' })).toHaveCount(0)
   } finally { for (const gate of gates) gate.release(); await context.close() }
+})
+
+test('Organizer refresh and Admin decisions keep one progress announcement and disabled original actions', async ({ browser }) => {
+  const organizerContext = await browser.newContext(), applicantContext = await browser.newContext(), adminContext = await browser.newContext()
+  const organizer = await organizerContext.newPage(), applicant = await applicantContext.newPage(), admin = await adminContext.newPage()
+  const gates: Awaited<ReturnType<typeof holdRequest>>[] = []
+  try {
+    await publishTicketEvent(organizer, 'Progress feedback workshop')
+    const refresh = await holdRequest(organizer, '**/api/me/activities?**'); gates.push(refresh)
+    await organizer.getByRole('button', { name: 'Refresh activities', exact: true }).click()
+    await refresh.wait()
+    await expect(organizer.getByText('Updating this list…', { exact: true })).toBeVisible()
+    await expectSingleProgress(organizer, 'Refresh activities')
+    await expect(organizer.getByText('Refreshing your activities', { exact: true })).toHaveCount(0)
+    refresh.release()
+    await expect(organizer.getByRole('button', { name: 'Refresh activities', exact: true })).toBeEnabled()
+
+    const organization = `Progress review ${Date.now()}`
+    await googleLogin(applicant, `progress.${Date.now()}@gmail.com`)
+    await applicant.getByLabel('Club or organization', { exact: true }).fill(organization)
+    await applicant.getByLabel('Why do you need Organizer access?', { exact: true }).fill('I would like to organize a campus workshop and need more guidance.')
+    const submit = await holdRequest(applicant, '**/api/me/organizer-request', 'POST'); gates.push(submit)
+    await applicant.getByRole('button', { name: 'Submit Organizer request', exact: true }).click()
+    await submit.wait()
+    await expectSingleProgress(applicant, 'Submit Organizer request')
+    submit.release()
+    await expect(applicant.getByRole('heading', { name: 'Pending Admin approval', exact: true })).toBeVisible()
+
+    await login(admin, 'admin')
+    await admin.getByRole('navigation').getByRole('button', { name: 'Organizer requests', exact: true }).click()
+    const card = admin.getByRole('article').filter({ hasText: organization })
+    await expect(card).toBeVisible()
+    const queue = await holdRequest(admin, '**/api/admin/organizer-requests?**'); gates.push(queue)
+    await admin.getByRole('button', { name: 'Refresh requests', exact: true }).click()
+    await queue.wait()
+    await expectSingleProgress(admin, 'Refresh requests')
+    queue.release()
+    await expect(admin.getByRole('button', { name: 'Refresh requests', exact: true })).toBeEnabled()
+    await card.getByRole('button', { name: 'Approve', exact: true }).click()
+    const decision = await holdRequest(admin, '**/api/admin/organizer-requests/*', 'PATCH'); gates.push(decision)
+    const dialog = admin.getByRole('dialog')
+    await dialog.getByRole('button', { name: 'Confirm approval', exact: true }).click()
+    await decision.wait()
+    await expectSingleProgress(dialog, 'Confirm approval')
+    await expect(dialog.getByRole('button', { name: 'Close dialog', exact: true })).toBeDisabled()
+    decision.release()
+    await expect(admin.getByRole('dialog')).toHaveCount(0)
+  } finally { for (const gate of gates) gate.release(); await organizerContext.close(); await applicantContext.close(); await adminContext.close() }
+})
+
+test('Library learning resources use relevance-gated AI search, real catalog cards and manual fallback', async ({ browser }) => {
+  const organizer = await browser.newContext(), student = await browser.newContext();
+  const organizerPage = await organizer.newPage(), page = await student.newPage();
+  try {
+    const title = await publishTicketEvent(organizerPage, 'Library Python workshop');
+    const fallbackTitle = await publishTicketEvent(organizerPage, 'Python fallback workshop', true);
+    const welcomeTitle = await publishTicketEvent(organizerPage, 'Fresher Welcome for Burmese Students', true, 'Welcome');
+    await login(page, 'student');
+    const relevance = await holdRequest(page, '**/api/activities/*/library-resources/relevance');
+    await page.getByRole('textbox', { name: 'Search activities' }).fill(title);
+    await page.getByRole('article').filter({ hasText: title }).getByRole('button', { name: 'View details' }).click();
+    const panel = page.getByRole('region', { name: 'Learning resources', exact: true });
+    await expect(panel).toBeVisible(); await expect(panel.getByRole('article')).toHaveCount(0);
+    await relevance.wait();
+    await expect(panel.getByRole('button', { name: 'Find learning resources', exact: true })).toHaveCount(0);
+    await expect(panel.getByText('Checking for related reading…', { exact: true })).toBeVisible();
+    await expect(panel.getByRole('button', { name: 'Search Library', exact: true })).toBeEnabled();
+    relevance.release();
+    const paused = await holdRequest(page, '**/api/activities/*/library-resources/suggest', 'POST');
+    await panel.getByRole('button', { name: 'Find learning resources', exact: true }).click();
+    await paused.wait();
+    await expect(panel.getByText('Finding learning resources', { exact: true })).toBeVisible();
+    paused.release();
+    await expect(panel.getByRole('article')).toHaveCount(4);
+    await expect(panel.getByText(/AI-assisted search/)).toContainText('Python');
+    await expect(panel.getByText('No copies available', { exact: true })).toHaveCount(2);
+    await expect(panel.getByRole('article').first().getByRole('link')).toHaveAttribute('href', /^https:\/\/library\.test\/books\//);
+    await expect(panel.getByRole('article').first().getByRole('link')).toHaveAttribute('rel', 'noopener noreferrer');
+    await page.evaluate(() => scrollTo(0, 0));
+    await page.screenshot({ path: 'test-results/library-resources-desktop.png', fullPage: true, animations: 'disabled' });
+    await panel.getByRole('button', { name: 'Next resources', exact: true }).click();
+    await expect(panel.getByRole('article')).toHaveCount(2);
+    await expect(panel.getByRole('button', { name: 'Next resources', exact: true })).toBeDisabled();
+    await panel.getByLabel('Search Library manually').fill('no-match');
+    await panel.getByRole('button', { name: 'Search Library', exact: true }).click();
+    await expect(panel.getByRole('heading', { name: 'No Library resources found', exact: true })).toBeVisible();
+    await panel.getByLabel('Search Library manually').fill('unavailable');
+    await panel.getByRole('button', { name: 'Search Library', exact: true }).click();
+    await expect(panel.getByRole('alert')).toContainText('temporarily unavailable');
+    await expect(panel.getByRole('article')).toHaveCount(0);
+    await panel.getByLabel('Search Library manually').fill('Python');
+    await panel.getByRole('button', { name: 'Search Library', exact: true }).click();
+    await expect(panel.getByRole('article')).toHaveCount(4);
+    await expect(panel.getByText(/Library search:/)).toBeVisible();
+    for (const width of [360, 768, 1440]) { await page.setViewportSize({ width, height: 900 }); expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy() }
+    await page.getByRole('button', { name: 'Back to activities', exact: true }).click();
+    await page.getByRole('textbox', { name: 'Search activities' }).fill(fallbackTitle);
+    await page.getByRole('article').filter({ hasText: fallbackTitle }).getByRole('button', { name: 'View details' }).click();
+    await expect(panel.getByRole('article')).toHaveCount(0);
+    await expect(panel.getByText('Checking for related reading…', { exact: true })).toHaveCount(0);
+    await expect(panel.getByRole('button', { name: 'Find learning resources', exact: true })).toHaveCount(0);
+    await panel.getByLabel('Search Library manually').fill('Python');
+    await panel.getByRole('button', { name: 'Search Library', exact: true }).click();
+    await expect(panel.getByRole('article')).toHaveCount(4);
+    await page.setViewportSize({ width: 360, height: 900 });
+    await page.evaluate(() => scrollTo(0, 0));
+    await page.screenshot({ path: 'test-results/library-resources-mobile-fallback.png', fullPage: true, animations: 'disabled' });
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.getByRole('button', { name: 'Back to activities', exact: true }).click();
+    await page.getByRole('textbox', { name: 'Search activities' }).fill(welcomeTitle);
+    await page.getByRole('article').filter({ hasText: welcomeTitle }).getByRole('button', { name: 'View details' }).click();
+    await expect(panel).toBeVisible();
+    await expect(panel.getByText('Checking for related reading…', { exact: true })).toHaveCount(0);
+    await expect(panel.getByRole('button', { name: 'Find learning resources', exact: true })).toHaveCount(0);
+    await expect(panel.getByRole('button', { name: 'Search Library', exact: true })).toBeEnabled();
+    await page.evaluate(() => scrollTo(0, 0));
+    await page.screenshot({ path: 'test-results/library-welcome-no-ai.png', fullPage: true, animations: 'disabled' });
+  } finally { await organizer.close(); await student.close() }
+});
+
+test('Student internships use the protected partner feed with search, pagination, demo labels and honest recovery', async ({ page }) => {
+  await login(page, 'student')
+  let release!: () => void
+  const ready = new Promise<void>(resolve => { release = resolve })
+  await page.route('**/api/internships?*', async route => { await ready; await route.continue() })
+  await page.getByRole('navigation', { name: 'Main navigation', exact: true }).getByRole('button', { name: 'Internships', exact: true }).click()
+  await expect(page.getByText('Finding internship opportunities', { exact: true })).toBeVisible()
+  release()
+  await expect(page.getByRole('article')).toHaveCount(6)
+  await expect(page.getByRole('article').getByText('Demo listing', { exact: true })).toHaveCount(6)
+  await expect(page.getByText('Application deadline · Thailand', { exact: true })).toHaveCount(6)
+  await expect(page.getByText('Allowance not specified', { exact: true })).toHaveCount(3)
+  const external = page.getByRole('article').first().getByRole('link')
+  await expect(external).toHaveAttribute('href', /^https:\/\/team17\.test\/opportunities\//)
+  await expect(external).toHaveAttribute('rel', 'noopener noreferrer')
+  await expect(page.getByRole('button', { name: 'Register now', exact: true })).toHaveCount(0)
+  await page.getByRole('button', { name: 'Next page', exact: true }).click()
+  await expect(page.getByRole('article')).toHaveCount(2)
+  await expect(page.getByRole('button', { name: 'Next page', exact: true })).toBeDisabled()
+  await page.getByLabel('Search internships', { exact: true }).fill('React')
+  await page.getByLabel('Work arrangement', { exact: true }).selectOption('remote')
+  await page.getByRole('button', { name: 'Search', exact: true }).click()
+  await expect(page.getByRole('article')).toHaveCount(4)
+  await expect(page.getByText('4 opportunities', { exact: true })).toBeVisible()
+  await page.getByLabel('Search internships', { exact: true }).fill('no-matching-opportunity')
+  await page.getByRole('button', { name: 'Search', exact: true }).click()
+  await expect(page.getByRole('heading', { name: 'No internships found', exact: true })).toBeVisible()
+  await page.getByLabel('Search internships', { exact: true }).fill('unavailable')
+  await page.getByRole('button', { name: 'Search', exact: true }).click()
+  await expect(page.getByRole('alert')).toContainText('temporarily unavailable')
+  await expect(page.getByRole('article')).toHaveCount(0)
+  await page.getByRole('button', { name: 'Clear filters', exact: true }).click()
+  await expect(page.getByRole('article')).toHaveCount(6)
+  for (const width of [360, 768, 1024, 1440]) {
+    await page.setViewportSize({ width, height: 900 })
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy()
+  }
+  await page.screenshot({ path: 'test-results/internships-desktop.png', fullPage: true, animations: 'disabled' })
+  await page.setViewportSize({ width: 360, height: 900 })
+  await page.getByRole('button', { name: 'Toggle navigation', exact: true }).click()
+  await expect(page.locator('#mobile-navigation').getByRole('button', { name: 'Internships', exact: true })).toHaveAttribute('aria-current', 'page')
+  await page.keyboard.press('Escape')
+  await page.screenshot({ path: 'test-results/internships-mobile.png', fullPage: true, animations: 'disabled' })
 })

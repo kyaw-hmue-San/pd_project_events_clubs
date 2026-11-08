@@ -1,0 +1,61 @@
+{
+  "date": "2026-11-08",
+  "timezone": "Asia/Bangkok",
+  "scope": "LIBRARY_RELEVANCE_V1: show AI catalog suggestions only for a confirmed learning subject",
+  "automated": {
+    "build": "passed",
+    "offlineEnvironment": "passed",
+    "isolatedBackend": {
+      "passed": 119,
+      "failed": 0,
+      "libraryHelperTests": 10
+    },
+    "targetedBrowser": {
+      "passed": 2,
+      "failed": 0,
+      "scenarios": [
+        "Library relevance-gated workshop suggestions/social welcome exclusion/AI unavailable/manual search/pagination/recovery",
+        "Existing Student loading/profile/registration/cancellation journey"
+      ]
+    },
+    "providers": "Mocked AI/Library/other partners with disposable Firebase emulators only"
+  },
+  "runtime": {
+    "checkedAt": "2026-11-08T05:16:12.985Z",
+    "checks": [
+      {
+        "name": "health",
+        "http": 200
+      },
+      {
+        "name": "protected-relevance",
+        "http": 401
+      },
+      {
+        "name": "frontend",
+        "http": 200
+      }
+    ]
+  },
+  "cache": {
+    "kind": "bounded process-local, no DB writes",
+    "key": "exact public title/description + model + policy version",
+    "validTtlSeconds": 86400,
+    "unavailableTtlSeconds": 60,
+    "maxEntries": 500,
+    "maxConcurrentAssessments": 8
+  },
+  "screenshots": {
+    "welcome-no-ai-button.png": "Synthetic welcome activity with mocked negative assessment; manual search remains",
+    "workshop-ai-button.png": "Synthetic Python workshop with mocked positive assessment and catalog results"
+  },
+  "limits": [
+    "No real-model semantic validation or AI credits consumed",
+    "No joint partner sign-off or deployment",
+    "AI classification may be mistaken; does not establish catalog availability",
+    "Cache restarts/eviction/expiry or multiple API processes can cause reassessment"
+  ],
+  "gitOperations": false,
+  "push": false,
+  "deployment": false
+}

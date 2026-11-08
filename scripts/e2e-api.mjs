@@ -7,6 +7,10 @@ import { createPlanningAssistant } from '../backend/src/features/draft-assistant
 import { createApp } from '../backend/src/app.js';
 import { createFacilities } from '../backend/src/features/integrations/facilities.js';
 import { createIntegration, integrationConfig } from '../backend/src/features/integrations/service.js';
+import { createInternships } from '../backend/src/features/internships/service.js';
+import { internshipFetch } from './fixtures/internship-feed.mjs';
+import { createLibrary } from '../backend/src/features/library/service.js';
+import { libraryFetch, libraryAiFetch } from './fixtures/library-catalog.mjs';
 const require = createRequire(new URL('../backend/package.json', import.meta.url));
 const { initializeApp, deleteApp } = require('firebase-admin/app');
 const { getAuth } = require('firebase-admin/auth');
@@ -41,6 +45,8 @@ const planningAssistant = createPlanningAssistant({ config: aiConfig, fetchImpl:
     checklist: { before: ['Prepare practice materials'], during: ['Support participants and collect questions'], after: ['Collect feedback and tidy the room'] },
     facilities: [`Suggested seating for ${brief.participants} participants; confirm capacity.`, 'Projector and presentation screen; confirm availability.'], assumptions: ['Venue and equipment availability have not been confirmed.'] });
 } });
-const server = createApp({ db, auth: getAuth(firebase), integration, facilities, organizerAdmission, planningAssistant }).listen(Number(process.env.PORT), '127.0.0.1', () => console.log('Isolated browser API ready; partner creation is mocked.'));
+const internships = createInternships({ config: { enabled: true, baseUrl: 'https://team17.test', timeoutMs: 1000 }, fetchImpl: internshipFetch });
+const library = createLibrary({ config: { enabled: true, baseUrl: 'https://library.test', key: 'isolated-library-key', timeoutMs: 1000 }, aiConfig, fetchImpl: libraryFetch, aiFetchImpl: libraryAiFetch });
+const server = createApp({ db, auth: getAuth(firebase), integration, facilities, organizerAdmission, planningAssistant, internships, library }).listen(Number(process.env.PORT), '127.0.0.1', () => console.log('Isolated browser API ready; partner providers are mocked.'));
 const stopWorker = integration.start();
 process.once('SIGTERM', () => { stopWorker(); server.close(async () => { await deleteApp(firebase); process.exit(0) }) });
