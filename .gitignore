@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+
+# Local operating-system files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Private environments; examples remain trackable
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Server credentials and private handover
+*service-account*.json
+*-firebase-adminsdk-*.json
+*private-key*.pem
+*.key
+*.p12
+*.pfx
+/campus-event.md
+
+# Logs, local caches and hosting state
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+firepit-log.txt
+.firebase/
+.vercel/
+.vite/
+.cache/
+
+# Generated builds, coverage and browser reports
+dist/
+dist-ssr/
+coverage/
+.nyc_output/
+*.tsbuildinfo
+playwright-report/
+test-results/
+blob-report/
