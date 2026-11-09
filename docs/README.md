@@ -3,6 +3,8 @@
 ## Current implementation
 
 - [Access workflow](ACCESS_WORKFLOW.md), [API contract](API_CONTRACT.md), [progress](../PROGRESS.md)
+- [Implemented architecture](architecture.md), [diagram](diagrams/platform-architecture.md), [exportable SVG](diagrams/platform-architecture.svg)
+- [Privacy, retention and personal-data requests](privacy-and-data-handling.md)
 - [Repository layout](REPOSITORY_LAYOUT.md) and [next-session handoff](NEXT_AI_HANDOFF.md)
 - [Local setup](LOCAL_DEVELOPMENT.md), [Google sign-in](GOOGLE_SIGN_IN.md)
 - [Environment templates](../config/env/README.md), [deployment](deployment/README.md)
@@ -15,7 +17,7 @@
 
 ## Coursework and design
 
-- Canonical [PRD](PRD.md), [architecture](architecture.md), [role reviews](role-reviews.md)
+- Canonical [PRD](PRD.md), [implemented architecture](architecture.md), [historical role reviews](role-reviews.md)
 - [Platform diagram](diagrams/platform-architecture.md), [implementation decisions](implementation-decisions.md)
 - [Assignments](assignments/README.md), [prompts](prompts/README.md), [PRD template](templates/prd-template.md)
 

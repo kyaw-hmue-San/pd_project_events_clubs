@@ -1,6 +1,13 @@
 # Maintenance connection and Team 10 handoff
 
-Updated 2026-11-07. The creation and signed-webhook contracts were supplied by
+Updated 2026-11-09. User confirms completed partner coordination and selects
+Maintenance as the main evaluation flow. Permanent creation URL:
+`https://maintenance-team10.vercel.app/api/partner/work-orders`; receiver:
+`https://pd-project-events-clubs.onrender.com/webhooks/partner`.
+No fresh hosted execution artifact is created by this documentation update.
+The dated local evidence below remains historical.
+
+The creation and signed-webhook contracts were supplied by
 the user from Team 10. Automated verification uses isolated partner doubles.
 A real manual work order was created through Team 10's local tunnel on Nov 7;
 that result and the earlier inbound delivery/operator link are recorded below.
@@ -35,7 +42,7 @@ included. Facilities notes are shared only through the reviewed action.
 
 ## Creation contract and safe retries
 
-`POST https://maintenanceteam10.vercel.app/api/partner/work-orders` with server-only
+`POST https://maintenance-team10.vercel.app/api/partner/work-orders` with server-only
 `X-Partner-Key`, `Content-Type: application/json`, stable UUID `Idempotency-Key`
 and `ngrok-skip-browser-warning: true`.
 

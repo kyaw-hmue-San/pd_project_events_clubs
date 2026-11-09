@@ -9,7 +9,7 @@ export function facilitiesConfig(env = process.env) {
   const emulated = env.FIREBASE_PROJECT_ID?.startsWith('demo-') || env.FIRESTORE_EMULATOR_HOST || env.FIREBASE_AUTH_EMULATOR_HOST;
   const enabled = !emulated && env.TEAM10_WORK_ORDERS_ENABLED === 'true';
   const key = env.TEAM10_PARTNER_KEY || '';
-  const url = env.TEAM10_WORK_ORDER_API_URL || 'https://maintenanceteam10.vercel.app/api/partner/work-orders';
+  const url = env.TEAM10_WORK_ORDER_API_URL || 'https://maintenance-team10.vercel.app/api/partner/work-orders';
   const parsed = new URL(url);
   if (parsed.protocol !== 'https:' || parsed.username || parsed.password || parsed.search || parsed.hash || parsed.pathname !== '/api/partner/work-orders') throw new Error('TEAM10_WORK_ORDER_API_URL must be HTTPS with path /api/partner/work-orders and no credentials, query or fragment');
   const timeZone = env.CAMPUS_TIME_ZONE || 'Asia/Bangkok';

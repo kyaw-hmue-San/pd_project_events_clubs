@@ -1,5 +1,9 @@
 # Integration request — Notification Hub
 
+Status on 9 November 2026: coordination attempted, per user confirmation.
+The message below is the request proposal, not a completed implementation.
+No notification API call, queued/delivered result or recipient sharing is claimed.
+
 Hi Notification Hub team! We’re Team 12, **Campus Events & Clubs**.
 
 We’d like to connect with your system using **one existing API endpoint**, starting with a registration confirmation notification after a student successfully registers for an activity.

@@ -1,5 +1,10 @@
 # Implementation Baseline and Decisions
 
+Current architecture and privacy operations (9 November 2026):
+[implemented cloud system](architecture.md), [diagram](diagrams/platform-architecture.md),
+[personal-data handling](privacy-and-data-handling.md). Sections below preserve
+dated implementation decisions; their local-only deployment status is historical.
+
 **Last checked:** 2026-11-06
 
 **Branch:** `implementation/campus-pulse-full-stack`

@@ -1,661 +1,154 @@
-# 04 — Architecture Options
+# Campus Events & Clubs — implemented system architecture
 
-## Events & Clubs
+Updated 9 November 2026. Team 12. This describes the implemented application,
+not a proposed stack. [Diagram](diagrams/platform-architecture.md) ·
+[Standalone SVG](diagrams/platform-architecture.svg) ·
+[Privacy and security](privacy-and-data-handling.md).
 
-## Architecture Goal
+## Deployment and trust boundaries
 
-The architecture only needs to support the core MVP:
-
-**Organizer publishes activity → Student discovers activity → Student views details → Student registers → Student receives confirmation → Student can view or cancel registration**
-
-The system uses three main entities:
-
-* User
-* Activity
-* Registration
-
-Because this is a 3–5 person university project with one semester and a 0 THB deployment budget, the architecture should use **one frontend, one backend/API responsibility, and one main database**.
-
-Microservices, message queues, multiple databases, Kubernetes, or other enterprise infrastructure are not necessary.
-
----
-
-# Option 1 — Vercel + Supabase
-
-## Frontend
-
-A single responsive web application can be deployed on **Vercel**.
-
-The same frontend should support both:
-
-* Student screens
-* Organizer screens
-
-There is no need to create separate student and organizer applications.
-
-Vercel's Hobby plan is currently free and includes Git-based deployment, automatic HTTPS and preview deployments, making it suitable for a small non-commercial student application.
-
-## Backend / API
-
-Use a **thin API layer within the same web application**.
-
-```text
-Browser
-   │
-   ▼
-Frontend
-   │
-   ▼
-REST API
-   │
-   ▼
-Supabase
-```
-
-The API is responsible for:
-
-* Reading published activities
-* Creating activities
-* Updating activities
-* Creating registrations
-* Cancelling registrations
-* Viewing registrations
-* Checking role and ownership rules
-
-A separate backend server or microservice is unnecessary.
-
-## Database
-
-Use **Supabase PostgreSQL**.
-
-The relational database matches the existing data model well:
-
-```text
-User
- ├── manages ──> Activity
- │
- └── creates ──> Registration ──> Activity
-```
-
-Important database constraints such as:
-
-```text
-UNIQUE(student_id, activity_id)
-```
-
-can be enforced directly.
-
-Supabase's current Free plan includes a PostgreSQL database and is designed for small projects, with free projects subject to usage limits.
-
-## Authentication
-
-Use **Supabase Authentication**.
-
-Authentication determines who the user is.
-
-Authorization then determines what they are allowed to do:
-
-```text
-STUDENT
-→ view activities
-→ create own registration
-→ cancel own registration
-
-ORGANIZER
-→ create activities
-→ update own activities
-→ view registrations for own activities
-```
-
-Authorization should be enforced by the backend/database rules, not only by hiding buttons in the interface.
-
-## Storage
-
-**No file storage is necessary for the current MVP.**
-
-The existing data model contains text-based activity and registration information only.
-
-If activity cover images are introduced later, Supabase Storage could be added. Supabase currently includes limited file storage in its Free plan.
-
-## Deployment
-
-```text
-              USERS
-                │
-                ▼
-       ┌─────────────────┐
-       │     Vercel      │
-       │                 │
-       │ Frontend        │
-       │ REST API        │
-       └────────┬────────┘
-                │
-                ▼
-       ┌─────────────────┐
-       │    Supabase     │
-       │                 │
-       │ Authentication  │
-       │ PostgreSQL      │
-       │ Optional Storage│
-       └─────────────────┘
-```
-
-## Advantages
-
-* Simple architecture
-* Strong match with the relational data model
-* Authentication and database are integrated
-* Easy to enforce database constraints
-* Explicit API layer is possible
-* Easy deployment workflow
-* Small number of components
-* Suitable for a five-person team
-* Good balance between learning and implementation speed
-
-## Disadvantages
-
-* Depends heavily on Supabase
-* Team members need basic SQL knowledge
-* Authorization rules must be configured carefully
-* Free-tier limitations must be monitored
-
-## Major Risks
-
-### Free Project Inactivity
-
-Supabase currently pauses Free projects after one week of inactivity. The team should therefore check and reactivate the project before demonstrations or presentations.
-
-### Authorization Errors
-
-Incorrect ownership rules could allow:
-
-* A student to access another student's registration
-* An organizer to modify another organizer's activity
-
-Authorization therefore needs backend/database enforcement.
-
-### Free-Tier Dependency
-
-The project must remain within Vercel and Supabase Free-plan limits. For this small university MVP, expected usage should be relatively low, but the team should still monitor usage during testing.
-
----
-
-# Option 2 — Cloudflare Workers + D1
-
-## Frontend
-
-A single lightweight web frontend can be served through Cloudflare.
-
-```text
-Browser
-   │
-   ▼
-Web Frontend
-```
-
-The frontend would contain the Student and Organizer interfaces.
-
-## Backend / API
-
-Use **one Cloudflare Worker** as the REST API.
-
-```text
-Frontend
-   │
-   ▼
-Cloudflare Worker
-   │
-   ▼
-D1 Database
-```
-
-The Worker would handle:
-
-* Authentication checks
-* Role validation
-* Activity CRUD
-* Registration
-* Cancellation
-* Ownership validation
-
-Only one Worker/backend application is necessary.
-
-## Database
-
-Use **Cloudflare D1**.
-
-D1 is Cloudflare's serverless SQL database and can support the three relational entities required by this MVP. Its Free plan currently includes free database capacity and daily read/write allowances suitable for prototype-scale applications.
-
-## Authentication
-
-Authentication is the biggest architectural issue with this option.
-
-Workers + D1 do not provide the same integrated application authentication experience as Firebase or Supabase.
-
-The team would therefore need to design or integrate authentication separately.
-
-Conceptually:
-
-```text
-User
- │
- ▼
-Authentication
- │
- ▼
-Token
- │
- ▼
-Worker API
- │
- ▼
-D1
-```
-
-This creates additional work that does not directly improve the Events & Clubs MVP.
-
-## Storage
-
-No file storage is necessary for the current MVP.
-
-If files become necessary later, another Cloudflare service such as object storage would have to be introduced.
-
-For now:
-
-```text
-Storage = Not Required
-```
-
-## Deployment
-
-```text
-              USERS
-                │
-                ▼
-        Web Frontend
-                │
-                ▼
-     ┌───────────────────┐
-     │ Cloudflare Worker │
-     │     REST API      │
-     └─────────┬─────────┘
-               │
-               ▼
-        ┌────────────┐
-        │     D1     │
-        │ SQL DB     │
-        └────────────┘
-```
-
-## Advantages
-
-* Clear API architecture
-* SQL database
-* Good separation between frontend and backend
-* Strong learning value for API development
-* Generous Free-tier capacity for a university project
-* Serverless deployment
-* Good control over backend business rules
-
-Cloudflare's Free Workers plan currently supports up to 100,000 Worker requests per day, while D1 includes prototype-scale free database quotas.
-
-## Disadvantages
-
-* Higher learning curve
-* Authentication requires more design work
-* More Cloudflare-specific concepts
-* More configuration than Vercel + Supabase
-* Team has greater responsibility for backend implementation
-
-## Major Risks
-
-### Authentication Complexity
-
-Authentication and authorization may consume significant development time compared with the actual Events & Clubs features.
-
-### Worker Limitations
-
-The Free Workers plan currently has a 10 ms CPU-time limit per invocation, so backend handlers need to remain lightweight.
-
-For basic CRUD requests this may be manageable, but it introduces another constraint for a student team to understand.
-
-### Higher Delivery Risk
-
-The architecture provides more technical control but also creates more implementation work.
-
-For a single-semester project, this increases the risk that the team spends time on infrastructure instead of completing the core user journey.
-
----
-
-# Option 3 — Firebase
-
-## Frontend
-
-Use a single web application with Firebase Hosting.
-
-```text
-Browser
-   │
-   ▼
-Web Frontend
-```
-
-Firebase provides a no-cost Spark plan with no payment method required for supported no-cost usage.
-
-## Backend / API
-
-The simplest Firebase architecture would allow the frontend to communicate directly with Firebase services:
-
-```text
-Frontend
-   │
-   ├── Firebase Authentication
-   │
-   └── Firestore
-```
-
-This makes development fast.
-
-However, it means there is less of a traditional explicit REST API backend.
-
-A custom Cloud Functions API could be introduced, but Cloud Functions requires the Blaze pay-as-you-go plan and a linked billing account.
-
-Because the project requirement is **0 THB with minimum billing risk**, introducing Cloud Functions would be undesirable.
-
-## Database
-
-Use **Cloud Firestore**.
-
-Possible collections could be:
-
-```text
-users
-activities
-registrations
-```
-
-Firestore's free quota currently includes limited daily document reads, writes and deletes that would be sufficient for a small university prototype.
-
-However, the current Events & Clubs data model is naturally relational.
-
-For example:
-
-```text
-Student
-   │
-Registration
-   │
-Activity
-```
-
-and:
-
-```text
-UNIQUE(student_id, activity_id)
-```
-
-are more naturally represented by a relational SQL database.
-
-## Authentication
-
-Use **Firebase Authentication**.
-
-Most standard Firebase Authentication options are available without charge under the supported no-cost product model.
-
-Roles would still need to be handled carefully:
-
-```text
-Student
-Organizer
-Optional Admin
-```
-
-and Security Rules would need to prevent unauthorized access.
-
-## Storage
-
-**Do not use Firebase Storage for the MVP.**
-
-It is not required by the current data model.
-
-More importantly, Cloud Storage for Firebase now requires projects to use the **Blaze pay-as-you-go plan**, even though some storage usage may remain within no-cost allowances.
-
-That conflicts with the project's desire to avoid billing risk.
-
-## Deployment
-
-```text
-              USERS
-                │
-                ▼
-      ┌──────────────────┐
-      │ Firebase Hosting │
-      │    Frontend      │
-      └────────┬─────────┘
-               │
-        ┌──────┴───────┐
-        ▼              ▼
- Firebase Auth     Firestore
-```
-
-## Advantages
-
-* Very quick to prototype
-* Integrated Authentication
-* Simple deployment
-* Little backend infrastructure
-* Good for small teams
-* Generous enough no-cost Firestore quota for this MVP
-
-## Disadvantages
-
-* NoSQL is less natural for the current relational model
-* Explicit REST API architecture is weaker
-* Unique registration rules require more application-level care
-* Security Rules become critical
-* Custom backend functions create billing-plan complexity
-
-## Major Risks
-
-### Data Integrity
-
-Preventing duplicates such as:
-
-```text
-student_id + activity_id
-```
-
-is less straightforward than using a relational unique database constraint.
-
-### Billing Requirement for Additional Services
-
-Cloud Functions require Blaze, and Cloud Storage for Firebase also requires Blaze.
-
-Adding these services therefore increases billing risk.
-
-### Architecture Learning
-
-The direct frontend-to-Firebase model is convenient, but it provides less experience with explicit API boundaries than the other two architectures.
-
----
-
-# Architecture Comparison
-
-| Area                                | Vercel + Supabase  | Cloudflare + D1 | Firebase                          |
-| ----------------------------------- | ------------------ | --------------- | --------------------------------- |
-| Overall complexity                  | **Low–Medium**     | Medium–High     | Low                               |
-| Database model                      | **Relational SQL** | Relational SQL  | NoSQL                             |
-| Fit with User–Activity–Registration | **Excellent**      | Good            | Moderate                          |
-| Authentication                      | **Integrated**     | Additional work | **Integrated**                    |
-| Explicit API                        | **Easy**           | **Strongest**   | Limited without Functions         |
-| Database constraints                | **Strong**         | Strong          | More application-driven           |
-| Zero-budget suitability             | **Strong**         | Strong          | Strong only with limited services |
-| Learning curve                      | Moderate           | Highest         | Lowest                            |
-| Development speed                   | **Fast**           | Slower          | **Fastest**                       |
-| Delivery risk                       | **Low**            | Higher          | Low–Medium                        |
-| MVP suitability                     | **Excellent**      | Good            | Good                              |
-
----
-
-# Recommended Architecture
-
-## Vercel + Supabase
-
-For Team 12's **Events & Clubs MVP**, the recommended option is:
-
-> **Vercel + Supabase**
-
-### Proposed Architecture
-
-```text
-                  ┌────────────────────┐
-                  │      Browser       │
-                  │ Student / Organizer│
-                  └─────────┬──────────┘
-                            │ HTTPS
-                            ▼
-               ┌────────────────────────┐
-               │       Vercel App       │
-               │                        │
-               │  Frontend UI           │
-               │       │                │
-               │       ▼                │
-               │  REST API Layer        │
-               │       │                │
-               │ Auth / Role /          │
-               │ Ownership Validation   │
-               └───────────┬────────────┘
-                           │
-                           ▼
-                ┌──────────────────────┐
-                │       Supabase       │
-                │                      │
-                │ Authentication       │
-                │                      │
-                │ PostgreSQL           │
-                │ ├── User             │
-                │ ├── Activity         │
-                │ └── Registration     │
-                │                      │
-                │ Storage              │
-                │ Not required for MVP │
-                └──────────────────────┘
-```
-
-## Why This Option Is Appropriate
-
-### 1. It matches the data model
-
-The platform already has a relational structure:
-
-```text
-User
-Activity
-Registration
-```
-
-PostgreSQL can directly enforce relationships and constraints such as:
-
-```text
-UNIQUE(student_id, activity_id)
-```
-
-This reduces duplicate and inconsistent registration data.
-
-### 2. Authentication is already available
-
-The team does not need to build a separate authentication service.
-
-That reduces development effort and security risk.
-
-### 3. It still provides a clear API architecture
-
-Instead of allowing the frontend to contain all business logic:
-
-```text
-Frontend
-   ↓
-API
-   ↓
-Database
-```
-
-gives the team a clear separation of responsibilities.
-
-### 4. It remains simple
-
-Only two deployed platforms are required:
-
-```text
-Vercel
-+
-Supabase
-```
-
-No microservices are necessary.
-
-No queue is necessary.
-
-No cache layer is necessary.
-
-No separate authentication server is necessary.
-
-No separate file-storage service is necessary.
-
-### 5. It fits the budget
-
-Vercel provides a free Hobby tier for small non-commercial projects, while Supabase provides a Free plan.
-
-The expected scale of a university demonstration should be kept comfortably within those limits.
-
-### 6. It fits one semester
-
-The architecture is complex enough to demonstrate:
-
-* Frontend
-* API
-* Authentication
-* Authorization
-* Database
-* Relationships
-* Business rules
-* Deployment
-
-but simple enough for a five-person student group to implement and explain.
-
----
-
-# Final Architecture Decision
-
-**Recommended: Vercel + Supabase**
-
-```text
-Web Frontend
-     ↓
-REST API
-     ↓
-Supabase Authentication
-     ↓
-PostgreSQL Database
-```
-
-This option provides the best balance of:
-
-**simplicity + relational data integrity + authentication + zero-budget deployment + realistic semester delivery.**
-
-The project should optimize for completing a reliable MVP rather than designing infrastructure for hypothetical large-scale future traffic.
-
----
-
-# Free-Tier Verification Record
-
-**Last verified:** 2026-08-16
-
-| Service | Verified condition relevant to this project | Official source |
+| Layer | Actual responsibility | Location |
 |---|---|---|
-| Vercel | Hobby is intended for personal/non-commercial use; Express runs as a Vercel Function | [Vercel terms](https://vercel.com/legal/terms), [Express on Vercel](https://vercel.com/docs/frameworks/backend/express) |
-| Supabase | Free projects may pause after a seven-day period of low activity | [Supabase project pausing](https://supabase.com/docs/guides/platform/free-project-pausing) |
-| Cloudflare | Workers Free includes 100,000 requests per day; D1 has separate free limits | [Workers limits](https://developers.cloudflare.com/workers/platform/limits/), [Workers and D1 pricing](https://developers.cloudflare.com/workers/platform/pricing/) |
-| Firebase | Cloud Storage requires the Blaze plan even though no-cost allowances may exist | [Firebase Storage billing requirements](https://firebase.google.com/docs/storage/faqs-storage-changes-announced-sept-2024) |
+| Browser | One React/TypeScript/Vite application; Student, Organizer and Admin interfaces; local ticket QR rendering/decoding | `frontend/src/` |
+| Static hosting | HTML, compiled JS/CSS and official branding; no server credentials | Firebase Hosting: `https://events-management-4d8ce.web.app` |
+| Identity | Google sign-in through Firebase Authentication; client obtains Firebase ID tokens | Google/Firebase Auth |
+| API | Persistent Node/Express process, Firebase Admin SDK, authoritative identity/roles/ownership/business rules | Render: `https://pd-project-events-clubs.onrender.com`; `backend/src/` |
+| Database | Firestore application records, transactions and durable integration state | Firebase project `events-management-4d8ce` |
+| External providers | AI/ML API; Team 10 Maintenance; Library; Team 17 Internship | Backend-to-provider HTTPS for in-app calls |
 
-These conditions are time-sensitive. The Delivery and Document owner must recheck them before stack lock, production deployment, and the final demonstration.
+The browser signs in with Firebase Auth and calls Express with an ID token.
+It never reads/writes Firestore directly; client Firestore rules deny all access.
+Admin SDK bypasses those rules, so server authorization and IAM credentials are
+the actual application data boundary. CORS is a browser control, not authentication.
+Partner callbacks use their separate shared-secret/HMAC boundary, not Google tokens.
+
+## Application modules
+
+| Module | Responsibility and limits |
+|---|---|
+| Authentication and profiles | Verify token/revocation, Google provider and email; load trusted profile. Student enrollment requires exact school domain and a separately supplied unique university ID. Each provisioned role can edit only its own display name. |
+| Activities | Owning Organizer creates, edits, publishes and closes activities. Optional capacity, end time and deadline. Admin event oversight is read-only. |
+| Registration | Student-capability checks; atomic seats/count/active-registration lock; duplicate protection and history-preserving cancellation. |
+| QR and attendance | Private opaque ticket for its registration owner; event-owning Organizer verifies and explicitly confirms check-in. Atomic attendance/counter; repeated scans count once. No Admin ticket/roster access. |
+| Organizer admission | Own request and Admin review; conditional AI admission under explicit CAMPUS_ORGANIZER_V1 config. Revision/lease/identity checks; uncertainty stays pending, never AI rejection or Admin appointment. |
+| AI planning | Organizer-only agenda/checklist/facilities suggestions; reviewed section application, replacement acknowledgment and labelled fixed-template fallback. No automatic publish or facilities Send. |
+| Maintenance | Owner-reviewed creation, stable retries/leases, validated unique response linking; raw-byte signed webhooks with monotonic lifecycle versions. |
+| Library | Student-only published/closed activity resources. Cached LIBRARY_RELEVANCE_V1 assessment gates AI suggestions; manual search stays available. Library supplies all books/copy counts. |
+| Internship | Student-only read-only proxy with validated search/pagination/safe links. Provider demo records remain labelled. |
+
+Three primary roles: Student, Organizer, Admin. An enrolled Student approved as
+Organizer retains Student capability and both workspaces. Personal-email or
+unenrolled Organizers gain no Student powers. Admin appointment is trusted
+operator setup, with no public role-selection API.
+
+## Data and transactions
+
+Firestore is document-based; there is no PostgreSQL database or SQL migration.
+
+- `users`, `universityIds`: profiles and unique enrollment claims.
+- `activities`, `registrations`, `activeRegistrations`: lifecycle, retained
+  history and unique active-registration locks. Seat allocation, cancellation
+  and counters transact against the activity.
+- `registrationTickets`, `ticketCodes`: private tickets and hashed lookup keys.
+  Ticket credentials are excluded from list DTOs, URLs and committed evidence.
+- `organizerRequests`, `organizerAiReviews`, `organizerRequestDecisions`:
+  exact revisions, processing leases and decision evidence.
+- `facilitiesRequests`, `maintenanceBindings`, `maintenanceWorkOrderLinks`,
+  `maintenanceWorkOrders`: reviewed payload/retry identity, unique associations
+  and latest authenticated work-order status.
+- Integration inbox/outbox/log records and `requestLogs`: deduplication,
+  optional delivery retries and sanitized operational evidence. Admin does not
+  automatically receive integration-log access.
+
+See [feature modules](../backend/src/features/) and [API contract](API_CONTRACT.md).
+Transactions preserve cross-document invariants. AI/partner network calls run
+outside transactions; results are rechecked against revision/lease before writes.
+Required composite indexes support bounded queries. No destructive migration is
+introduced by the architecture update.
+
+## Main data flows
+
+1. **Sign-in:** Google → Firebase Auth → browser ID token → Express verification/
+   revocation/provider/email checks → trusted Firestore profile/capabilities.
+   UI workspace choice grants no authority.
+2. **Join/check in:** Student request → visibility/deadline/capacity checks →
+   transactional registration/lock/count → authoritative response/refetch →
+   optional own QR. Owning Organizer verifies and confirms attendance separately.
+3. **Plan:** Organizer brief → AI/ML API → strict schema/duration validation →
+   AI plan or fixed template → human section review/apply → separate save/publish.
+4. **Admission:** save pending request → assess organization/reason → validate
+   rubric/quotes → recheck current Google identity/revision/lease → atomic
+   conditional promotion/audit, otherwise Admin review. Student data is preserved.
+5. **Facilities:** review saved requirements → backend POST to Team 10 → validate
+   receipt activity ID and unique order → persist link → signed callback →
+   deduplicate/version-check → persist status → owner panel refresh. Saving
+   notes alone never sends them. Later edits do not update the remote request.
+6. **Library:** eligible activity open → cached relevance check of public
+   title/description → AI action only on positive result → explicit search →
+   real Library records. Manual search is independent of AI. No Student identity
+   is attached to AI prompts/catalog requests.
+7. **Internship:** Student search → protected proxy → public Team 17 feed →
+   validated results/demo labels → optional external detail/application website.
+
+## Partner boundaries and evaluation status
+
+| Connection | Direction and data | Status |
+|---|---|---|
+| Team 10 Maintenance | Outbound reviewed activity ID/title/requirements/schedule/location/category; inbound work-order receipt and signed status events | User confirms connection completed; main evaluation showcase. Latest permanent-origin health was separately checked. New hosted HTTP/lifecycle artifacts have not been captured by this documentation task. |
+| Library | Read-only catalog GET with search/paging and server-only provider key; real books/copy counts returned | User confirms connection completed. No borrowing/reservation. |
+| Team 17 Internship | Read-only public GET with search/filters/paging; no caller identity/credentials | User confirms connection completed. Applications remain on provider site. |
+| Notification Hub | No current runtime data flow | Coordination attempted, per user. No delivery implementation or success claimed. |
+
+Permanent endpoints:
+
+- Creation: `https://maintenance-team10.vercel.app/api/partner/work-orders`.
+- Receiver: `https://pd-project-events-clubs.onrender.com/webhooks/partner`.
+- Library: `https://campus-library-mu.vercel.app`.
+- Internship: `https://team17-internship.vercel.app`.
+
+Evaluation infrastructure must not depend on localhost/ngrok. Historical local
+receipts remain labelled as such. User confirmation is not a captured HTTP trace.
+The user is preparing the Working Happy Path; no additional production writes
+or partner messages are performed by this documentation change.
+
+## Runtime, deployment and failure behavior
+
+`backend/api.mjs` starts the persistent service. Importing `backend/src/app.js`
+does not initialize Firebase, listen or start a worker. The in-process worker
+uses durable leases/retries for enabled legacy integration jobs. Hosted settings
+currently disable legacy publication/polling. Facilities sends/retries are
+explicit owner actions, not automatic worker jobs. Do not move the worker to
+a Vercel/serverless request handler.
+
+Render idle sleep suspends the process/worker until wake-up. In-memory AI caches
+and rate guards reset on restart; they are not distributed quotas. Provider
+failure yields honest unavailable/manual-review/template states. An uncertain
+receipt preserves original retry identity, not invented success.
+
+Build from the root and publish only `frontend/dist` to Firebase Hosting. Deploy
+`backend/` using persistent `npm start`. Keep local and hosted environments
+separate; AI/partner/Admin credentials never belong in Vite assets.
+See [release guide](deployment/firebase-render.md).
+
+## Security, privacy and verification
+
+Implemented: HTTPS, verified identity, server role/owner checks, bounded input,
+exact-origin CORS, denied client Firestore access, safe links, webhook HMAC/
+replay/version checks, transactional writes and server-only credentials. Request
+logs exclude bearer headers/bodies. Free text can still contain personal data.
+The public `#privacy` page explains actual sharing and manual rights requests.
+[Privacy operations](privacy-and-data-handling.md) distinguishes policy,
+implemented controls and remaining institutional decisions.
+
+[Evidence](evidence/README.md) separates emulator tests, historical hosted checks
+and user/peer reports. Contributions must reflect actual work; each member must
+be able to explain and modify their assigned code. No invented authorship,
+lecturer approval, production verification or legal certification.
+
+## Historical stack decision
+
+Earlier Supabase/PostgreSQL/Vercel options are preserved unchanged in
+[the archive](archive/architecture-options-original.md). Firebase/Firestore/Render
+is the implemented deviation; lecturer approval has not been recorded. Earlier
+AI/Admin exclusions were superseded by the confirmed bounded scope in
+[ACCESS_WORKFLOW.md](ACCESS_WORKFLOW.md). Historical coursework is not rewritten.

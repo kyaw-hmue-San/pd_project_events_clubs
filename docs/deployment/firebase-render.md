@@ -46,19 +46,22 @@ in-process worker until a request wakes the service. This is a presentation
 limitation; no always-on or paid plan is enabled automatically. See
 [Render's limits](https://render.com/docs/free).
 
-## Temporary Maintenance connection
+## Maintenance connection
 
-The user explicitly authorized retaining the previous Team 10 HTTPS ngrok
-creation URL for the coordinated demonstration. Its exact value is copied to
-`TEAM10_APPROVED_TEST_URL`; only an exact matching HTTPS ngrok URL with the
-creation path passes the deployment check. This exception does not permit a
-temporary frontend/API address, HTTP, localhost or the partner health path.
-Remove the exception once Team 10 supplies its permanent creation endpoint.
+Team 10 supplied their permanent backend on 2026-11-09. Configure Render's
+`TEAM10_WORK_ORDER_API_URL` as
+`https://maintenance-team10.vercel.app/api/partner/work-orders` (note the hyphen).
+Remove `TEAM10_APPROVED_TEST_URL`; a tunnel exception is no longer needed.
+Keep the agreed partner key and webhook secret unchanged. Save the environment
+and let Render restart the service. Local `backend/.env` and the private Render
+import file have been updated; these files do not change Render automatically.
 
-The deployed `https://maintenanceteam10.vercel.app/api/partner/health` returned200,
-but it does not create orders. The old ngrok route was offline at preparation
-time. Team 10 must keep their API/tunnel running for sends to succeed.
-After our API is updated, give them the permanent callback:
+A separate manual, authenticated GET of `/api/partner/health` returned200.
+GET `/api/partner/work-orders` returned400 `MISSING_QUERY_PARAM`, confirming
+the route responds but not proving the agreed POST creation contract. No order
+was created during these checks. Verify the next explicit reviewed facilities
+submission and subsequent signed lifecycle updates with Team 10.
+Their permanent webhook callback remains:
 `https://pd-project-events-clubs.onrender.com/webhooks/partner`.
 Do not relink existing work orders, generate keys or submit test requests without
 an explicit reviewed activity action. No partner message has been sent.

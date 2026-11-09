@@ -1,5 +1,10 @@
 # 07 — Architecture Review and Decision Log
 
+> Historical coursework review of the earlier Supabase/Vercel proposal. It is
+> preserved as submitted, not a description of the deployed system or proof of
+> named member contributions. See the [current architecture](architecture.md)
+> and [privacy/control evidence](privacy-and-data-handling.md).
+
 ## Events & Clubs
 
 **Team:** Team 12  

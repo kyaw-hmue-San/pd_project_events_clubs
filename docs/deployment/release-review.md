@@ -1,5 +1,11 @@
 # Prepared release review
 
+> Historical pre-release review. Its branch, test counts and publication blocker
+> below describe that earlier attempt, not current release status. See
+> [current deployment](firebase-render.md), [implemented architecture](../architecture.md)
+> and [privacy operations](../privacy-and-data-handling.md). The November9 privacy
+> UI changes are local until a separate authorized frontend deployment.
+
 Implementation is local on `implementation/campus-pulse-full-stack`.
 Primary feature commit: `baaeac7` (Codex-attributed implementation; original
 prototype supplied by the user). Public repository destination would be

@@ -1,5 +1,9 @@
 # Library learning resources
 
+9 November 2026: user confirms the read-only connection is completed. No
+borrowing/reservation was added. This is user-reported acceptance, not a new
+hosted HTTP trace; Maintenance is the main evaluation showcase.
+
 Student workspace → activity details → **Learning resources** connects event
 topics to Campus Library's real catalog. Opening details checks whether the
 public title/description has a clear learning purpose and a concrete reading

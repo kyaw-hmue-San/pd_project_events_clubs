@@ -1,6 +1,26 @@
 # Next AI session handoff — current implementation status
 
-Updated 2026-11-08, Asia/Bangkok. Current working branch main.
+Updated 2026-11-09, Asia/Bangkok. Current working branch fix/team10-permanent-endpoint.
+LATEST architecture/privacy: current docs/architecture.md and diagrams now match
+Firebase Hosting + persistent Render + Firebase Auth/Firestore + three roles/AI/
+partners. Original options preserved in docs/archive/architecture-options-original.md.
+Public frontend #privacy route and links added; no session/API needed to read it.
+Public contact authorized: 6731503062@lamduan.mfu.ac.th. User delegated retention:
+logs30 days, identifiable project data90 days after final evaluation, MANUAL
+operator review only (no purge/export endpoint). See privacy-and-data-handling.md
+for rights handling, source/control evidence and unresolved legal confirmation.
+User reports three partner connections completed; Maintenance is showcase,
+Library/Internship read-only; Notification Hub attempted, no active flow.
+User is creating hosted Happy Path. No new production trace/acceptance invented.
+These architecture/privacy changes are local and require frontend deployment;
+no push/deploy/partner call by this change. Preserve earlier endpoint work.
+LATEST Team 10 origin is https://maintenance-team10.vercel.app (hyphenated).
+Facilities default/examples/private local and Render import URL now use
+/api/partner/work-orders there; private tunnel approval removed. Authenticated
+manual health GET200 and work-orders GET400 MISSING_QUERY_PARAM. No POST/order
+creation performed. User must update running Render TEAM10_WORK_ORDER_API_URL
+in dashboard; keys unchanged, receiver remains our permanent Render URL.
+Older tunnel/provider references below are historical. No commit/push/deploy.
 Read AGENTS.md, PROGRESS.md, docs/ACCESS_WORKFLOW.md and API_CONTRACT.md first.
 Preserve uploaded files, existing uncommitted changes, UI polish and access rules.
 User authorized and completed the Firebase Hosting + Render release, superseding
@@ -19,9 +39,9 @@ backend/.env.render and frontend/.env.production.local are private/ignored.
 Local Admin key was replaced after the user revoked the recovered old key:
 never restore an old checkpoint Admin credential as if it were valid. Render
 must use the new key in /etc/secrets/firebase-service-account.json.
-Team 10's deployed health worked, but the user-approved old ngrok creation URL
-was offline; TEAM10_APPROVED_TEST_URL is a narrow temporary demo exception.
-Team10 must restore their tunnel and target our permanent /webhooks/partner.
+At the original release the old ngrok creation URL was offline; the new permanent
+origin above supersedes that temporary configuration. Team10 must target our
+permanent /webhooks/partner receiver.
 No partner messages or new work orders were sent. Render Free sleeps on idle;
 worker is still persistent/in-process while service runs, not serverless.
 User keeps Git publication control; no agents/delegation requested.
