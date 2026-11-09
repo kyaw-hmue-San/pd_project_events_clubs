@@ -14,6 +14,7 @@ Thumbs.db
 !.env.*.example
 
 # Server credentials and private handover
+/backend/private-backups/
 *service-account*.json
 *-firebase-adminsdk-*.json
 *private-key*.pem

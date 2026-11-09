@@ -1,0 +1,106 @@
+{
+  "date": "2026-11-09",
+  "checkedAt": "2026-11-09T15:48:23.773Z",
+  "environment": "Live Firebase project events-management-4d8ce",
+  "authorization": "User explicitly confirmed the reviewed cleanup scope",
+  "backup": {
+    "createdBeforeMutation": true,
+    "gitIgnored": true,
+    "private": true,
+    "checksumsVerified": true,
+    "typedSerializationRoundtripVerified": true,
+    "authRecoveryIncluded": true
+  },
+  "deleted": {
+    "firestoreDocuments": 99,
+    "authAccounts": 8,
+    "byCollection": {
+      "activities": 19,
+      "registrations": 11,
+      "activeRegistrations": 9,
+      "registrationTickets": 7,
+      "ticketCodes": 7,
+      "organizerRequests": 4,
+      "organizerAiReviews": 2,
+      "organizerRequestDecisions": 4,
+      "facilitiesRequests": 7,
+      "maintenanceBindings": 7,
+      "maintenanceWorkOrderLinks": 7,
+      "webhookOutbox": 6,
+      "users": 6,
+      "universityIds": 3
+    }
+  },
+  "retained": [
+    {
+      "role": "ADMIN",
+      "enabled": true,
+      "identityAndEnrollmentPreserved": true,
+      "capabilities": {
+        "student": false,
+        "organizer": false
+      }
+    },
+    {
+      "role": "STUDENT",
+      "enabled": true,
+      "identityAndEnrollmentPreserved": true,
+      "capabilities": {
+        "student": true,
+        "organizer": false
+      }
+    }
+  ],
+  "remainingCounts": {
+    "activities": 0,
+    "registrations": 0,
+    "activeRegistrations": 0,
+    "registrationTickets": 0,
+    "ticketCodes": 0,
+    "organizerRequests": 0,
+    "organizerAiReviews": 0,
+    "organizerRequestDecisions": 0,
+    "facilitiesRequests": 0,
+    "maintenanceBindings": 0,
+    "maintenanceWorkOrderLinks": 0,
+    "webhookOutbox": 0,
+    "users": 2,
+    "universityIds": 1
+  },
+  "preserved": {
+    "roleAssignments": {
+      "before": 1,
+      "after": 2
+    },
+    "requestLogs": {
+      "before": 1421,
+      "after": 1421
+    },
+    "integrationLogs": {
+      "before": 133,
+      "after": 133
+    },
+    "integrationState": {
+      "before": 1,
+      "after": 1
+    },
+    "webhookInbox": {
+      "before": 79,
+      "after": 79
+    },
+    "maintenanceWorkOrders": {
+      "before": 14,
+      "after": 14
+    }
+  },
+  "studentCanRequestOrganizerAgain": true,
+  "verificationPassed": true,
+  "verificationKind": "Direct read-only Firebase Admin verification, not browser/user sign-in",
+  "externalPartnerCalls": 0,
+  "externalWorkOrdersChanged": false,
+  "configurationOrKeysChanged": false,
+  "securityOrWebhookReplayRecordsDeleted": false,
+  "applicationDeployed": false,
+  "gitCommitted": false,
+  "gitPushed": false
+}
