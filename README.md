@@ -162,6 +162,7 @@ Hosting, the persistent Render API, Firebase Auth/Firestore, AI and partners.
 | `npm test` | Run backend helper tests; API scenarios require emulators |
 | `npm run test:emulator` | Run the isolated backend suite |
 | `npm run test:e2e` | Run browser workflows against isolated demo services |
+| `npm run ci:check` | Run the CI build/artifact, backend and browser gates sequentially |
 | `npm run build:production` | Validate production frontend settings, then build |
 | `npm run check:hosting` | Check that only safe production frontend assets will be published |
 | `npm run deploy:frontend` | Rebuild, validate and publish to the existing Firebase Hosting site |
@@ -169,6 +170,11 @@ Hosting, the persistent Render API, Firebase Auth/Firestore, AI and partners.
 Emulator tests require Java 21+; see [local development](docs/LOCAL_DEVELOPMENT.md).
 Automated checks use disposable demo projects and mocked AI/partner providers.
 Recorded results and their limits are in [PROGRESS.md](PROGRESS.md).
+
+[GitHub quality gates](docs/deployment/quality-gates.md) run on pull requests to
+`main` and pushes to `main` once the workflow is published. Make **Quality gate**
+a required check in GitHub branch protection to enforce it. Deployment remains
+manual; no production credentials are needed for CI.
 
 ## Deployment
 

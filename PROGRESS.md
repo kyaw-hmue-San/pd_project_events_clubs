@@ -6,6 +6,30 @@ Status: **Hosted on Firebase Hosting + Render. School Google sign-in confirmed
 by the user; broader hosted workflows and partner lifecycle acceptance remain separate.**
 The work reuses the user-supplied Campus Pulse prototype and current skills pack.
 
+## CI quality gates — 2026-11-09
+
+- Added GitHub Actions for PRs into main, pushes to main and manual dispatch.
+  Separate build/artifact, backend emulator and full browser jobs feed one
+  always-evaluated Quality gate. Failed/skipped/cancelled prerequisites fail the
+  aggregate. Skeleton master is excluded. Immutable official-action pins,
+  read-only repository permissions, non-persisted credentials, bounded job time
+  and seven-day JSON/JUnit artifacts; no deployment or production secrets.
+- Added ci:build/ci:backend/ci:browser and sequential ci:check local rehearsal.
+  Inherited provider/Google credentials are stripped; demo emulators/mock providers
+  only. Build uses nonfunctional public key/app-ID fixtures and does not call
+  providers; it is checked but never uploaded as a release. Playwright forbids
+  focused-only tests in CI. Production data reset/accounts remain untouched.
+- Local validation: production-shaped build/artifact gate passes;119 backend
+  tests pass with0 skipped;25 browser tests pass. Actionlint1.7.12 passes; policy
+  checks verify permissions/pins/triggers and aggregate success/failure/skip/
+  cancellation behavior. Synthetic inherited-credential isolation checks pass.
+  Local host is macOS/Node26; GitHub Ubuntu24.04/Node22 runner has not run yet.
+- No commit/push, remote workflow run, branch-protection change, partner call or
+  deploy. User must publish the workflow and select Quality gate as a required
+  main status check to enforce merges. Render auto-deploy is a separate dashboard
+  setting. [Guide](docs/deployment/quality-gates.md),
+  [local evidence](docs/evidence/ci-quality-gates-2026-11-09/check-results.json).
+
 ## User-approved presentation data reset — 2026-11-09
 
 - User explicitly confirmed the exact live cleanup after reviewing the inventory.
