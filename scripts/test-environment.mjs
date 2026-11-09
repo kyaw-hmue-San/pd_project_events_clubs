@@ -1,6 +1,6 @@
 // No local .env is loaded. This mode uses only an isolated demo project.
-export function testEnvironment() {
-  const env = { ...process.env };
+export function testEnvironment(source = process.env) {
+  const env = { ...source };
   for (const name of Object.keys(env)) {
     if (/^(AIML_|ORGANIZER_AI_|PARTNER_|WEBHOOK_|TEAM10_|TEAM17_|LIBRARY_|GOOGLE_APPLICATION_CREDENTIALS$|INTEGRATION_LOG_VIEWER_UIDS$)/.test(name)) delete env[name];
   }

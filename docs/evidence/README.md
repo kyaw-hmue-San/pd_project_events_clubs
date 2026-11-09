@@ -12,6 +12,7 @@ reports and real manual deliveries are different evidence types.
 - [Firebase Hosting + Render release](hosted-release-2026-11-08/check-results.json)
 - [Architecture and public privacy notice](architecture-privacy-2026-11-09/check-results.json)
 - [User-approved live presentation reset](demo-cleanup-2026-11-09/check-results.json)
+- [Local CI quality-gate rehearsal](ci-quality-gates-2026-11-09/check-results.json)
 - [Earlier maintenance receipt](maintenance-live-2026-11-06/check-results.json)
 - [AI checks](ai-flows-2026-11-06/)
 - [Description formatting](description-format-2026-11-06/check-results.json)

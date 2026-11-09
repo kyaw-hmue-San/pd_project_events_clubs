@@ -4,6 +4,9 @@ User-selected hosting setup, 2026-11-08. Use `main` for the complete application
 Lowercase `master` is the folder skeleton and cannot run the application.
 Git publication remains with the user; these commands do not commit or push.
 
+For automated pre-merge checks, see [CI quality gates](quality-gates.md).
+They do not deploy or configure branch protection automatically.
+
 Released: frontend and updated API are live at the URLs below. Basic live checks
 passed and the user confirmed school Google login opens their workspace. See
 [sanitized release evidence](../evidence/hosted-release-2026-11-08/check-results.json).

@@ -1,0 +1,88 @@
+{
+  "date": "2026-11-09",
+  "checkedAt": "2026-11-09T15:59:41.002Z",
+  "branch": "fix/team10-permanent-endpoint",
+  "workflow": ".github/workflows/quality-gates.yml",
+  "localHost": {
+    "platform": "darwin",
+    "node": "v26.12.1"
+  },
+  "targetRunner": {
+    "os": "ubuntu-24.04",
+    "node": "22",
+    "java": "21"
+  },
+  "stages": {
+    "build": {
+      "stage": "build",
+      "status": "passed",
+      "durationMs": 2580,
+      "environment": "Build-only public fixtures; no provider calls",
+      "deployed": false
+    },
+    "backend": {
+      "stage": "backend",
+      "status": "passed",
+      "durationMs": 34796,
+      "environment": "Disposable demo emulators and mocked providers",
+      "deployed": false
+    },
+    "browser": {
+      "stage": "browser",
+      "status": "passed",
+      "durationMs": 139963,
+      "environment": "Disposable demo emulators and mocked providers",
+      "deployed": false
+    }
+  },
+  "backend": {
+    "passed": 119,
+    "failed": 0,
+    "skipped": 0
+  },
+  "browser": {
+    "passed": 25,
+    "failed": 0,
+    "skipped": 0
+  },
+  "workflowLint": {
+    "tool": "actionlint",
+    "version": "1.7.12",
+    "officialReleaseChecksumVerified": true,
+    "passed": true
+  },
+  "policyChecks": {
+    "readOnlyPermissions": true,
+    "immutableOfficialActionPins": true,
+    "mainOnlyAutomaticTriggers": true,
+    "alwaysEvaluatedAggregate": true,
+    "aggregateCases": 4,
+    "syntheticCredentialIsolationPassed": true
+  },
+  "privacy": {
+    "productionCredentialsUsed": false,
+    "productionRecordsChanged": false,
+    "partnerCalls": 0,
+    "realAiCalls": 0,
+    "uploadedByThisLocalRun": false
+  },
+  "reports": {
+    "format": [
+      "Stage JSON",
+      "JUnit XML"
+    ],
+    "gitIgnored": true,
+    "configuredGitHubRetentionDays": 7,
+    "rawTracesAndBackupsExcluded": true
+  },
+  "limits": [
+    "Local rehearsal only; no GitHub-hosted run yet",
+    "Branch protection must be configured separately by the user after publication",
+    "CI build uses nonfunctional public key/app-ID fixtures and is not a deployable release",
+    "Render auto-deploy setting is separate from this workflow"
+  ],
+  "gitCommitted": false,
+  "gitPushed": false,
+  "remoteBranchProtectionChanged": false,
+  "deployed": false
+}

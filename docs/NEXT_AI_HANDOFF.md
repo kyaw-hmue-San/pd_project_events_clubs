@@ -1,6 +1,17 @@
 # Next AI session handoff — current implementation status
 
 Updated 2026-11-09, Asia/Bangkok. Current working branch fix/team10-permanent-endpoint.
+LATEST CI added locally: .github/workflows/quality-gates.yml, PR/push main and
+manual dispatch. Build/artifact + backend + browser jobs feed required-candidate
+Quality gate; no deploy/secrets. Official actions commit-pinned, permissions
+read-only, report-only artifacts7 days. User must push and configure branch
+protection; neither GitHub execution nor remote enforcement is claimed.
+ci:check runs the same gates sequentially locally (build uses nonfunctional public
+fixtures; normal frontend deploy rebuilds with actual public settings).119 backend
+and25 browser tests passed, no skipped backend cases; Actionlint and safety/policy
+checks passed locally on macOS/Node26. Target runner Ubuntu24.04/Node22/Java21
+is not yet remotely verified. See docs/deployment/quality-gates.md and CI evidence.
+Preserve cleaned live accounts/data; these checks use demo emulators/mocks only.
 LATEST approved live demo cleanup completed: kept the user-selected Admin and
 school Student accounts only (2 Auth users/profiles;1 university-ID claim).
 School account is now STUDENT, no Organizer capability; identity/enrollment

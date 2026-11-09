@@ -9,6 +9,7 @@
 - [Local setup](LOCAL_DEVELOPMENT.md), [Google sign-in](GOOGLE_SIGN_IN.md)
 - [Environment templates](../config/env/README.md), [deployment](deployment/README.md)
 - [Firebase Hosting + Render release steps](deployment/firebase-render.md)
+- [CI quality gates and GitHub activation](deployment/quality-gates.md)
 - [AI planning](AI_DRAFT_ASSISTANT.md), [Organizer admission](ORGANIZER_AI_ADMISSION.md)
 - [Maintenance](MAINTENANCE_CONNECTION.md), [partner handoff](A5-PARTNER-HANDOFF.md)
 - [Team 17 Internship connection](integrations/team17-internships.md)
