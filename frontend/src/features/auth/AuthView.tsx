@@ -3,6 +3,7 @@ import { auth, configurationError } from "../../lib/firebase"
 import { continueWithGoogle, continueWithGoogleRedirect, finishGoogleRedirect, signInError } from "../../lib/google-signin"
 import { Button, Icon, OperationNotice } from "../../components/ui"
 import { BrandLogo } from '../../components/BrandLogo'
+import { PrivacyLink } from '../privacy/PrivacyPage'
 
 export function AuthView() {
   const [loading, setLoading] = useState(false)
@@ -58,6 +59,7 @@ export function AuthView() {
           <p className="mt-2 text-sm leading-6 text-slate-500">
             Choose the Google account you use for Campus Events & Clubs. Campus access and your role are managed by the school.
           </p>
+          <p className="mt-4 text-xs leading-6 text-slate-500">Read how we use your information before signing in. <PrivacyLink /></p>
           {(configurationError || error) && <p role="alert" className="mt-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">{configurationError || error}</p>}
           <Button type="button" variant="secondary" className="mt-7 w-full bg-white" busy={loading} busyFeedback="notice" disabled={Boolean(configurationError)} onClick={() => void submit()}>
             <GoogleMark />Continue with Google

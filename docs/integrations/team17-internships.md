@@ -1,5 +1,9 @@
 # Team 17 Internship connection
 
+9 November 2026: user confirms the read-only connection is completed. This is
+user-reported acceptance, not a newly captured hosted HTTP trace. Maintenance
+is the main evaluation showcase; current listings remain demo-labelled.
+
 Campus Events & Clubs consumes one public, read-only endpoint:
 `GET https://team17-internship.vercel.app/api/placements`.
 The original [handover](../../Team17-Team12-API-Handover/README.md) and

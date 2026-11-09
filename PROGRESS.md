@@ -1,10 +1,52 @@
 # Campus Pulse implementation progress
 
-Latest update: 2026-11-08 (Asia/Bangkok). Current working branch: `main`.
+Latest update: 2026-11-09 (Asia/Bangkok). Current working branch: `fix/team10-permanent-endpoint`.
 
 Status: **Hosted on Firebase Hosting + Render. School Google sign-in confirmed
 by the user; broader hosted workflows and partner lifecycle acceptance remain separate.**
 The work reuses the user-supplied Campus Pulse prototype and current skills pack.
+
+## Architecture and privacy preparation — 2026-11-09
+
+- Replaced the outdated architecture/diagram with implemented Firebase Hosting,
+  React/Vite, persistent Render/Express, Firebase Google Auth/Firestore, three
+  roles/capabilities, AI and partner boundaries. Added a standalone accessible
+  SVG for presentation/export. Preserved the original architecture options in
+  docs/archive/architecture-options-original.md; historical reviews clearly
+  point to the actual stack. No lecturer approval of the stack deviation invented.
+- User reports Maintenance, Library and Internship connections completed;
+  Maintenance is the main evaluation flow, the other two read-only. Notification
+  Hub coordination is attempted, with no active delivery claimed. No fresh
+  hosted partner trace is fabricated. User prepares the Working Happy Path.
+- Added public #privacy notice before authentication/enrollment/application and
+  shared workspace footer links, public contact explicitly authorized by user,
+  AI/free-text disclosure and manual rights-request procedure. User delegated
+  retention choice: routine diagnostic logs30 days; identifiable project records
+  within90 days after final evaluation, operator-reviewed. No automatic purge,
+  export endpoint, consent checkbox or production data changes. Controller/basis/
+  processor-transfer confirmation remains a separate institutional/legal task.
+- Implementation is local on the feature branch. No push, deploy, partner
+  messages, real AI call or production mutation performed by this change.
+- Verification: production build and Hosting artifact guard pass; two focused
+  isolated browser tests pass (public notice without session/API access and
+  workspace navigation). SVG rendered and inspected with no text outside its
+  canvas. Local screenshots/evidence remain separate from hosted acceptance.
+
+## Permanent Team 10 backend — 2026-11-09
+
+- User supplied https://maintenance-team10.vercel.app (hyphenated hostname).
+  Updated facilities provider default, public environment examples and private
+  local/Render import URL to its /api/partner/work-orders route. Removed private
+  temporary-tunnel approvals; credentials, request identity, existing links,
+  HMAC/status ordering and other integrations are unchanged.
+- Separate manual authenticated reads: partner health200; work-orders GET400
+  MISSING_QUERY_PARAM. No creation POST, record change or lifecycle acceptance
+  claimed. Render's running environment must still be changed in its dashboard;
+  our receiver remains https://pd-project-events-clubs.onrender.com/webhooks/partner.
+  No commit, push, deployment or partner message performed.
+- Verification: 17 targeted isolated facilities/environment/local-mode tests
+  pass; local and production-import environment checks pass. No real partner
+  calls or AI credits during automated checks. Frontend unchanged.
 
 ## Hosted release — 2026-11-08
 

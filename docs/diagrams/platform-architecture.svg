@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1160" viewBox="0 0 1600 1160" role="img" aria-labelledby="title description">
+<title id="title">Campus Events and Clubs implemented cloud architecture</title>
+<desc id="description">Firebase Hosting serves a React browser app for Students, Organizers and Admins. Google sign-in uses Firebase Authentication. The browser calls a persistent Express API on Render, which verifies identity, authorizes access and transacts against Firestore. Server-only connections use AI/ML API, Maintenance, Library and Team 17 Internship. Maintenance status returns through signed webhooks. Notification Hub was attempted and has no active flow.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"/></marker></defs>
+<style>text{font-family:Arial,Helvetica,sans-serif}.overline{font-size:13px;font-weight:700;letter-spacing:2px}.title{font-size:24px;font-weight:700}.body{font-size:17px}.small{font-size:14px}.label{font-size:13px;fill:#475569} .wire{fill:none;stroke:#64748b;stroke-width:2;marker-end:url(#arrow)}</style>
+<rect width="1600" height="1160" fill="#f8fafc"/>
+<text x="50" y="53" class="overline" fill="#2563eb">TEAM 12 · IMPLEMENTED SYSTEM · 9 NOVEMBER 2026</text>
+<text x="50" y="101" font-size="38" font-weight="700" fill="#0f172a">Campus Events &amp; Clubs</text>
+<text x="50" y="129" class="body" fill="#64748b">One web application · persistent API · transactional data · separate partner boundaries</text>
+
+<path class="wire" d="M530 225 H620" marker-start="url(#arrow)"/>
+<text x="548" y="207" class="label" fill="#475569">Sign-in</text>
+<path class="wire" d="M290 304 V402" marker-start="url(#arrow)"/>
+<text x="312" y="350" class="label" fill="#475569">HTTPS REST + ID token</text>
+<path class="wire" d="M835 402 V304"/>
+<text x="855" y="350" class="label" fill="#475569">Token / revocation check</text>
+<path class="wire" d="M1050 433 H1080 V240 H1140" marker-start="url(#arrow)"/>
+<path class="wire" d="M1050 480 H1140"/>
+<path class="wire" d="M1140 527 H1050"/>
+<path class="wire" d="M1050 565 H1100 V690 H1140" marker-start="url(#arrow)"/>
+<path class="wire" d="M1050 595 H1080 V880 H1140" marker-start="url(#arrow)"/>
+<path class="wire" d="M350 612 V700" marker-start="url(#arrow)"/>
+<text x="375" y="662" class="label" fill="#475569">Admin SDK · Firestore transactions</text>
+<path class="wire" d="M875 612 V700"/>
+<text x="892" y="663" class="label" fill="#475569">Same process</text>
+<rect x="50" y="150" width="480" height="154" rx="18" fill="#eff6ff" stroke="#93c5fd"/>
+<text x="72" y="179" class="overline" fill="#2563eb">DELIVERY + CLIENT</text>
+<text x="72" y="215" class="title" fill="#0f172a">Firebase Hosting / Browser</text>
+<text x="72" y="246" class="body" fill="#475569">React · TypeScript · Vite</text>
+<text x="72" y="271" class="body" fill="#475569">Student / Organizer / Admin; local QR decode</text>
+<rect x="620" y="150" width="430" height="154" rx="18" fill="#eff6ff" stroke="#93c5fd"/>
+<text x="642" y="179" class="overline" fill="#2563eb">IDENTITY</text>
+<text x="642" y="215" class="title" fill="#0f172a">Firebase Authentication</text>
+<text x="642" y="246" class="body" fill="#475569">Google sign-in and Firebase ID tokens</text>
+<text x="642" y="271" class="body" fill="#475569">Role/capability authority stays in the API</text>
+<rect x="50" y="402" width="1000" height="210" rx="18" fill="#172554" stroke="#2563eb"/>
+<text x="72" y="431" class="overline" fill="#bfdbfe">TRUSTED APPLICATION BOUNDARY</text>
+<text x="72" y="467" class="title" fill="#ffffff">Render · persistent Node.js / Express API</text>
+<text x="72" y="498" class="body" fill="#dbeafe">Identity verification → role / ownership checks → input validation</text>
+<text x="72" y="523" class="body" fill="#dbeafe">Activities · registrations · attendance · profiles · Organizer admission</text>
+<text x="72" y="548" class="body" fill="#dbeafe">AI review / planning · owner-reviewed facilities · read-only resource proxies</text>
+<text x="72" y="573" class="body" fill="#dbeafe">Server-only Admin credentials, AI key, partner keys and webhook secrets</text>
+<rect x="50" y="700" width="600" height="200" rx="18" fill="#ecfdf5" stroke="#6ee7b7"/>
+<text x="72" y="729" class="overline" fill="#2563eb">APPLICATION DATA</text>
+<text x="72" y="765" class="title" fill="#0f172a">Cloud Firestore</text>
+<text x="72" y="796" class="body" fill="#475569">Profiles / enrollment · activities / registrations</text>
+<text x="72" y="821" class="body" fill="#475569">Attendance / private ticket lookup · decisions</text>
+<text x="72" y="846" class="body" fill="#475569">Facilities links / snapshots · inbox / outbox / audit</text>
+<text x="72" y="871" class="body" fill="#475569">Atomic locks, counts, claims, leases and revisions</text>
+<rect x="700" y="700" width="350" height="200" rx="18" fill="#ffffff" stroke="#cbd5e1"/>
+<text x="722" y="729" class="overline" fill="#2563eb">PERSISTENT RUNTIME</text>
+<text x="722" y="765" class="title" fill="#0f172a">Integration worker</text>
+<text x="722" y="796" class="body" fill="#475569">Legacy durable retries / leases</text>
+<text x="722" y="821" class="body" fill="#475569">Publication / polling disabled</text>
+<text x="722" y="846" class="body" fill="#475569">Facilities Send stays explicit</text>
+<text x="722" y="871" class="body" fill="#475569">Render idle sleep pauses worker</text>
+<rect x="1140" y="160" width="410" height="160" rx="18" fill="#f5f3ff" stroke="#c4b5fd"/>
+<text x="1162" y="189" class="overline" fill="#2563eb">SERVER-TO-SERVER · AI</text>
+<text x="1162" y="225" class="title" fill="#0f172a">AI/ML API</text>
+<text x="1162" y="256" class="body" fill="#475569">Planning · Organizer rubric</text>
+<text x="1162" y="281" class="body" fill="#475569">Library relevance / search query</text>
+<text x="1162" y="306" class="body" fill="#475569">Bounded task text; validated responses</text>
+<rect x="1140" y="370" width="410" height="200" rx="18" fill="#eff6ff" stroke="#93c5fd"/>
+<text x="1162" y="399" class="overline" fill="#2563eb">PARTNER · MAIN DEMO</text>
+<text x="1162" y="435" class="title" fill="#0f172a">Team 10 Maintenance</text>
+<text x="1162" y="466" class="body" fill="#475569">Reviewed creation POST → work order</text>
+<text x="1162" y="491" class="body" fill="#475569">← signed status webhook</text>
+<text x="1162" y="516" class="body" fill="#475569">HMAC · event deduplication · versions</text>
+<text x="1162" y="541" class="body" fill="#475569">OPEN → ASSIGNED → … → CLOSED</text>
+<rect x="1140" y="620" width="410" height="140" rx="18" fill="#ffffff" stroke="#cbd5e1"/>
+<text x="1162" y="649" class="overline" fill="#2563eb">PARTNER · READ ONLY</text>
+<text x="1162" y="685" class="title" fill="#0f172a">Library</text>
+<text x="1162" y="716" class="body" fill="#475569">Catalog GET → books and copy counts</text>
+<text x="1162" y="741" class="body" fill="#475569">Search only; no identity or borrowing</text>
+<rect x="1140" y="810" width="410" height="140" rx="18" fill="#ffffff" stroke="#cbd5e1"/>
+<text x="1162" y="839" class="overline" fill="#2563eb">PARTNER · READ ONLY</text>
+<text x="1162" y="875" class="title" fill="#0f172a">Team 17 Internship</text>
+<text x="1162" y="906" class="body" fill="#475569">Public feed GET → labelled listings</text>
+<text x="1162" y="931" class="body" fill="#475569">No identity forwarding or applications</text>
+<rect x="1140" y="980" width="410" height="88" rx="18" fill="#fffbeb" stroke="#fbbf24" stroke-dasharray="6 5"/>
+<text x="1162" y="1009" class="overline" fill="#2563eb">COORDINATION ATTEMPTED</text>
+<text x="1162" y="1045" class="title" fill="#0f172a">Notification Hub</text>
+<rect x="50" y="955" width="1000" height="113" rx="18" fill="#e2e8f0"/>
+<text x="72" y="985" class="overline" fill="#334155">PRIVACY + SECURITY</text>
+<text x="72" y="1016" class="body" fill="#334155">No direct browser Firestore access · least privilege · explicit facilities sharing</text>
+<text x="72" y="1043" class="body" fill="#334155">Public privacy notice · manual data requests · reviewed retention policy</text>
+<text x="50" y="1110" class="small" fill="#64748b">Connections completed per user confirmation. Diagram is not a new captured live test; Notification Hub has no active data path.</text>
+<text x="50" y="1135" class="small" fill="#64748b">Cloud evaluation: Firebase Hosting + Render + permanent partner endpoints. No localhost or ngrok dependency.</text>
+</svg>

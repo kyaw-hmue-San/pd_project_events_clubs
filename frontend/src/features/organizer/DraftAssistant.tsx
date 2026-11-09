@@ -61,7 +61,7 @@ export function DraftAssistant({ disabled, current, activityType, onApply }: { d
         {tooLong && <ErrorNotice message="These sections exceed the 5,000-character description limit. Deselect sections or shorten your existing text." />}
         <div className="mt-5 flex flex-wrap justify-end gap-2"><Button variant="secondary" onClick={() => setSuggestion(null)}>Edit brief</Button><Button icon="check" disabled={!selected.length || tooLong || (replace && !confirmed)} onClick={() => { onApply(updates); setOpen(false); setSuggestion(null); setConfirmed(false) }}>Apply selected sections</Button></div>
       </div> : <form onSubmit={generate} className="space-y-4">
-        <p className="text-sm leading-6 text-slate-600">Describe your idea to get an agenda, preparation checklist and facilities suggestions. Review the plan before adding it to your activity.</p>
+        <p className="text-sm leading-6 text-slate-600">Describe your idea to get an agenda, preparation checklist and facilities suggestions. Review the plan before adding it to your activity. AI uses the brief you submit; leave out personal or sensitive information.</p>
         <fieldset disabled={busy} className="space-y-4">
           <Field label="Activity idea"><Input required minLength={3} maxLength={160} value={topic} onChange={event => setTopic(event.target.value)} placeholder="Beginner Python workshop" /></Field>
           <Field label="Who is it for?"><Input required minLength={3} maxLength={160} value={audience} onChange={event => setAudience(event.target.value)} placeholder="MFU students new to coding" /></Field>

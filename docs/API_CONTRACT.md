@@ -184,6 +184,12 @@ links, and preserve status received before the receipt. Trusted operator linking
 of existing orders remains available. Incoming webhook activityId is ignored for
 association. No public arbitrary linking/status management route is added.
 
+Current provider origin (supplied 2026-11-09):
+`https://maintenance-team10.vercel.app`. Local settings and Render import use
+that origin; updating the running Render environment is a separate dashboard
+step. Health authentication was checked read-only; POST creation and the hosted
+status lifecycle on this new origin still require coordinated acceptance.
+
 The existing `POST /webhooks/partner` requires X-Webhook-Secret. Signed maintenance
 events additionally require X-Webhook-Signature (`sha256=<64 lowercase hex>`),
 HMAC-SHA256 over exact UTF-8 raw bytes, X-Event-ID equal to UUID-v4 body.id, and

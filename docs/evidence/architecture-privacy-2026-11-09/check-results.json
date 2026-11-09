@@ -1,0 +1,67 @@
+{
+  "date": "2026-11-09",
+  "timezone": "Asia/Bangkok",
+  "branch": "fix/team10-permanent-endpoint",
+  "scope": "Implemented architecture, public privacy notice and manual data-handling policy",
+  "productionBuild": "passed",
+  "hostingArtifactGuard": "passed",
+  "isolatedBrowser": {
+    "passed": 2,
+    "failed": 0,
+    "scenarios": [
+      "Public privacy notice without session or protected API requests; focus, contact, mobile width, pre-sign-in new-tab link",
+      "Existing compact header and workspace switching"
+    ],
+    "providers": "Disposable emulators and mocked providers"
+  },
+  "productionPreview": {
+    "externalRequestsBlocked": true,
+    "viewports": [
+      1440,
+      360
+    ],
+    "noHorizontalOverflow": true,
+    "screenshots": [
+      "privacy-1440.png",
+      "privacy-360.png"
+    ]
+  },
+  "architecture": {
+    "format": [
+      "Markdown",
+      "Mermaid",
+      "standalone accessible SVG"
+    ],
+    "renderedAndVisuallyInspected": true,
+    "textOutsideCanvas": 0,
+    "originalOptionsPreserved": "docs/archive/architecture-options-original.md"
+  },
+  "privacy": {
+    "contact": "User-authorized public school email",
+    "retention": "Routine diagnostic logs 30 days; identifiable project records within 90 days after final evaluation, operator reviewed",
+    "automaticPurgeImplemented": false,
+    "cleanupExecuted": false,
+    "rightsRequests": "Manual project contact procedure, not automatic export/deletion",
+    "legalComplianceCertified": false
+  },
+  "partnerStatus": {
+    "source": "User confirmation on 2026-11-09",
+    "maintenance": "Connected; primary showcase",
+    "library": "Connected, read-only",
+    "internship": "Connected, read-only",
+    "notificationHub": "Coordination attempted, no active runtime integration",
+    "newHostedExecutionCaptured": false
+  },
+  "limits": [
+    "Local frontend change; not deployed by this task",
+    "Controller/basis/provider-transfer arrangements require responsible confirmation",
+    "Retention policy is manual, not a tested or executed purge",
+    "Working Happy Path is being prepared by the user"
+  ],
+  "productionRecordsChanged": false,
+  "realAiCalls": 0,
+  "partnerCalls": 0,
+  "gitCommitted": false,
+  "gitPushed": false,
+  "deployed": false
+}

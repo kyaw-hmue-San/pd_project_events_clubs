@@ -3,6 +3,7 @@ import { Button, ErrorNotice, Field, Icon, Input, Loading, LoadingScreen, Operat
 import { useRemote } from "../../hooks/useRemote"
 import { api, ApiError } from "../../lib/api"
 import { AdmissionAnalysis } from "./AdmissionAnalysis"
+import { PrivacyLink } from '../privacy/PrivacyPage'
 import type { OrganizerRequest } from "../../models"
 
 export function OrganizerAccess({ onRefreshAccess, onLogout, email }: { onRefreshAccess: () => void; onLogout?: () => Promise<void>; email?: string | null }) {
@@ -20,6 +21,7 @@ export function OrganizerAccess({ onRefreshAccess, onLogout, email }: { onRefres
   if (signingOut) return <LoadingScreen text="Signing you out" description="Closing your Google campus session." />
   return <div className="page-wrap max-w-3xl">
     <PageHeader eyebrow="Campus access" title="Request Organizer access" description="Describe your campus activity, intended audience and organizing responsibilities." />
+    <p className="mt-3 text-xs leading-6 text-slate-500"><PrivacyLink /></p>
     {email && <p className="mt-4 break-all text-sm text-slate-600">Signed in as {email}</p>}
     {onLogout && <p className="mt-3 text-sm leading-6 text-slate-600">Student access is limited to @lamduan.mfu.ac.th accounts. Other Google accounts can request Organizer access here.</p>}
     {remote.loading && !remote.value ? <Loading text="Loading your Organizer request" variant="section" /> : remote.error ? <ErrorNotice message={remote.error} onRetry={remote.refresh} /> : <>
@@ -60,6 +62,7 @@ function RequestForm({ request, onSubmitted }: { request?: OrganizerRequest | nu
     <Field label="Club or organization" error={fieldErrors.organization}><Input required maxLength={160} value={organization} onChange={event => setOrganization(event.target.value)} disabled={busy} /></Field>
     <Field label="Why do you need Organizer access?" hint="Describe a specific campus activity, its purpose/audience, and your own organizing responsibilities. Independent organizers are welcome." error={fieldErrors.reason}><Textarea required minLength={10} maxLength={1000} value={reason} onChange={event => setReason(event.target.value)} disabled={busy} /></Field>
     <p className="text-xs leading-5 text-slate-500">AI helps review your application. Clear applications may be approved automatically; anything needing clarification goes to Admin. Applications are never rejected automatically.</p>
+    <p className="text-xs leading-5 text-slate-500">Leave out sensitive information and identity documents. Contact the project team if you need human review.</p>
     {error && <ErrorNotice message={error} />}
     {busy && <OperationNotice title="Reviewing your Organizer application" description="Saving your request and checking the approval criteria. Uncertain results stay pending for Admin." />}
     <Button type="submit" busy={busy} busyFeedback="notice">Submit Organizer request</Button>

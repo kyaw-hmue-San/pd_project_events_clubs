@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { useMotionPresence } from './hooks/useMotionPresence'
 import { BrandLogo } from './components/BrandLogo'
+import { PrivacyLink, PrivacyPage } from './features/privacy/PrivacyPage'
 import { InternshipsPage } from './features/internships/InternshipsPage'
 import { LearningResources } from './features/student/LearningResources'
 import type { ActivityInput, ActivityStatus, Profile, RegistrationStatus, Role, Route } from "./models"
@@ -53,12 +54,23 @@ function useRoute(preferredRole: Role, dualAccess = false) {
 }
 
 export default function App() {
+  const [privacy, setPrivacy] = useState(() => window.location.hash === '#privacy')
+  useEffect(() => {
+    const change = () => setPrivacy(window.location.hash === '#privacy')
+    window.addEventListener('hashchange', change)
+    return () => window.removeEventListener('hashchange', change)
+  }, [])
+  // The public notice remains readable without waiting for Firebase or the API.
+  return privacy ? <PrivacyPage /> : <SessionApp />
+}
+
+function SessionApp() {
   const session = useSession()
   if (session.loading) return <LoadingScreen text={session.user ? "Opening your workspace" : "Checking your session"} description={session.user ? "Verifying your campus profile and access." : "Connecting to your Google sign-in session."} />
   if (!session.user) return <AuthView />
   if (session.needsOrganizerApproval) return <OrganizerAccess email={session.user.email} onRefreshAccess={session.retry} onLogout={session.logout} />
   if (session.needsProfile) return <ProfileSetup email={session.user.email} onComplete={session.retry} onLogout={session.logout} />
-  if (!session.profile) return <main className="page-wrap max-w-xl"><h1 className="text-2xl font-bold">Account access</h1><ErrorNotice message={session.error || "Your campus profile is unavailable."} onRetry={session.retry} /><Button variant="secondary" onClick={() => void session.logout()}>Sign out</Button></main>
+  if (!session.profile) return <main className="page-wrap max-w-xl"><h1 className="text-2xl font-bold">Account access</h1><ErrorNotice message={session.error || "Your campus profile is unavailable."} onRetry={session.retry} /><Button variant="secondary" onClick={() => void session.logout()}>Sign out</Button><p className="mt-6 text-xs"><PrivacyLink /></p></main>
   return <Workspace key={session.profile.id} profile={session.profile} onLogout={session.logout} onRefreshAccess={session.retry} />
 }
 
@@ -375,5 +387,5 @@ function Header({
 }
 
 function Footer() {
-  return <footer className="mt-8 border-t border-slate-200/80 bg-white"><div className="app-container flex flex-col gap-2 py-5 text-xs text-slate-500 sm:flex-row sm:justify-between"><p className="font-medium">Campus Events & Clubs · Team 12</p><p>Campus time: {campusTimeZone}</p></div></footer>
+  return <footer className="mt-8 border-t border-slate-200/80 bg-white"><div className="app-container flex flex-wrap items-center justify-between gap-3 py-5 text-xs text-slate-500"><p className="font-medium">Campus Events & Clubs · Team 12</p><PrivacyLink /><p>Campus time: {campusTimeZone}</p></div></footer>
 }

@@ -135,6 +135,24 @@ are fictional demos. [Library learning resources](docs/integrations/library-reso
 use independent server-only Library credentials and the existing AI provider.
 Notification Hub's contract remains pending.
 
+Maintenance is the main integration demonstration; Library and Internship are
+read-only connections, completed per the user's confirmation. Notification Hub
+coordination was attempted; no active notification delivery is implemented.
+
+## Privacy and architecture
+
+The public `#privacy` page explains collected data, AI/partner sharing, access,
+retention and the project contact for manual personal-data requests. It is linked
+before sign-in and from all workspaces; deploy the latest frontend to publish it.
+The project retention policy is 30 days for routine technical logs and 90 days
+after final evaluation for identifiable project records, with operator review.
+Automatic deletion is not implemented and full PDPA compliance is not certified.
+See [privacy operations](docs/privacy-and-data-handling.md).
+
+The [current architecture](docs/architecture.md) and
+[exportable diagram](docs/diagrams/platform-architecture.svg) describe Firebase
+Hosting, the persistent Render API, Firebase Auth/Firestore, AI and partners.
+
 ## Checks and builds
 
 | Command | Purpose |

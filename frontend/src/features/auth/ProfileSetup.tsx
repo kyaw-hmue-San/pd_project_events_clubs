@@ -2,6 +2,7 @@ import { useState } from "react"
 import { api, ApiError } from "../../lib/api"
 import { Button, ErrorNotice, Field, Input, LoadingScreen, OperationNotice } from "../../components/ui"
 import { BrandLogo } from '../../components/BrandLogo'
+import { PrivacyLink } from '../privacy/PrivacyPage'
 
 export function ProfileSetup({ email, onComplete, onLogout }: { email: string | null; onComplete: () => void; onLogout: () => Promise<void> }) {
   const [universityId, setUniversityId] = useState("")
@@ -26,6 +27,7 @@ export function ProfileSetup({ email, onComplete, onLogout }: { email: string | 
       <h1 className="mt-6 text-2xl font-bold text-slate-950">Complete your campus profile</h1>
       <p className="mt-3 break-all text-sm text-slate-600">Signed in as {email}.</p>
       <p className="mt-2 text-sm leading-6 text-slate-500">Enter your university ID once to start using Campus Events & Clubs as a Student.</p>
+      <p className="mt-3 text-xs leading-6 text-slate-500">Your ID supports Student enrollment and is kept out of partner requests. <PrivacyLink /></p>
       <form onSubmit={submit} className="mt-6 space-y-5">
         <Field label="University ID" error={fieldError}><Input required autoComplete="off" maxLength={40} pattern={"[A-Za-z0-9\\-]{1,40}"} value={universityId} onChange={event => setUniversityId(event.target.value)} disabled={busy} /></Field>
         {error && <ErrorNotice message={error} />}

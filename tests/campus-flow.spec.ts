@@ -3,6 +3,28 @@ import { readFile } from 'node:fs/promises'
 import { execFileSync } from 'node:child_process'
 import { testEnvironment } from '../scripts/test-environment.mjs'
 
+test('public privacy notice opens without a session or API access and is linked before sign-in', async ({ page }) => {
+  const accountRequests: string[] = []
+  page.on('request', request => { if (new URL(request.url()).pathname.startsWith('/api/')) accountRequests.push(request.url()) })
+  await page.goto('/#privacy')
+  const heading = page.getByRole('heading', { name: 'Privacy and data use', exact: true })
+  await expect(heading).toBeVisible()
+  await expect(heading).toBeFocused()
+  await expect(page.getByRole('link', { name: '6731503062@lamduan.mfu.ac.th', exact: true })).toHaveAttribute('href', /^mailto:/)
+  await expect(page.getByText(/automatic expiry is not implemented/i)).toBeVisible()
+  await page.setViewportSize({ width: 360, height: 800 })
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy()
+  expect(accountRequests).toEqual([])
+  await page.getByRole('link', { name: 'Open application', exact: true }).click()
+  await expect(page.getByRole('button', { name: 'Continue with Google', exact: true })).toBeVisible()
+  const popupPromise = page.waitForEvent('popup')
+  await page.getByRole('link', { name: 'Privacy and data use (opens in a new tab)', exact: true }).click()
+  const notice = await popupPromise
+  await expect(notice.getByRole('heading', { name: 'Privacy and data use', exact: true })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Continue with Google', exact: true })).toBeVisible()
+  await notice.close()
+})
+
 async function publishTicketEvent(page: Page, prefix = 'Ticket workshop', signedIn = false, description = 'Isolated QR attendance browser verification.') {
   if (!signedIn) await login(page, 'organizer')
   await page.getByRole('navigation').getByRole('button', { name: 'Create activity', exact: true }).click()
