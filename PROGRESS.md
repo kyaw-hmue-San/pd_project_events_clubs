@@ -6,6 +6,31 @@ Status: **Hosted on Firebase Hosting + Render. School Google sign-in confirmed
 by the user; broader hosted workflows and partner lifecycle acceptance remain separate.**
 The work reuses the user-supplied Campus Pulse prototype and current skills pack.
 
+## User-approved presentation data reset — 2026-11-09
+
+- User explicitly confirmed the exact live cleanup after reviewing the inventory.
+  Kept the specified Admin and school account only. School profile is now
+  STUDENT with Student-only capabilities; preserved name/email/university ID,
+  enrollment claim and creation timestamp. Admin profile remained unchanged.
+  Removed old Organizer approvals/applications so a fresh request is possible.
+- Private typed Firestore/Auth recovery backup was written and checksum/roundtrip
+  verified before mutation. It includes original account/provider/password-hash
+  recovery data; restricted local directory/file permissions and explicit root/
+  backend gitignore rules keep it out of Git. Never publish its contents.
+- One transaction deleted the approved99 Firestore records across events,
+  registrations/locks/tickets, application reviews/decisions, facilities requests/
+  links, old publication jobs and extra profiles/enrollment claims; reset the
+  Student role and appended a trusted-operator role audit. Deleted the other8
+  Firebase sign-in accounts after the database commit. Backed-up document versions
+  and collection membership were checked to reject unreviewed concurrent changes.
+- Direct read-only verification confirms exactly2 Auth accounts/profiles,1
+  enrollment claim and zero records in all cleared presentation collections.
+  Request/integration logs, inbox/replay protection, latest maintenance statuses
+  and integration configuration were retained. External Team10 work orders were
+  untouched. No partner call, AI usage, schema/rules change, deploy or Git push.
+  This is a real operator reset, not an automated test or browser login acceptance.
+  [Sanitized result](docs/evidence/demo-cleanup-2026-11-09/check-results.json).
+
 ## Architecture and privacy preparation — 2026-11-09
 
 - Replaced the outdated architecture/diagram with implemented Firebase Hosting,

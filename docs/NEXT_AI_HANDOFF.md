@@ -1,6 +1,18 @@
 # Next AI session handoff — current implementation status
 
 Updated 2026-11-09, Asia/Bangkok. Current working branch fix/team10-permanent-endpoint.
+LATEST approved live demo cleanup completed: kept the user-selected Admin and
+school Student accounts only (2 Auth users/profiles;1 university-ID claim).
+School account is now STUDENT, no Organizer capability; identity/enrollment
+preserved.99 approved Firestore records and8 extra Auth accounts removed after
+private recovery backup. All activities/registrations/tickets/Organizer requests,
+AI reviews/decisions, facilities requests/links and publication jobs are empty.
+Security/integration logs, inbox replay protection and maintenance status records
+remain. Team10 remote work orders unchanged, no partner calls. User will create
+new presentation events and request Organizer access again. Do not seed live
+demo accounts or restore previous approvals. See demo-cleanup evidence/progress.
+Private recovery material under backend/private-backups is ignored/restricted:
+NEVER print, commit, upload or share it. No automatic restore or retention purge.
 LATEST architecture/privacy: current docs/architecture.md and diagrams now match
 Firebase Hosting + persistent Render + Firebase Auth/Firestore + three roles/AI/
 partners. Original options preserved in docs/archive/architecture-options-original.md.
